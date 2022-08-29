@@ -1,0 +1,4 @@
+.bazel-output-base
+.bazel-disk-cache
+.output-bazelrc
+bazel-output

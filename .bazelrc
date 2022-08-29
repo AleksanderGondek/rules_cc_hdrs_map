@@ -1,0 +1,6 @@
+try-import %workspace%/.output-bazelrc
+
+# Cannot do the following:
+# startup --output_base=%workspace%/.bazel-output-base
+# build --disk_cache=%workspace%/.bazel-disk-cache
+# as Bazel will not resolve %workspace%

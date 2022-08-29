@@ -27,6 +27,7 @@ in nixpkgs.mkShell {
 
   buildInputs = with nixpkgs; [
     bazel_5
+    bazel-buildtools
     cacert
     coreutils-full
     curlFull
@@ -38,6 +39,9 @@ in nixpkgs.mkShell {
   ];
 
   shellHook = ''
+    echo "startup --output_base=$(pwd)/.bazel-output-base" > $(pwd)/.output-bazelrc
+    echo "build --disk_cache=$(pwd)/.bazel-disk-cache" >> $(pwd)/.output-bazelrc
+
     echo "Welcome to rules_cc_header_maps dev-shell."
   '';
 }
