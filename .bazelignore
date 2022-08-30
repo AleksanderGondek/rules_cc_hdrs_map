@@ -2,3 +2,4 @@
 .bazel-disk-cache
 .output-bazelrc
 bazel-output
+examples

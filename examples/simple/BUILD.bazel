@@ -1,0 +1,14 @@
+""" Simple examples. """
+
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "riddle",
+    srcs = [
+        "main.cpp",
+        "riddle-one.hpp",
+        "riddle-two.hpp",
+        "riddle-three.hpp",
+        "riddle-four.hpp",
+    ],
+)
