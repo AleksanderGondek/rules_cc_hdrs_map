@@ -1,9 +1,13 @@
 #include <iostream>
 
+// Include via just the name
 #include "riddle-one.hpp"
-#include "riddle-two.hpp"
-#include "riddle-three.hpp"
-#include "riddle-four.hpp"
+// Include via arbitrary directory name that doesn't exist
+#include "arbitrary-name/riddle-two.hpp"
+// Include via multiply nested directory that doesn't exist
+#include "a/b/c/d/e/f/g/riddle-three.hpp"
+// Include via directory name equal to package name
+#include "simple/riddle-four.hpp"
 
 int main()
 {
