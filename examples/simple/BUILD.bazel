@@ -1,6 +1,7 @@
 """ Simple examples. """
 
 load("@rules_cc//cc:defs.bzl", "cc_binary")
+load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
 
 cc_binary(
     name = "riddle",
@@ -11,4 +12,10 @@ cc_binary(
         "riddle-three.hpp",
         "riddle-four.hpp",
     ],
+)
+
+cc_bin_with_header_maps(
+    name = "hello-world",
+    # src = "hello-world.cpp",
+    srcs = ["hello-world.cpp"],
 )
