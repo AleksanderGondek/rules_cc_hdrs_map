@@ -9,7 +9,6 @@ load(
     "@rules_cc_header_maps//cc:common.bzl",
     "get_feature_configuration",
     "compile",
-    "create_shared_library",
     "link"
 )
 
@@ -24,16 +23,25 @@ def _cc_bin_with_header_maps_impl(ctx):
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         srcs = ctx.files.srcs,
+        deps = ctx.attr.deps if ctx.attr.deps else [],
+        user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
+        defines = ctx.attr.defines if ctx.attr.defines else [],
+        includes = ctx.attr.includes if ctx.attr.includes else [],
+        local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
     )
 
-    feature_configuration = cc_common.configure_features(
+    linking_output = link(
         ctx = ctx,
         cc_toolchain = cc_toolchain,
-        requested_features = ctx.features,
-        unsupported_features = ctx.disabled_features,
+        feature_configuration = feature_configuration,
+        compilation_outputs = compilation_outputs,
+        deps = ctx.attr.deps if ctx.attr.deps else [],
+        user_link_flags = ctx.attr.linkopts if ctx.attr.linkopts else [],
+        link_deps_statically = ctx.attr.linkstatic,
+        stamp = ctx.attr.stamp,
+        additional_inputs = ctx.attr.additional_linker_inputs if ctx.attr.additional_linker_inputs else [],
     )
 
-    # TODO: Is this needed?
     # linking_context, linking_output = create_shared_library(
     #     ctx = ctx,
     #     cc_toolchain = cc_toolchain,
@@ -48,21 +56,11 @@ def _cc_bin_with_header_maps_impl(ctx):
     # if linking_output.library_to_link.dynamic_library:
     #     output_files.append(linking_output.library_to_link.dynamic_library)
 
-    linking_output = link(
-        ctx = ctx,
-        cc_toolchain = cc_toolchain,
-        feature_configuration = feature_configuration,
-        compilation_outputs = compilation_outputs,
-    )
-
     output_files = []
     if linking_output.executable:
         output_files.append(linking_output.executable)
-    if linking_output.library_to_link:
-        if linking_output.library_to_link.static_library:
-            output_files.append(linking_output.library_to_link.static_library)
-        if linking_output.library_to_link.dynamic_library:
-            output_files.append(linking_output.library_to_link.dynamic_library)
+    elif linking_output.library_to_link:
+        fail("'cc_bin_with_header_maps' must not output a library!")
 
     return [
         DefaultInfo(
@@ -78,15 +76,48 @@ def _cc_bin_with_header_maps_impl(ctx):
 cc_bin_with_header_maps = rule(
     implementation = _cc_bin_with_header_maps_impl,
     attrs = {
+        "deps": attr.label_list(
+            doc = ""
+        ),
         "srcs": attr.label_list(
             mandatory = True,
-            allow_files = [".cpp"],
+            allow_files = [
+                ".c", ".cc", ".cpp", ".cxx", ".c++", ".C",
+                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+            ],
+            doc = ""
+        ),
+        "additional_linker_inputs": attr.label_list(
+            doc = ""
+        ),
+        "copts": attr.string_list(
+            doc = ""
+        ),
+        "defines": attr.string_list(
+            doc = ""
+        ),
+        "includes": attr.string_list(
+            doc = ""
+        ),
+        "linkopts": attr.string_list(
+            doc = ""
+        ),
+        "linkstatic": attr.bool(
+            default = True, 
+            doc = ""
+        ),
+        "local_defines": attr.string_list(
+            doc = ""
+        ),
+        "stamp": attr.int(
+            default = -1,
+            doc = ""
         ),
         "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
-        ),
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
+        )
     },
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
-    executable = True,
+    executable = True
 )
