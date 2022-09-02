@@ -14,5 +14,8 @@ cc_bin_with_header_maps(
     ],
     public_hdrs = [
         "//tolkien:reuel/ronald/john/include/riddle-one.hpp"
-    ]
+    ],
+    header_maps = {
+        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one.hpp"]
+    }
 )

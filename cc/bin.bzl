@@ -11,6 +11,10 @@ load(
     "compile",
     "link"
 )
+load(
+    "@rules_cc_header_maps//cc:header_maps.bzl",
+    "materialize_hdrs_mapping",
+)
 
 def _cc_bin_with_header_maps_impl(ctx):
     """ To be described. """
@@ -18,17 +22,42 @@ def _cc_bin_with_header_maps_impl(ctx):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
+    # Materialize mappings
+    public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
+        ctx.actions,
+        ctx.attr.header_maps,
+        ctx.files.public_hdrs
+    )
+    public_hdrs = ctx.files.public_hdrs if ctx.files.public_hdrs else []
+    if public_hdrs_extra_files:
+        public_hdrs = public_hdrs + public_hdrs_extra_files
+
+    private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
+        ctx.actions,
+        ctx.attr.header_maps,
+        ctx.files.private_hdrs
+    )
+    private_hdrs = ctx.files.private_hdrs if ctx.files.private_hdrs else []
+    if private_hdrs_extra_files:
+        private_hdrs = private_hdrs + private_hdrs_extra_files
+
+    includes = ctx.attr.includes if ctx.attr.includes else []
+    if public_hdrs_extra_include_path:
+        includes.append(public_hdrs_extra_include_path)
+    if private_hdrs_extra_include_path:
+        includes.append(private_hdrs_extra_include_path)
+
     compilation_ctx, compilation_outputs = compile(
         ctx = ctx,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         srcs = ctx.files.srcs,
-        public_hdrs = ctx.files.public_hdrs if ctx.files.public_hdrs else [],
-        private_hdrs = ctx.files.private_hdrs if ctx.files.private_hdrs else [],
+        public_hdrs = public_hdrs,
+        private_hdrs = private_hdrs,
         deps = ctx.attr.deps if ctx.attr.deps else [],
         user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
         defines = ctx.attr.defines if ctx.attr.defines else [],
-        includes = ctx.attr.includes if ctx.attr.includes else [],
+        includes = includes,
         local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
     )
 
@@ -98,6 +127,9 @@ cc_bin_with_header_maps = rule(
             allow_files = [
                 ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
             ],
+            doc = ""
+        ),
+        "header_maps": attr.string_list_dict(
             doc = ""
         ),
         "additional_linker_inputs": attr.label_list(
