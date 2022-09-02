@@ -1,1 +1,8 @@
 """ Ensure this is a separate package """
+
+exports_files([
+    "reuel/ronald/john/include/riddle-one.hpp",
+    "reuel/ronald/john/include/riddle-two.hpp",
+    "reuel/ronald/john/include/riddle-three.hpp",
+    "reuel/ronald/john/include/riddle-four.hpp"
+])

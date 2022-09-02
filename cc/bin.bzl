@@ -23,6 +23,8 @@ def _cc_bin_with_header_maps_impl(ctx):
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         srcs = ctx.files.srcs,
+        public_hdrs = ctx.files.public_hdrs if ctx.files.public_hdrs else [],
+        private_hdrs = ctx.files.private_hdrs if ctx.files.private_hdrs else [],
         deps = ctx.attr.deps if ctx.attr.deps else [],
         user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
         defines = ctx.attr.defines if ctx.attr.defines else [],
@@ -83,6 +85,17 @@ cc_bin_with_header_maps = rule(
             mandatory = True,
             allow_files = [
                 ".c", ".cc", ".cpp", ".cxx", ".c++", ".C",
+            ],
+            doc = ""
+        ),
+        "public_hdrs": attr.label_list(
+            allow_files = [
+                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+            ],
+            doc = ""
+        ),
+        "private_hdrs": attr.label_list(
+            allow_files = [
                 ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
             ],
             doc = ""
