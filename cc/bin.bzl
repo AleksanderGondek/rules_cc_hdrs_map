@@ -13,7 +13,7 @@ load(
 )
 load(
     "@rules_cc_header_maps//cc:header_maps.bzl",
-    "HdrMapsInfo",
+    "merge_hdr_maps_info_from_deps",
     "materialize_hdrs_mapping",
 )
 
@@ -23,24 +23,34 @@ def _cc_bin_with_header_maps_impl(ctx):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
+    header_maps = ctx.attr.header_maps if ctx.attr.header_maps else {}
+    public_hdrs = [h for h in ctx.files.public_hdrs]
+    private_hdrs = [h for h in ctx.files.private_hdrs]
+
+    # Merge with deps
+    deps_public_hdrs, deps_private_hdrs, header_maps = merge_hdr_maps_info_from_deps(
+        ctx.attr.deps,
+        header_maps,
+    )
+    public_hdrs.extend(deps_public_hdrs)
+    private_hdrs.extend(deps_private_hdrs)
+
     # Materialize mappings
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
-        ctx.attr.header_maps,
-        ctx.files.public_hdrs
+        header_maps,
+        public_hdrs
     )
-    public_hdrs = ctx.files.public_hdrs if ctx.files.public_hdrs else []
     if public_hdrs_extra_files:
-        public_hdrs = public_hdrs + public_hdrs_extra_files
+        public_hdrs.extend(public_hdrs_extra_files)
 
     private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
-        ctx.attr.header_maps,
-        ctx.files.private_hdrs
+        header_maps,
+        private_hdrs
     )
-    private_hdrs = ctx.files.private_hdrs if ctx.files.private_hdrs else []
     if private_hdrs_extra_files:
-        private_hdrs = private_hdrs + private_hdrs_extra_files
+        private_hdrs.extend(private_hdrs_extra_files)
 
     includes = ctx.attr.includes if ctx.attr.includes else []
     if public_hdrs_extra_include_path:
@@ -48,6 +58,7 @@ def _cc_bin_with_header_maps_impl(ctx):
     if private_hdrs_extra_include_path:
         includes.append(private_hdrs_extra_include_path)
 
+    # Compile
     compilation_ctx, compilation_outputs = compile(
         ctx = ctx,
         cc_toolchain = cc_toolchain,

@@ -19,5 +19,6 @@ cc_hdrs(
     ],
     header_maps = {
         "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one.hpp"]
-    }
+    },
+    visibility = ["//visibility:public"]
 )

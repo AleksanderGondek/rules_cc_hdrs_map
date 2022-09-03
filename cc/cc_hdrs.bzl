@@ -3,7 +3,7 @@
 load(
     "@rules_cc_header_maps//cc:header_maps.bzl",
     "HdrMapsInfo",
-    "merge_header_maps",
+    "merge_hdr_maps_info_from_deps",
 )
 
 def _cc_hdrs_impl(ctx):
@@ -11,25 +11,13 @@ def _cc_hdrs_impl(ctx):
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
 
-    header_maps = ctx.attr.header_maps if ctx.attr.header_maps else {}
-    for dependency in ctx.attr.deps:
-        if HdrMapsInfo not in dependency:
-            # Merge hdrs only for HdrMapsInfo-aware deps
-            continue
+    deps_public_hdrs, deps_private_hdrs, header_maps = merge_hdr_maps_info_from_deps(
+        ctx.attr.deps,
+        ctx.attr.header_maps if ctx.attr.header_maps else {}
+    )
 
-        if dependency[HdrMapsInfo].public_hdrs:
-            public_hdrs.extend(
-                dependency[HdrMapsInfo].public_hdrs
-            )
-        if dependency[HdrMapsInfo].private_hdrs:
-            private_hdrs.extend(
-                dependency[HdrMapsInfo].private_hdrs
-            )
-        if dependency[HdrMapsInfo].header_maps:
-            header_maps = merge_header_maps(
-                header_maps,
-                dependency[HdrMapsInfo].header_maps
-            )
+    public_hdrs.extend(deps_public_hdrs)
+    private_hdrs.extend(deps_private_hdrs)
 
     return [
         DefaultInfo(

@@ -81,3 +81,33 @@ def merge_header_maps(
             final_mappings[pattern].append(mapping)
 
     return final_mappings
+
+def merge_hdr_maps_info_from_deps(
+    deps,
+    header_maps,
+):
+    """To be described. """
+    public_hdrs = []
+    private_hdrs = []
+    header_maps = header_maps if header_maps else {}
+
+    for dependency in deps:
+        if HdrMapsInfo not in dependency:
+            # Merge hdrs only for HdrMapsInfo-aware deps
+            continue
+
+        if dependency[HdrMapsInfo].public_hdrs:
+            public_hdrs.extend(
+                dependency[HdrMapsInfo].public_hdrs.to_list()
+            )
+        if dependency[HdrMapsInfo].private_hdrs:
+            private_hdrs.extend(
+                dependency[HdrMapsInfo].private_hdrs.to_list()
+            )
+        if dependency[HdrMapsInfo].header_maps:
+            header_maps = merge_header_maps(
+                header_maps,
+                dependency[HdrMapsInfo].header_maps
+            )
+
+    return public_hdrs, private_hdrs, header_maps
