@@ -8,6 +8,7 @@ load(
 
 def _cc_hdrs_impl(ctx):
     """ To be described. """
+    # TODO: Important! non-hdrmapsinfo deps need to be passed-on!
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
 
@@ -33,7 +34,6 @@ def _cc_hdrs_impl(ctx):
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
             header_maps = header_maps
-        )
     ]
 
 
