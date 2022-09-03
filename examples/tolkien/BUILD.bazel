@@ -1,8 +1,23 @@
 """ Ensure this is a separate package """
 
+load("@rules_cc_header_maps//cc:cc_hdrs.bzl", "cc_hdrs")
+
 exports_files([
     "reuel/ronald/john/include/riddle-one.hpp",
     "reuel/ronald/john/include/riddle-two.hpp",
     "reuel/ronald/john/include/riddle-three.hpp",
     "reuel/ronald/john/include/riddle-four.hpp"
 ])
+
+cc_hdrs(
+    name = "headers",
+    public_hdrs = [
+        "reuel/ronald/john/include/riddle-one.hpp",
+        "reuel/ronald/john/include/riddle-two.hpp",
+        "reuel/ronald/john/include/riddle-three.hpp",
+        "reuel/ronald/john/include/riddle-four.hpp"
+    ],
+    header_maps = {
+        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one.hpp"]
+    }
+)

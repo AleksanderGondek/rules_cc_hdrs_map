@@ -13,6 +13,7 @@ load(
 )
 load(
     "@rules_cc_header_maps//cc:header_maps.bzl",
+    "HdrMapsInfo",
     "materialize_hdrs_mapping",
 )
 

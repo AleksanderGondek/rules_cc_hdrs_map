@@ -1,5 +1,14 @@
 """ To be described. """
 
+HdrMapsInfo = provider(
+    doc = "",
+    fields = {
+        "public_hdrs": "To be described",
+        "private_hdrs": "To be described",
+        "header_maps": "To be described, string_list_dict"
+    }
+)
+
 def materialize_hdrs_mapping(
     actions,
     header_maps,
@@ -44,3 +53,31 @@ def materialize_hdrs_mapping(
         )
 
     return materialized_include_path, materialized_hdrs_files
+
+def merge_header_maps(
+    hdr_maps_one,
+    hdr_maps_two
+):
+    """ To be described. """
+    final_mappings = {}
+    for pattern, mappings in hdr_maps_one.items():
+        if pattern not in final_mappings:
+            final_mappings[pattern] = []
+
+        for mapping in mappings:
+            if mapping in final_mappings[pattern]:
+                continue
+
+            final_mappings[pattern].append(mapping)
+
+    for pattern, mappings in hdr_maps_two.items():
+        if pattern not in final_mappings:
+            final_mappings[pattern] = []
+
+        for mapping in mappings:
+            if mapping in final_mappings[pattern]:
+                continue
+
+            final_mappings[pattern].append(mapping)
+
+    return final_mappings
