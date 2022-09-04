@@ -1,5 +1,8 @@
 #include <iostream>
 
+// External, raw-cpp library include: Boost
+#include <boost/math/constants/constants.hpp>
+
 // Include via just the name
 #include "riddle-one.hpp"
 // Include via arbitrary directory name that doesn't exist
@@ -11,6 +14,7 @@
 
 int main()
 {
+  std::cout << boost::math::constants::half<double>() << std::endl;
   std::cout << RIDDLE_LINE_ONE << std::endl;
   // std::cout << RIDDLE_LINE_TWO << std::endl;
   // std::cout << RIDDLE_LINE_THREE << std::endl;

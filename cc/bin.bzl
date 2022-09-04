@@ -26,14 +26,16 @@ def _cc_bin_with_header_maps_impl(ctx):
     header_maps = ctx.attr.header_maps if ctx.attr.header_maps else {}
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
+    deps = [d for d in ctx.attr.deps]
 
     # Merge with deps
     deps_pub_hdrs, deps_prv_hdrs, header_maps, deps_deps = merge_hdr_maps_info_from_deps(
-        ctx.attr.deps,
+        deps,
         header_maps,
     )
     public_hdrs.extend(deps_pub_hdrs)
     private_hdrs.extend(deps_prv_hdrs)
+    deps.extend(deps_deps)
 
     # Materialize mappings
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
@@ -66,8 +68,9 @@ def _cc_bin_with_header_maps_impl(ctx):
         srcs = ctx.files.srcs,
         public_hdrs = public_hdrs,
         private_hdrs = private_hdrs,
-        # I don't think this keyword will work..
-        deps = ctx.attr.deps if ctx.attr.deps else [],
+        # !Important: undocumented keyword param
+        # that makes life much, much easier..
+        deps = deps,
         user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
         defines = ctx.attr.defines if ctx.attr.defines else [],
         includes = includes,
@@ -79,8 +82,9 @@ def _cc_bin_with_header_maps_impl(ctx):
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         compilation_outputs = compilation_outputs,
-        # I don't think this keyword will work..
-        deps = ctx.attr.deps if ctx.attr.deps else [],
+        # !Important: undocumented keyword param
+        # that makes life much, much easier..
+        deps = deps,
         user_link_flags = ctx.attr.linkopts if ctx.attr.linkopts else [],
         link_deps_statically = ctx.attr.linkstatic,
         stamp = ctx.attr.stamp,

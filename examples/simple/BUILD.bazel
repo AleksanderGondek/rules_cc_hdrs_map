@@ -3,6 +3,25 @@
 load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
 load("@rules_cc//cc:defs.bzl", "cc_binary")
 
+cc_bin_with_header_maps(
+    name = "hello-world",
+    srcs = ["hello-world.cpp"],
+)
+
+cc_bin_with_header_maps(
+    name = "main",
+    srcs = [
+        "main.cpp"
+    ],
+    deps = [
+        "//tolkien:headers",
+        "@boost//:math",
+    ],
+    header_maps = {
+        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one-bis.hpp"]
+    }
+)
+
 cc_binary(
     name = "vanilla-boost",
     srcs = [
@@ -19,22 +38,4 @@ cc_binary(
         "@boost//:type_traits",
         "@boost//:iterator",
     ]
-)
-
-cc_bin_with_header_maps(
-    name = "hello-world",
-    srcs = ["hello-world.cpp"],
-)
-
-cc_bin_with_header_maps(
-    name = "main",
-    srcs = [
-        "main.cpp"
-    ],
-    deps = [
-        "//tolkien:headers"
-    ],
-    header_maps = {
-        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one-bis.hpp"]
-    }
 )
