@@ -8,17 +8,18 @@ load(
 
 def _cc_hdrs_impl(ctx):
     """ To be described. """
-    # TODO: Important! non-hdrmapsinfo deps need to be passed-on!
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
+    deps = [d for d in ctx.attr.deps]
 
-    deps_public_hdrs, deps_private_hdrs, header_maps = merge_hdr_maps_info_from_deps(
-        ctx.attr.deps,
+    deps_pub_hdrs, deps_prv_hdrs, header_maps, deps_deps = merge_hdr_maps_info_from_deps(
+        deps,
         ctx.attr.header_maps if ctx.attr.header_maps else {}
     )
 
-    public_hdrs.extend(deps_public_hdrs)
-    private_hdrs.extend(deps_private_hdrs)
+    public_hdrs.extend(deps_pub_hdrs)
+    private_hdrs.extend(deps_prv_hdrs)
+    deps.extend(deps_deps)
 
     return [
         DefaultInfo(
@@ -33,9 +34,12 @@ def _cc_hdrs_impl(ctx):
         HdrMapsInfo(
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
-            header_maps = header_maps
+            header_maps = header_maps,
+            deps = depset([
+                d for d in deps
+            ])
+        )
     ]
-
 
 cc_hdrs = rule(
     implementation = _cc_hdrs_impl,

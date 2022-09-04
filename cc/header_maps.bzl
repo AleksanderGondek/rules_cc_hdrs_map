@@ -5,7 +5,8 @@ HdrMapsInfo = provider(
     fields = {
         "public_hdrs": "To be described",
         "private_hdrs": "To be described",
-        "header_maps": "To be described, string_list_dict"
+        "header_maps": "To be described, string_list_dict",
+        "deps": "To be described",
     }
 )
 
@@ -90,6 +91,7 @@ def merge_hdr_maps_info_from_deps(
     public_hdrs = []
     private_hdrs = []
     header_maps = header_maps if header_maps else {}
+    hdr_maps_deps = []
 
     for dependency in deps:
         if HdrMapsInfo not in dependency:
@@ -109,5 +111,10 @@ def merge_hdr_maps_info_from_deps(
                 header_maps,
                 dependency[HdrMapsInfo].header_maps
             )
+        if dependency[HdrMapsInfo].deps:
+            hdr_maps_deps.extend(
+                dependency[HdrMapsInfo].deps.to_list()
+            )
 
-    return public_hdrs, private_hdrs, header_maps
+
+    return public_hdrs, private_hdrs, header_maps, hdr_maps_deps
