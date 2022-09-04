@@ -49,9 +49,10 @@ def materialize_hdrs_mapping(
 
     if materialized_hdrs_files:
         hdr = materialized_hdrs_files[0]
-        materialized_include_path = hdr.path.replace(
-            hdr.basename, ""
-        )
+        materialized_include_path = "/".join([
+            hdr.path.rsplit("header_maps")[0],
+            "header_maps"
+        ])
 
     return materialized_include_path, materialized_hdrs_files
 

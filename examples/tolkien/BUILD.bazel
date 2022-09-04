@@ -18,7 +18,10 @@ cc_hdrs(
         "reuel/ronald/john/include/riddle-four.hpp"
     ],
     header_maps = {
-        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one.hpp"]
+        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one.hpp"],
+        "tolkien/reuel/ronald/john/include/riddle-two.hpp": ["riddle-two.hpp"],
+        "tolkien/reuel/ronald/john/include/riddle-three.hpp": ["riddle-three.hpp"],
+        "tolkien/reuel/ronald/john/include/riddle-four.hpp": ["riddle-four.hpp"]
     },
     visibility = ["//visibility:public"]
 )

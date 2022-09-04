@@ -18,7 +18,6 @@ cc_bin_with_header_maps(
         "@boost//:math",
     ],
     header_maps = {
-        "tolkien/reuel/ronald/john/include/riddle-one.hpp": ["riddle-one.hpp"],
         "tolkien/reuel/ronald/john/include/riddle-two.hpp": ["arbitrary-name/riddle-two.hpp"],
         "tolkien/reuel/ronald/john/include/riddle-three.hpp": ["a/b/c/d/e/f/g/riddle-three.hpp"],
         "tolkien/reuel/ronald/john/include/riddle-four.hpp": ["simple/riddle-four.hpp"],
