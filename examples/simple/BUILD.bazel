@@ -1,6 +1,25 @@
 """ Simple examples. """
 
 load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+cc_binary(
+    name = "vanilla-boost",
+    srcs = [
+        "vanilla-boost.cpp",
+    ],
+    deps = [
+        "@boost//:lambda",
+        # Curious: rules_boost seem not to propagade dependencies
+        # between rules, which makes us explicitly, manually list
+        # deps of @boost//:lambda
+        "@boost//:core",
+        "@boost//:is_placeholder",
+        "@boost//:tuple",
+        "@boost//:type_traits",
+        "@boost//:iterator",
+    ]
+)
 
 cc_bin_with_header_maps(
     name = "hello-world",

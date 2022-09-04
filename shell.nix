@@ -33,6 +33,7 @@ in nixpkgs.mkShell {
     curlFull
     git
     gnutar
+    less
     nix
     nixfmt
     pkg-config
