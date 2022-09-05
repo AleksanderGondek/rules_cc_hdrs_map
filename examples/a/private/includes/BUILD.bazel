@@ -1,0 +1,34 @@
+""" Ensure this is a separate package """
+
+load("@rules_cc_header_maps//cc:cc_hdrs.bzl", "cc_hdrs")
+
+cc_hdrs(
+    name = "a-consts-headers",
+    public_hdrs = [
+        "a-consts-one.hpp",
+        "pointless-subdir/a-consts-two.hpp",
+        "pointless-subdir/a-consts-three.hpp",
+        "//a/private/other:a-consts-four.hpp"
+    ],
+    header_maps = {
+        "a/private/includes/a-consts-one.hpp": ["a-consts-one.hpp"],
+        "a/private/includes/pointless-subdir/a-consts-two.hpp": ["a-consts-two.hpp"],
+        "a/private/includes/pointless-subdir/a-consts-three.hpp": ["a-consts-three.hpp"],
+        "a/private/other/a-consts-four.hpp": ["a-consts-four.hpp"]
+    },
+    visibility = ["//visibility:public"]
+)
+
+cc_hdrs(
+    name = "a-half-a-bee-headers",
+    public_hdrs = [
+        "half-a-bee.hpp",
+    ],
+    header_maps = {
+        "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"]
+    },
+    deps = [
+        "@boost//:math"
+    ],
+    visibility = ["//visibility:public"]
+)

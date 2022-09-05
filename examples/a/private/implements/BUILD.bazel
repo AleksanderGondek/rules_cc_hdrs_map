@@ -1,0 +1,36 @@
+""" Simple examples. """
+
+load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
+
+# This target checks for proper mapping of very weird patterns,
+# to even wierder ones. 
+cc_bin_with_header_maps(
+    name = "list-cheeses",
+    srcs = [
+        "list-cheeses.cpp"
+    ],
+    deps = [
+        "//a/private/includes:a-consts-headers"
+    ],
+    header_maps = {
+        "a/private/includes/pointless-subdir/a-consts-two.hpp": ["other-pointless-subdir/a-consts-two.hpp"],
+        "a/private/includes/pointless-subdir/a-consts-three.hpp": ["a/b/c/d/e/f/g/a-consts-three.hpp"],
+        "a/private/other/a-consts-four.hpp": ["implements/a-consts-four.hpp"]
+    }
+)
+
+# This target checks for propagation of transitive CCInfo dependencies
+# i.e. boost
+cc_bin_with_header_maps(
+    name = "print-half-a-bee",
+    srcs = [
+        "print-half-a-bee.cpp"
+    ],
+    deps = [
+        "//a/private/includes:a-half-a-bee-headers"
+    ],
+    header_maps = {
+        "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
+    }
+)
+

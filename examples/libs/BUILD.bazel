@@ -1,7 +1,0 @@
-""" 
-Package containng cc_library equivalents.
-
-There are placed in separate Bazel package,
-to ensure nothing in implementation works by
-accidental "files layout".
-"""

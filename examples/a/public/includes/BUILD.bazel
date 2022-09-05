@@ -1,0 +1,20 @@
+""" Ensure this is a separate package """
+
+load("@rules_cc_header_maps//cc:cc_hdrs.bzl", "cc_hdrs")
+
+cc_hdrs(
+    name = "headers",
+    public_hdrs = [
+        "cheeses.hpp",
+    ],
+    deps = [
+        "//a/private/includes:a-consts-headers"
+    ],
+    header_maps = {
+        "a/private/includes/a-consts-one.hpp": ["alpha/a-consts-one.hpp"],
+        "a/private/includes/pointless-subdir/a-consts-two.hpp": ["beta/a-consts-two.hpp"],
+        "a/private/includes/pointless-subdir/a-consts-three.hpp": ["gamma/a-consts-three.hpp"],
+        "a/private/other/a-consts-four.hpp": ["delta/epsilon/a-consts-four.hpp"]  
+    },
+    visibility = ["//visibility:public"]
+)

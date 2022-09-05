@@ -20,7 +20,7 @@ jobs:
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - run: nix-shell --pure --run 'bazel build //...'
   bzl-test:
-    name: Run bazel test
+    name: Run tests (examples workspace)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.0.2
@@ -32,5 +32,4 @@ jobs:
         install_url: https://releases.nixos.org/nix/nix-2.8.1/install
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-    - run: nix-shell --pure --run 'bazel test //...'
-
+    - run: nix-shell --pure --run 'cd examples && bazel build //...'

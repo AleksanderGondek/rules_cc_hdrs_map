@@ -1,0 +1,16 @@
+""" Simple examples. """
+
+load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
+
+cc_bin_with_header_maps(
+    name = "list-cheeses",
+    srcs = [
+        "cheeses.cpp"
+    ],
+    deps = [
+        "//a/public/includes:headers"
+    ],
+    header_maps = {
+        "a/public/includes/cheeses.hpp": ["a/cheeses.hpp"],
+    },
+)
