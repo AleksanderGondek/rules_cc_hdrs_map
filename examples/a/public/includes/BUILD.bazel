@@ -11,10 +11,10 @@ cc_hdrs(
         "//a/private/includes:a-consts-headers"
     ],
     header_maps = {
-        "a/private/includes/a-consts-one.hpp": ["alpha/a-consts-one.hpp"],
-        "a/private/includes/pointless-subdir/a-consts-two.hpp": ["beta/a-consts-two.hpp"],
-        "a/private/includes/pointless-subdir/a-consts-three.hpp": ["gamma/a-consts-three.hpp"],
-        "a/private/other/a-consts-four.hpp": ["delta/epsilon/a-consts-four.hpp"]  
+        "a/private/includes/a-consts-one.hpp": ["alpha/{filename}"],
+        "a/private/includes/pointless-subdir/a-consts-two.hpp": ["beta/{filename}"],
+        "a/private/includes/pointless-subdir/a-consts-three.hpp": ["gamma/{filename}"],
+        "a/private/other/a-consts-four.hpp": ["delta/epsilon/{filename}"]  
     },
     visibility = ["//visibility:public"]
 )

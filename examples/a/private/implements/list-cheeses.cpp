@@ -6,6 +6,8 @@
 #include "a-consts-one.hpp"
 // Include via arbitrary directory name that doesn't exist
 #include "other-pointless-subdir/a-consts-two.hpp"
+// Ensure glob matching works
+#include "a-consts-two.hpp"
 // Include via multiply nested directory that doesn't exist
 #include "a/b/c/d/e/f/g/a-consts-three.hpp"
 // Include via directory name equal to package name
