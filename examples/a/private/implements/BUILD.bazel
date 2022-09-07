@@ -33,4 +33,3 @@ cc_bin_with_header_maps(
         "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
     }
 )
-

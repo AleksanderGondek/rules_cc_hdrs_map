@@ -160,5 +160,8 @@ cc_bin_with_header_maps = rule(
     },
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
-    executable = True
+    executable = True,
+    provides = [
+        DefaultInfo
+    ]
 )

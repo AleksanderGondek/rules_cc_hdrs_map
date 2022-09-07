@@ -5,8 +5,7 @@
 // Yet another mapping, because reasons
 #include "a/cheeses.hpp"
 
-int main()
-{
+void printOutCheeses() {
   std::cout << "Cheeses: " << std::endl;
   for (
       std::vector<std::string>::iterator it = CHEESES.begin();
@@ -15,6 +14,4 @@ int main()
     ) {
       std::cout << *it << std::endl;
   }
-
-  return 0;
 }

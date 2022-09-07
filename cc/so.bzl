@@ -13,6 +13,7 @@ load(
 )
 load(
     "@rules_cc_header_maps//cc:header_maps.bzl",
+    "HdrMapsInfo",
     "merge_hdr_maps_info_from_deps",
     "materialize_hdrs_mapping",
 )
@@ -79,11 +80,11 @@ def _cc_so(ctx):
         ctx = ctx,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
-        compilation_outputs = compilation_outputs
+        compilation_outputs = compilation_outputs,
         deps = deps,
         user_link_flags = ctx.attr.linkopts if ctx.attr.linkopts else [],
         alwayslink = ctx.attr.alwayslink,
-        additional_inputs = ctx.attr.additional_linker_inputs if ctx.attr.additional_linker_inputs else [],
+        additional_inputs = [],
         disallow_static_libraries = False,
         disallow_dynamic_library = False,
     )
@@ -97,13 +98,20 @@ def _cc_so(ctx):
 
     return [
         DefaultInfo(
-          executable = linking_output.executable,
           files = depset(output_files)
         ),
-        # CcInfo(
-        #     compilation_context = compilation_context,
-        #     linking_context = linking_context,
-        # ),
+        CcInfo(
+            compilation_context = compilation_ctx,
+            linking_context = linking_context,
+        ),
+        HdrMapsInfo(
+            public_hdrs = depset(public_hdrs),
+            private_hdrs = depset(private_hdrs),
+            header_maps = header_maps,
+            deps = depset([
+                d for d in deps
+            ])
+        )
     ]
 
 cc_so = rule(
@@ -169,5 +177,9 @@ cc_so = rule(
     },
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
-    executable = True
+    provides = [
+        DefaultInfo,
+        CcInfo,
+        HdrMapsInfo
+    ]
 )
