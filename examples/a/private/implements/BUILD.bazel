@@ -1,10 +1,10 @@
 """ Simple examples. """
 
-load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
+load("@rules_cc_hdrs_map//cc:bin.bzl", "cc_bin_with_hdrs_map")
 
 # This target checks for proper mapping of very weird patterns,
 # to even wierder ones. 
-cc_bin_with_header_maps(
+cc_bin_with_hdrs_map(
     name = "list-cheeses",
     srcs = [
         "list-cheeses.cpp"
@@ -12,7 +12,7 @@ cc_bin_with_header_maps(
     deps = [
         "//a/private/includes:a-consts-headers"
     ],
-    header_maps = {
+    hdrs_map = {
         "a/private/includes/pointless-subdir/a-consts-two.hpp": ["other-pointless-subdir/{filename}"],
         "a/private/includes/pointless-subdir/a-consts-three.hpp": ["a/b/c/d/e/f/g/{filename}"],
         "a/private/other/a-consts-four.hpp": ["implements/{filename}"]
@@ -21,7 +21,7 @@ cc_bin_with_header_maps(
 
 # This target checks for propagation of transitive CCInfo dependencies
 # i.e. boost
-cc_bin_with_header_maps(
+cc_bin_with_hdrs_map(
     name = "print-half-a-bee",
     srcs = [
         "print-half-a-bee.cpp"
@@ -29,7 +29,7 @@ cc_bin_with_header_maps(
     deps = [
         "//a/private/includes:a-half-a-bee-headers"
     ],
-    header_maps = {
+    hdrs_map = {
         "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
     }
 )

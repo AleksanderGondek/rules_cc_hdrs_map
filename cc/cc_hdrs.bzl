@@ -1,8 +1,8 @@
 """ To be described. """
 
 load(
-    "@rules_cc_header_maps//cc:header_maps.bzl",
-    "HdrMapsInfo",
+    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
+    "HdrsMapInfo",
     "merge_hdr_maps_info_from_deps",
 )
 
@@ -12,9 +12,9 @@ def _cc_hdrs_impl(ctx):
     private_hdrs = [h for h in ctx.files.private_hdrs]
     deps = [d for d in ctx.attr.deps]
 
-    deps_pub_hdrs, deps_prv_hdrs, header_maps, deps_deps = merge_hdr_maps_info_from_deps(
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdr_maps_info_from_deps(
         deps,
-        ctx.attr.header_maps if ctx.attr.header_maps else {}
+        ctx.attr.hdrs_map if ctx.attr.hdrs_map else {}
     )
 
     public_hdrs.extend(deps_pub_hdrs)
@@ -31,10 +31,10 @@ def _cc_hdrs_impl(ctx):
               ]
             )
         ),
-        HdrMapsInfo(
+        HdrsMapInfo(
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
-            header_maps = header_maps,
+            hdrs_map = hdrs_map,
             deps = depset([
                 d for d in deps
             ])
@@ -44,10 +44,6 @@ def _cc_hdrs_impl(ctx):
 cc_hdrs = rule(
     implementation = _cc_hdrs_impl,
     attrs = {
-        # TODO: Is it necessary?
-        # "implementation_deps": attr.label_list(
-        #     doc = ""
-        # ),
         "deps": attr.label_list(
             doc = ""
         ),
@@ -63,7 +59,7 @@ cc_hdrs = rule(
             ],
             doc = ""
         ),
-        "header_maps": attr.string_list_dict(
+        "hdrs_map": attr.string_list_dict(
             doc = ""
         ),
         "copts": attr.string_list(
@@ -86,15 +82,11 @@ cc_hdrs = rule(
         ),
         "strip_include_prefix": attr.string(
             doc = ""
-        ),
-        # TODO: Is it necessary?
-        # "textual_hdrs": attr.label_list(
-        #     doc = ""
-        # ),
+        )
     },
     fragments = ["cpp"],
     provides = [
         DefaultInfo,
-        HdrMapsInfo
+        HdrsMapInfo
     ],
 )

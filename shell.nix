@@ -21,7 +21,7 @@ let
   nixpkgs = flake.nixpkgs.${currentSystem};
   nixpkgs_latest = flake.nixpkgs_latest.${currentSystem};
 in nixpkgs.mkShell {
-  name = "rules_cc_header_maps";
+  name = "rules_cc_hdrs_map";
 
   inherit NIX_PATH TERM TMPDIR;
 
@@ -43,6 +43,6 @@ in nixpkgs.mkShell {
     echo "startup --output_base=$(pwd)/.bazel-output-base" > $(pwd)/.output-bazelrc
     echo "build --disk_cache=$(pwd)/.bazel-disk-cache" >> $(pwd)/.output-bazelrc
 
-    echo "Welcome to rules_cc_header_maps dev-shell."
+    echo "Welcome to rules_cc_hdrs_map dev-shell."
   '';
 }

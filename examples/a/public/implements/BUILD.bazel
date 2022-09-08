@@ -1,7 +1,7 @@
 """ Simple examples. """
 
-load("@rules_cc_header_maps//cc:bin.bzl", "cc_bin_with_header_maps")
-load("@rules_cc_header_maps//cc:so.bzl", "cc_so")
+load("@rules_cc_hdrs_map//cc:bin.bzl", "cc_bin_with_hdrs_map")
+load("@rules_cc_hdrs_map//cc:so.bzl", "cc_so")
 
 cc_so(
     name = "list-cheeses",
@@ -11,12 +11,12 @@ cc_so(
     deps = [
         "//a/public/includes:headers"
     ],
-    header_maps = {
+    hdrs_map = {
         "a/public/includes/cheeses.hpp": ["a/{filename}"],
     },
 )
 
-cc_bin_with_header_maps(
+cc_bin_with_hdrs_map(
     name = "list-cheeses-bin",
     srcs = [
         "list.cpp"

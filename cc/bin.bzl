@@ -6,32 +6,32 @@ load(
     "use_cpp_toolchain"
 )
 load(
-    "@rules_cc_header_maps//cc:common.bzl",
+    "@rules_cc_hdrs_map//cc:common.bzl",
     "get_feature_configuration",
     "compile",
     "link"
 )
 load(
-    "@rules_cc_header_maps//cc:header_maps.bzl",
+    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
     "merge_hdr_maps_info_from_deps",
     "materialize_hdrs_mapping",
 )
 
-def _cc_bin_with_header_maps_impl(ctx):
+def _cc_bin_with_hdrs_map_impl(ctx):
     """ To be described. """
 
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
-    header_maps = ctx.attr.header_maps if ctx.attr.header_maps else {}
+    hdrs_map = ctx.attr.hdrs_map if ctx.attr.hdrs_map else {}
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
     deps = [d for d in ctx.attr.deps]
 
     # Merge with deps
-    deps_pub_hdrs, deps_prv_hdrs, header_maps, deps_deps = merge_hdr_maps_info_from_deps(
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdr_maps_info_from_deps(
         deps,
-        header_maps,
+        hdrs_map,
     )
     public_hdrs.extend(deps_pub_hdrs)
     private_hdrs.extend(deps_prv_hdrs)
@@ -40,7 +40,7 @@ def _cc_bin_with_header_maps_impl(ctx):
     # Materialize mappings
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
-        header_maps,
+        hdrs_map,
         public_hdrs
     )
     if public_hdrs_extra_files:
@@ -48,7 +48,7 @@ def _cc_bin_with_header_maps_impl(ctx):
 
     private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
-        header_maps,
+        hdrs_map,
         private_hdrs
     )
     if private_hdrs_extra_files:
@@ -91,7 +91,7 @@ def _cc_bin_with_header_maps_impl(ctx):
     if linking_output.executable:
         output_files.append(linking_output.executable)
     elif linking_output.library_to_link:
-        fail("'cc_bin_with_header_maps' must not output a library!")
+        fail("'cc_bin_with_hdrs_map' must not output a library!")
 
     return [
         DefaultInfo(
@@ -100,8 +100,8 @@ def _cc_bin_with_header_maps_impl(ctx):
         )
     ]
 
-cc_bin_with_header_maps = rule(
-    implementation = _cc_bin_with_header_maps_impl,
+cc_bin_with_hdrs_map = rule(
+    implementation = _cc_bin_with_hdrs_map_impl,
     attrs = {
         "deps": attr.label_list(
             doc = ""
@@ -125,7 +125,7 @@ cc_bin_with_header_maps = rule(
             ],
             doc = ""
         ),
-        "header_maps": attr.string_list_dict(
+        "hdrs_map": attr.string_list_dict(
             doc = ""
         ),
         "additional_linker_inputs": attr.label_list(

@@ -1,11 +1,11 @@
 """ To be described. """
 
-HdrMapsInfo = provider(
+HdrsMapInfo = provider(
     doc = "",
     fields = {
         "public_hdrs": "To be described",
         "private_hdrs": "To be described",
-        "header_maps": "To be described, string_list_dict",
+        "hdrs_map": "To be described, string_list_dict",
         "deps": "To be described",
     }
 )
@@ -149,14 +149,14 @@ def glob_match(
 
 def materialize_hdrs_mapping(
     actions,
-    header_maps,
+    hdrs_map,
     hdrs
 ):
     """ To be described. """
     materialized_include_path = None
     materialized_hdrs_files = []
 
-    for pattern, mappings in header_maps.items():
+    for pattern, mappings in hdrs_map.items():
         for header_file in hdrs:
             if not glob_match(pattern, header_file.path):
                 continue
@@ -166,7 +166,7 @@ def materialize_hdrs_mapping(
                 target = mapping.replace("{filename}", header_file.basename)
                 # TODO: Hash the label name and add as prefix?
                 mapping_path = "/".join([
-                    "header_maps",
+                    "hdrs_map",
                     target
                 ])
                 mapping_file = actions.declare_file(
@@ -189,13 +189,13 @@ def materialize_hdrs_mapping(
     if materialized_hdrs_files:
         hdr = materialized_hdrs_files[0]
         materialized_include_path = "/".join([
-            hdr.path.rsplit("header_maps")[0],
-            "header_maps"
+            hdr.path.rsplit("hdrs_map")[0],
+            "hdrs_map"
         ])
 
     return materialized_include_path, materialized_hdrs_files
 
-def merge_header_maps(
+def merge_hdrs_map(
     hdr_maps_one,
     hdr_maps_two
 ):
@@ -225,36 +225,36 @@ def merge_header_maps(
 
 def merge_hdr_maps_info_from_deps(
     deps,
-    header_maps,
+    hdrs_map,
 ):
     """To be described. """
     public_hdrs = []
     private_hdrs = []
-    header_maps = header_maps if header_maps else {}
+    hdrs_map = hdrs_map if hdrs_map else {}
     hdr_maps_deps = []
 
     for dependency in deps:
-        if HdrMapsInfo not in dependency:
-            # Merge hdrs only for HdrMapsInfo-aware deps
+        if HdrsMapInfo not in dependency:
+            # Merge hdrs only for HdrsMapInfo-aware deps
             continue
 
-        if dependency[HdrMapsInfo].public_hdrs:
+        if dependency[HdrsMapInfo].public_hdrs:
             public_hdrs.extend(
-                dependency[HdrMapsInfo].public_hdrs.to_list()
+                dependency[HdrsMapInfo].public_hdrs.to_list()
             )
-        if dependency[HdrMapsInfo].private_hdrs:
+        if dependency[HdrsMapInfo].private_hdrs:
             private_hdrs.extend(
-                dependency[HdrMapsInfo].private_hdrs.to_list()
+                dependency[HdrsMapInfo].private_hdrs.to_list()
             )
-        if dependency[HdrMapsInfo].header_maps:
-            header_maps = merge_header_maps(
-                header_maps,
-                dependency[HdrMapsInfo].header_maps
+        if dependency[HdrsMapInfo].hdrs_map:
+            hdrs_map = merge_hdrs_map(
+                hdrs_map,
+                dependency[HdrsMapInfo].hdrs_map
             )
-        if dependency[HdrMapsInfo].deps:
+        if dependency[HdrsMapInfo].deps:
             hdr_maps_deps.extend(
-                dependency[HdrMapsInfo].deps.to_list()
+                dependency[HdrsMapInfo].deps.to_list()
             )
 
 
-    return public_hdrs, private_hdrs, header_maps, hdr_maps_deps
+    return public_hdrs, private_hdrs, hdrs_map, hdr_maps_deps

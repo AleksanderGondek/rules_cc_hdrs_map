@@ -58,8 +58,6 @@ def compile(
 
     return compilation_ctx, compilation_outputs
 
-# Not sure if this is sufficient to create a .so file
-# perhaps it is?
 def create_shared_library(
     ctx,
     cc_toolchain,

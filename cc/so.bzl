@@ -6,14 +6,14 @@ load(
     "use_cpp_toolchain"
 )
 load(
-    "@rules_cc_header_maps//cc:common.bzl",
+    "@rules_cc_hdrs_map//cc:common.bzl",
     "get_feature_configuration",
     "compile",
     "create_shared_library"
 )
 load(
-    "@rules_cc_header_maps//cc:header_maps.bzl",
-    "HdrMapsInfo",
+    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
+    "HdrsMapInfo",
     "merge_hdr_maps_info_from_deps",
     "materialize_hdrs_mapping",
 )
@@ -24,15 +24,15 @@ def _cc_so(ctx):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
-    header_maps = ctx.attr.header_maps if ctx.attr.header_maps else {}
+    hdrs_map = ctx.attr.hdrs_map if ctx.attr.hdrs_map else {}
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
     deps = [d for d in ctx.attr.deps]
 
     # Merge with deps
-    deps_pub_hdrs, deps_prv_hdrs, header_maps, deps_deps = merge_hdr_maps_info_from_deps(
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdr_maps_info_from_deps(
         deps,
-        header_maps,
+        hdrs_map,
     )
     public_hdrs.extend(deps_pub_hdrs)
     private_hdrs.extend(deps_prv_hdrs)
@@ -41,7 +41,7 @@ def _cc_so(ctx):
     # Materialize mappings
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
-        header_maps,
+        hdrs_map,
         public_hdrs
     )
     if public_hdrs_extra_files:
@@ -49,7 +49,7 @@ def _cc_so(ctx):
 
     private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
-        header_maps,
+        hdrs_map,
         private_hdrs
     )
     if private_hdrs_extra_files:
@@ -104,10 +104,10 @@ def _cc_so(ctx):
             compilation_context = compilation_ctx,
             linking_context = linking_context,
         ),
-        HdrMapsInfo(
+        HdrsMapInfo(
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
-            header_maps = header_maps,
+            hdrs_map = hdrs_map,
             deps = depset([
                 d for d in deps
             ])
@@ -139,7 +139,7 @@ cc_so = rule(
             ],
             doc = ""
         ),
-        "header_maps": attr.string_list_dict(
+        "hdrs_map": attr.string_list_dict(
             doc = ""
         ),
         "alwayslink": attr.bool(
@@ -180,6 +180,6 @@ cc_so = rule(
     provides = [
         DefaultInfo,
         CcInfo,
-        HdrMapsInfo
+        HdrsMapInfo
     ]
 )
