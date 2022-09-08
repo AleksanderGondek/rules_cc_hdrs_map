@@ -2,9 +2,23 @@
 
 load("@rules_cc_hdrs_map//cc:bin.bzl", "cc_bin_with_hdrs_map")
 load("@rules_cc_hdrs_map//cc:so.bzl", "cc_so")
+load("@rules_cc_hdrs_map//cc:static.bzl", "cc_static")
 
 cc_so(
     name = "list-cheeses",
+    srcs = [
+        "cheeses.cpp"
+    ],
+    deps = [
+        "//a/public/includes:headers"
+    ],
+    hdrs_map = {
+        "a/public/includes/cheeses.hpp": ["a/{filename}"],
+    },
+)
+
+cc_static(
+    name = "list-cheeses-static",
     srcs = [
         "cheeses.cpp"
     ],
