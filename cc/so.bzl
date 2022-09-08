@@ -63,7 +63,8 @@ def _cc_so(ctx):
 
     # Compile
     compilation_ctx, compilation_outputs = compile(
-        ctx = ctx,
+        name = ctx.label.name,
+        actions = ctx.actions,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         srcs = ctx.files.srcs,
@@ -77,7 +78,8 @@ def _cc_so(ctx):
     )
 
     linking_context, linking_output = create_shared_library(
-        ctx = ctx,
+        name = ctx.label.name,
+        actions = ctx.actions,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         compilation_outputs = compilation_outputs,

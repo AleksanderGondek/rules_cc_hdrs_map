@@ -62,7 +62,8 @@ def _cc_bin_with_hdrs_map_impl(ctx):
 
     # Compile
     compilation_ctx, compilation_outputs = compile(
-        ctx = ctx,
+        name = ctx.label.name,
+        actions = ctx.actions,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         srcs = ctx.files.srcs,
@@ -76,7 +77,8 @@ def _cc_bin_with_hdrs_map_impl(ctx):
     )
 
     linking_output = link(
-        ctx = ctx,
+        name = ctx.label.name,
+        actions = ctx.actions,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         compilation_outputs = compilation_outputs,

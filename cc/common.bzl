@@ -12,7 +12,8 @@ def get_feature_configuration(ctx, cc_toolchain):
     )
 
 def compile(
-    ctx, 
+    name,
+    actions,
     cc_toolchain,
     feature_configuration,
     srcs = [],
@@ -35,8 +36,8 @@ def compile(
         dep[CcInfo].compilation_context for dep in deps if CcInfo in dep
     ]
     compilation_ctx, compilation_outputs = cc_common.compile(
-        name = ctx.label.name,
-        actions = ctx.actions,
+        name = name,
+        actions = actions,
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
         compilation_contexts = compilation_contexts,
@@ -59,7 +60,8 @@ def compile(
     return compilation_ctx, compilation_outputs
 
 def create_shared_library(
-    ctx,
+    name,
+    actions,
     cc_toolchain,
     feature_configuration,
     compilation_outputs,
@@ -75,12 +77,12 @@ def create_shared_library(
         dep[CcInfo].linking_context for dep in deps if CcInfo in dep
     ]
     linking_context, linking_output = cc_common.create_linking_context_from_compilation_outputs(
-        actions = ctx.actions,
+        actions = actions,
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
-        name = ctx.label.name,
+        name = name,
         user_link_flags = user_link_flags,
         alwayslink = alwayslink,
         additional_inputs = additional_inputs,
@@ -91,7 +93,8 @@ def create_shared_library(
     return linking_context, linking_output
 
 def link(
-    ctx,
+    name,
+    actions,
     cc_toolchain,
     feature_configuration,
     compilation_outputs,
@@ -107,12 +110,12 @@ def link(
         dep[CcInfo].linking_context for dep in deps if CcInfo in dep
     ]    
     linking_output = cc_common.link(
-        actions = ctx.actions,
+        actions = actions,
         feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
-        name = ctx.label.name,
+        name = name,
         output_type = output_type,
         user_link_flags = [],
         link_deps_statically = link_deps_statically,
