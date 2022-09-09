@@ -102,7 +102,7 @@ def glob_match(
 
         # '*' not followed by '/'
         #   => Match the current character
-        if p == "*" and next_t != "/":
+        elif p == "*" and next_t != "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
 
@@ -112,9 +112,10 @@ def glob_match(
                 pi = pi + 1
                 p = pattern[pi] if pi < len(pattern) else None
 
+
         # '*' followed by '/'
         #   => Stop star matching
-        if p == "*" and next_t == "/":
+        elif p == "*" and next_t == "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
@@ -122,7 +123,7 @@ def glob_match(
 
         # '?' and character is not '/'
         #   => Progress matching
-        if p == "?" and t != "/":
+        elif p == "?" and t != "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
@@ -130,14 +131,14 @@ def glob_match(
 
         # 1:1 match
         #   => Progress matching
-        if p == t:
+        elif p == t:
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
 
+        # Everything else is a non-match
         else:
-            # Everything else is a non-match
             return False
 
     # Cleanup
