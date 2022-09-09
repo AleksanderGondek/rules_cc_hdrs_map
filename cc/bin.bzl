@@ -7,14 +7,10 @@ load(
 )
 load(
     "@rules_cc_hdrs_map//cc:common.bzl",
-    "compile",
     "get_feature_configuration",
+    "prepare_for_compilation",
+    "compile",
     "link_to_binary",
-)
-load(
-    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
-    "materialize_hdrs_mapping",
-    "merge_hdr_maps_info_from_deps",
 )
 
 def _cc_bin_with_hdrs_map_impl(ctx):
@@ -23,42 +19,22 @@ def _cc_bin_with_hdrs_map_impl(ctx):
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
-    hdrs_map = ctx.attr.hdrs_map if ctx.attr.hdrs_map else {}
-    public_hdrs = [h for h in ctx.files.public_hdrs]
-    private_hdrs = [h for h in ctx.files.private_hdrs]
-    deps = [d for d in ctx.attr.deps]
-
-    # Merge with deps
-    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdr_maps_info_from_deps(
-        deps,
-        hdrs_map,
+    compilation_prep_ctx = prepare_for_compilation(
+        actions = ctx.actions,
+        cc_toolchain = cc_toolchain,
+        feature_configuration = feature_configuration,
+        input_hdrs_map = ctx.attr.hdrs_map,
+        input_public_hdrs = ctx.files.public_hdrs,
+        input_private_hdrs = ctx.files.private_hdrs,
+        input_deps = ctx.attr.deps,
+        input_includes = ctx.attr.includes
     )
-    public_hdrs.extend(deps_pub_hdrs)
-    private_hdrs.extend(deps_prv_hdrs)
-    deps.extend(deps_deps)
 
-    # Materialize mappings
-    public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
-        ctx.actions,
-        hdrs_map,
-        public_hdrs,
-    )
-    if public_hdrs_extra_files:
-        public_hdrs.extend(public_hdrs_extra_files)
-
-    private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
-        ctx.actions,
-        hdrs_map,
-        private_hdrs,
-    )
-    if private_hdrs_extra_files:
-        private_hdrs.extend(private_hdrs_extra_files)
-
-    includes = ctx.attr.includes if ctx.attr.includes else []
-    if public_hdrs_extra_include_path:
-        includes.append(public_hdrs_extra_include_path)
-    if private_hdrs_extra_include_path:
-        includes.append(private_hdrs_extra_include_path)
+    hdrs_map = compilation_prep_ctx.hdrs_map
+    public_hdrs = compilation_prep_ctx.public_hdrs
+    private_hdrs = compilation_prep_ctx.private_hdrs
+    includes = compilation_prep_ctx.includes
+    deps = compilation_prep_ctx.deps
 
     # Compile
     compilation_ctx, compilation_outputs = compile(

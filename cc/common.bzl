@@ -4,6 +4,11 @@ load(
     "@bazel_tools//tools/build_defs/cc:action_names.bzl",
     "CPP_LINK_STATIC_LIBRARY_ACTION_NAME",
 )
+load(
+    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
+    "materialize_hdrs_mapping",
+    "merge_hdr_maps_info_from_deps",
+)
 
 def get_feature_configuration(ctx, cc_toolchain):
     """ To be described. """
@@ -14,6 +19,63 @@ def get_feature_configuration(ctx, cc_toolchain):
         # language = "c++",
         requested_features = ctx.features,
         unsupported_features = ctx.disabled_features,
+    )
+
+def prepare_for_compilation(
+    actions,
+    cc_toolchain,
+    feature_configuration,
+    input_hdrs_map,
+    input_public_hdrs,
+    input_private_hdrs,
+    input_deps,
+    input_includes
+):
+    """ To be described. """
+
+    hdrs_map = input_hdrs_map if input_hdrs_map else {}
+    public_hdrs = [h for h in input_public_hdrs]
+    private_hdrs = [h for h in input_private_hdrs]
+    deps = [d for d in input_deps]
+
+    # Merge with deps
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdr_maps_info_from_deps(
+        deps,
+        hdrs_map,
+    )
+    public_hdrs.extend(deps_pub_hdrs)
+    private_hdrs.extend(deps_prv_hdrs)
+    deps.extend(deps_deps)
+
+    # Materialize mappings
+    public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
+        actions,
+        hdrs_map,
+        public_hdrs,
+    )
+    if public_hdrs_extra_files:
+        public_hdrs.extend(public_hdrs_extra_files)
+
+    private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
+        actions,
+        hdrs_map,
+        private_hdrs,
+    )
+    if private_hdrs_extra_files:
+        private_hdrs.extend(private_hdrs_extra_files)
+
+    includes = input_includes if input_includes else []
+    if public_hdrs_extra_include_path:
+        includes.append(public_hdrs_extra_include_path)
+    if private_hdrs_extra_include_path:
+        includes.append(private_hdrs_extra_include_path)
+
+    return struct(
+        hdrs_map = hdrs_map,
+        public_hdrs = public_hdrs,
+        private_hdrs = private_hdrs,
+        includes = includes,
+        deps = deps
     )
 
 def compile(
