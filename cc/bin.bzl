@@ -9,7 +9,7 @@ load(
     "@rules_cc_hdrs_map//cc:common.bzl",
     "compile",
     "get_feature_configuration",
-    "link",
+    "link_to_binary",
 )
 load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
@@ -76,7 +76,7 @@ def _cc_bin_with_hdrs_map_impl(ctx):
         local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
     )
 
-    linking_output = link(
+    linking_output = link_to_binary(
         name = ctx.label.name,
         actions = ctx.actions,
         cc_toolchain = cc_toolchain,

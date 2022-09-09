@@ -8,7 +8,7 @@ load(
 load(
     "@rules_cc_hdrs_map//cc:common.bzl",
     "compile",
-    "create_shared_library",
+    "link_to_so",
     "get_feature_configuration",
 )
 load(
@@ -77,7 +77,7 @@ def _cc_so(ctx):
         local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
     )
 
-    linking_context, linking_output = create_shared_library(
+    linking_context, linking_output = link_to_so(
         name = ctx.label.name,
         actions = ctx.actions,
         cc_toolchain = cc_toolchain,

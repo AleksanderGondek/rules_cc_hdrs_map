@@ -8,7 +8,7 @@ load(
 load(
     "@rules_cc_hdrs_map//cc:common.bzl",
     "compile",
-    "create_static_library",
+    "link_to_archive",
     "get_feature_configuration",
 )
 load(
@@ -76,7 +76,7 @@ def _cc_static(ctx):
         local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
     )
 
-    linking_result = create_static_library(
+    linking_result = link_to_archive(
         invoker_label = ctx.label,
         actions = ctx.actions,
         cc_toolchain = cc_toolchain,

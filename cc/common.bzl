@@ -65,7 +65,7 @@ def compile(
 
     return compilation_ctx, compilation_outputs
 
-def create_shared_library(
+def link_to_so(
         name,
         actions,
         cc_toolchain,
@@ -101,7 +101,7 @@ def create_shared_library(
 
 # This function is borrowed from:
 # https://github.com/kkiningh/rules_verilator/blob/5d4e8da0fde91bddd5d71baf10eb35d3406aa1c8/verilator/internal/cc_actions.bzl#L9
-def create_static_library(
+def link_to_archive(
         invoker_label,
         actions,
         cc_toolchain,
@@ -201,7 +201,7 @@ def create_static_library(
         ),
     )
 
-def link(
+def link_to_binary(
         name,
         actions,
         cc_toolchain,
