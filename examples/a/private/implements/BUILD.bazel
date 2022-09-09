@@ -3,20 +3,20 @@
 load("@rules_cc_hdrs_map//cc:bin.bzl", "cc_bin_with_hdrs_map")
 
 # This target checks for proper mapping of very weird patterns,
-# to even wierder ones. 
+# to even wierder ones.
 cc_bin_with_hdrs_map(
     name = "list-cheeses",
     srcs = [
-        "list-cheeses.cpp"
-    ],
-    deps = [
-        "//a/private/includes:a-consts-headers"
+        "list-cheeses.cpp",
     ],
     hdrs_map = {
         "a/private/includes/pointless-subdir/a-consts-two.hpp": ["other-pointless-subdir/{filename}"],
         "a/private/includes/pointless-subdir/a-consts-three.hpp": ["a/b/c/d/e/f/g/{filename}"],
-        "a/private/other/a-consts-four.hpp": ["implements/{filename}"]
-    }
+        "a/private/other/a-consts-four.hpp": ["implements/{filename}"],
+    },
+    deps = [
+        "//a/private/includes:a-consts-headers",
+    ],
 )
 
 # This target checks for propagation of transitive CCInfo dependencies
@@ -24,12 +24,12 @@ cc_bin_with_hdrs_map(
 cc_bin_with_hdrs_map(
     name = "print-half-a-bee",
     srcs = [
-        "print-half-a-bee.cpp"
-    ],
-    deps = [
-        "//a/private/includes:a-half-a-bee-headers"
+        "print-half-a-bee.cpp",
     ],
     hdrs_map = {
         "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
-    }
+    },
+    deps = [
+        "//a/private/includes:a-half-a-bee-headers",
+    ],
 )

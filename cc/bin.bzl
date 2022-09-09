@@ -3,18 +3,18 @@
 load(
     "@bazel_tools//tools/cpp:toolchain_utils.bzl",
     "find_cpp_toolchain",
-    "use_cpp_toolchain"
+    "use_cpp_toolchain",
 )
 load(
     "@rules_cc_hdrs_map//cc:common.bzl",
-    "get_feature_configuration",
     "compile",
-    "link"
+    "get_feature_configuration",
+    "link",
 )
 load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
-    "merge_hdr_maps_info_from_deps",
     "materialize_hdrs_mapping",
+    "merge_hdr_maps_info_from_deps",
 )
 
 def _cc_bin_with_hdrs_map_impl(ctx):
@@ -41,7 +41,7 @@ def _cc_bin_with_hdrs_map_impl(ctx):
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
         hdrs_map,
-        public_hdrs
+        public_hdrs,
     )
     if public_hdrs_extra_files:
         public_hdrs.extend(public_hdrs_extra_files)
@@ -49,7 +49,7 @@ def _cc_bin_with_hdrs_map_impl(ctx):
     private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
         hdrs_map,
-        private_hdrs
+        private_hdrs,
     )
     if private_hdrs_extra_files:
         private_hdrs.extend(private_hdrs_extra_files)
@@ -97,73 +97,90 @@ def _cc_bin_with_hdrs_map_impl(ctx):
 
     return [
         DefaultInfo(
-          executable = linking_output.executable,
-          files = depset(output_files)
-        )
+            executable = linking_output.executable,
+            files = depset(output_files),
+        ),
     ]
 
 cc_bin_with_hdrs_map = rule(
     implementation = _cc_bin_with_hdrs_map_impl,
     attrs = {
         "deps": attr.label_list(
-            doc = ""
+            doc = "",
         ),
         "srcs": attr.label_list(
             mandatory = True,
             allow_files = [
-                ".c", ".cc", ".cpp", ".cxx", ".c++", ".C",
+                ".c",
+                ".cc",
+                ".cpp",
+                ".cxx",
+                ".c++",
+                ".C",
             ],
-            doc = ""
+            doc = "",
         ),
         "public_hdrs": attr.label_list(
             allow_files = [
-                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
             ],
-            doc = ""
+            doc = "",
         ),
         "private_hdrs": attr.label_list(
             allow_files = [
-                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
             ],
-            doc = ""
+            doc = "",
         ),
         "hdrs_map": attr.string_list_dict(
-            doc = ""
+            doc = "",
         ),
         "additional_linker_inputs": attr.label_list(
-            doc = ""
+            doc = "",
         ),
         "copts": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "defines": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "includes": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "linkopts": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "linkstatic": attr.bool(
-            default = True, 
-            doc = ""
+            default = True,
+            doc = "",
         ),
         "local_defines": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "stamp": attr.int(
             default = -1,
-            doc = ""
+            doc = "",
         ),
         "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
-        )
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
     },
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     executable = True,
     provides = [
-        DefaultInfo
-    ]
+        DefaultInfo,
+    ],
 )

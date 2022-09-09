@@ -14,7 +14,7 @@ def _cc_hdrs_impl(ctx):
 
     deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdr_maps_info_from_deps(
         deps,
-        ctx.attr.hdrs_map if ctx.attr.hdrs_map else {}
+        ctx.attr.hdrs_map if ctx.attr.hdrs_map else {},
     )
 
     public_hdrs.extend(deps_pub_hdrs)
@@ -24,69 +24,82 @@ def _cc_hdrs_impl(ctx):
     return [
         DefaultInfo(
             files = depset(
-              [], 
-              transitive = [
-                depset(public_hdrs),
-                depset(private_hdrs)
-              ]
-            )
+                [],
+                transitive = [
+                    depset(public_hdrs),
+                    depset(private_hdrs),
+                ],
+            ),
         ),
         HdrsMapInfo(
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
             hdrs_map = hdrs_map,
             deps = depset([
-                d for d in deps
-            ])
-        )
+                d
+                for d in deps
+            ]),
+        ),
     ]
 
 cc_hdrs = rule(
     implementation = _cc_hdrs_impl,
     attrs = {
         "deps": attr.label_list(
-            doc = ""
+            doc = "",
         ),
         "public_hdrs": attr.label_list(
             allow_files = [
-                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
             ],
-            doc = ""
+            doc = "",
         ),
         "private_hdrs": attr.label_list(
             allow_files = [
-                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
             ],
-            doc = ""
+            doc = "",
         ),
         "hdrs_map": attr.string_list_dict(
-            doc = ""
+            doc = "",
         ),
         "copts": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "defines": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "include_prefix": attr.string(
-            doc = ""
+            doc = "",
         ),
         "includes": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "linkopts": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "local_defines": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "strip_include_prefix": attr.string(
-            doc = ""
-        )
+            doc = "",
+        ),
     },
     fragments = ["cpp"],
     provides = [
         DefaultInfo,
-        HdrsMapInfo
+        HdrsMapInfo,
     ],
 )

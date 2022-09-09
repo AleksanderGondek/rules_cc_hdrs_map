@@ -1,4 +1,3 @@
 workspace(
-    name = "rules_cc_hdrs_map"
+    name = "rules_cc_hdrs_map",
 )
-

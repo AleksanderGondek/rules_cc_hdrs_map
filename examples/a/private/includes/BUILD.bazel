@@ -4,30 +4,30 @@ load("@rules_cc_hdrs_map//cc:cc_hdrs.bzl", "cc_hdrs")
 
 cc_hdrs(
     name = "a-consts-headers",
+    hdrs_map = {
+        "a/private/includes/*.hpp": ["{filename}"],
+        "a/private/includes/**/*.hpp": ["{filename}"],
+        "a/private/other/a-consts-four.hpp": ["{filename}"],
+    },
     public_hdrs = [
         "a-consts-one.hpp",
         "pointless-subdir/a-consts-two.hpp",
         "pointless-subdir/a-consts-three.hpp",
-        "//a/private/other:a-consts-four.hpp"
+        "//a/private/other:a-consts-four.hpp",
     ],
-    hdrs_map = {
-        "a/private/includes/*.hpp": ["{filename}"],
-        "a/private/includes/**/*.hpp": ["{filename}"],
-        "a/private/other/a-consts-four.hpp": ["{filename}"]
-    },
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
 )
 
 cc_hdrs(
     name = "a-half-a-bee-headers",
+    hdrs_map = {
+        "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
+    },
     public_hdrs = [
         "half-a-bee.hpp",
     ],
-    hdrs_map = {
-        "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"]
-    },
+    visibility = ["//visibility:public"],
     deps = [
-        "@boost//:math"
+        "@boost//:math",
     ],
-    visibility = ["//visibility:public"]
 )

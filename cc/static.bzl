@@ -3,19 +3,19 @@
 load(
     "@bazel_tools//tools/cpp:toolchain_utils.bzl",
     "find_cpp_toolchain",
-    "use_cpp_toolchain"
+    "use_cpp_toolchain",
 )
 load(
     "@rules_cc_hdrs_map//cc:common.bzl",
-    "get_feature_configuration",
     "compile",
-    "create_static_library"
+    "create_static_library",
+    "get_feature_configuration",
 )
 load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
     "HdrsMapInfo",
-    "merge_hdr_maps_info_from_deps",
     "materialize_hdrs_mapping",
+    "merge_hdr_maps_info_from_deps",
 )
 
 def _cc_static(ctx):
@@ -42,7 +42,7 @@ def _cc_static(ctx):
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
         hdrs_map,
-        public_hdrs
+        public_hdrs,
     )
     if public_hdrs_extra_files:
         public_hdrs.extend(public_hdrs_extra_files)
@@ -50,7 +50,7 @@ def _cc_static(ctx):
     private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
         ctx.actions,
         hdrs_map,
-        private_hdrs
+        private_hdrs,
     )
     if private_hdrs_extra_files:
         private_hdrs.extend(private_hdrs_extra_files)
@@ -89,8 +89,8 @@ def _cc_static(ctx):
     return [
         DefaultInfo(
             files = depset(
-                linking_result.cc_linking_outputs.static_libraries
-            )
+                linking_result.cc_linking_outputs.static_libraries,
+            ),
         ),
         CcInfo(
             compilation_context = compilation_ctx,
@@ -101,70 +101,87 @@ def _cc_static(ctx):
             private_hdrs = depset(private_hdrs),
             hdrs_map = hdrs_map,
             deps = depset([
-                d for d in deps
-            ])
-        )
+                d
+                for d in deps
+            ]),
+        ),
     ]
-
 
 cc_static = rule(
     implementation = _cc_static,
     attrs = {
         "deps": attr.label_list(
-            doc = ""
+            doc = "",
         ),
         "srcs": attr.label_list(
             mandatory = True,
             allow_files = [
-                ".c", ".cc", ".cpp", ".cxx", ".c++", ".C",
+                ".c",
+                ".cc",
+                ".cpp",
+                ".cxx",
+                ".c++",
+                ".C",
             ],
-            doc = ""
+            doc = "",
         ),
         "public_hdrs": attr.label_list(
             allow_files = [
-                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
             ],
-            doc = ""
+            doc = "",
         ),
         "private_hdrs": attr.label_list(
             allow_files = [
-                ".h", ".hh", ".hpp", ".hxx", ".inc", ".inl", ".H"
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
             ],
-            doc = ""
+            doc = "",
         ),
         "hdrs_map": attr.string_list_dict(
-            doc = ""
+            doc = "",
         ),
         "copts": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "defines": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "includes_prefix": attr.string(
-            doc = ""
+            doc = "",
         ),
         "includes": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "linkopts": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "local_defines": attr.string_list(
-            doc = ""
+            doc = "",
         ),
         "strip_include_prefix": attr.string(
-            doc = ""
+            doc = "",
         ),
         "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")
-        )
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
     },
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     provides = [
         DefaultInfo,
         CcInfo,
-        HdrsMapInfo
-    ]
+        HdrsMapInfo,
+    ],
 )

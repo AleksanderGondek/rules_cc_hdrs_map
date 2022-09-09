@@ -17,28 +17,29 @@ def get_feature_configuration(ctx, cc_toolchain):
     )
 
 def compile(
-    name,
-    actions,
-    cc_toolchain,
-    feature_configuration,
-    srcs = [],
-    public_hdrs = [],
-    private_hdrs = [],
-    deps = [],
-    # Includes
-    include_prefix = "",
-    strip_include_prefix = "",
-    includes = [],
-    quote_includes = [],
-    system_includes = [],
-    # Other
-    defines = [],
-    local_defines = [],
-    user_compile_flags = [],
-):
+        name,
+        actions,
+        cc_toolchain,
+        feature_configuration,
+        srcs = [],
+        public_hdrs = [],
+        private_hdrs = [],
+        deps = [],
+        # Includes
+        include_prefix = "",
+        strip_include_prefix = "",
+        includes = [],
+        quote_includes = [],
+        system_includes = [],
+        # Other
+        defines = [],
+        local_defines = [],
+        user_compile_flags = []):
     """ To be described. """
     compilation_contexts = [
-        dep[CcInfo].compilation_context for dep in deps if CcInfo in dep
+        dep[CcInfo].compilation_context
+        for dep in deps
+        if CcInfo in dep
     ]
     compilation_ctx, compilation_outputs = cc_common.compile(
         name = name,
@@ -56,7 +57,7 @@ def compile(
         includes = includes,
         quote_includes = quote_includes,
         system_includes = system_includes,
-        # Other        
+        # Other
         defines = defines,
         local_defines = local_defines,
         user_compile_flags = user_compile_flags,
@@ -65,21 +66,22 @@ def compile(
     return compilation_ctx, compilation_outputs
 
 def create_shared_library(
-    name,
-    actions,
-    cc_toolchain,
-    feature_configuration,
-    compilation_outputs,
-    deps = [],
-    user_link_flags = [],
-    alwayslink = False,
-    additional_inputs = [],
-    disallow_static_libraries = False,
-    disallow_dynamic_library = False,
-):
+        name,
+        actions,
+        cc_toolchain,
+        feature_configuration,
+        compilation_outputs,
+        deps = [],
+        user_link_flags = [],
+        alwayslink = False,
+        additional_inputs = [],
+        disallow_static_libraries = False,
+        disallow_dynamic_library = False):
     """ To be described. """
     linking_contexts = [
-        dep[CcInfo].linking_context for dep in deps if CcInfo in dep
+        dep[CcInfo].linking_context
+        for dep in deps
+        if CcInfo in dep
     ]
     linking_context, linking_output = cc_common.create_linking_context_from_compilation_outputs(
         actions = actions,
@@ -100,21 +102,22 @@ def create_shared_library(
 # This function is borrowed from:
 # https://github.com/kkiningh/rules_verilator/blob/5d4e8da0fde91bddd5d71baf10eb35d3406aa1c8/verilator/internal/cc_actions.bzl#L9
 def create_static_library(
-    invoker_label,
-    actions,
-    cc_toolchain,
-    feature_configuration,
-    compilation_outputs,
-    deps = [],
-    user_link_flags = []
-):
+        invoker_label,
+        actions,
+        cc_toolchain,
+        feature_configuration,
+        compilation_outputs,
+        deps = [],
+        user_link_flags = []):
     """ To be described. """
     linking_contexts = [
-        dep[CcInfo].linking_context for dep in deps if CcInfo in dep
+        dep[CcInfo].linking_context
+        for dep in deps
+        if CcInfo in dep
     ]
 
     static_library = actions.declare_file(
-        "lib{name}.a".format(name = invoker_label.name)
+        "lib{name}.a".format(name = invoker_label.name),
     )
     link_tool = cc_common.get_tool_for_action(
         feature_configuration = feature_configuration,
@@ -199,22 +202,23 @@ def create_static_library(
     )
 
 def link(
-    name,
-    actions,
-    cc_toolchain,
-    feature_configuration,
-    compilation_outputs,
-    deps = [],
-    output_type = "executable",
-    user_link_flags = [],
-    link_deps_statically = True,
-    stamp = 0,
-    additional_inputs = [],
-):
+        name,
+        actions,
+        cc_toolchain,
+        feature_configuration,
+        compilation_outputs,
+        deps = [],
+        output_type = "executable",
+        user_link_flags = [],
+        link_deps_statically = True,
+        stamp = 0,
+        additional_inputs = []):
     """ To be described. """
     linking_contexts = [
-        dep[CcInfo].linking_context for dep in deps if CcInfo in dep
-    ]    
+        dep[CcInfo].linking_context
+        for dep in deps
+        if CcInfo in dep
+    ]
     linking_output = cc_common.link(
         actions = actions,
         feature_configuration = feature_configuration,
