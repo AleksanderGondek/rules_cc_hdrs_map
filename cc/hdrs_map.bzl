@@ -100,10 +100,9 @@ def glob_match(
                 ti = ti + 1
                 t = text[ti] if ti < len(text) else None
 
-            # '*' not followed by '/'
-            #   => Match the current character
-
-        elif p == "*" and next_t != "/":
+        # '*' not followed by '/'
+        #   => Match the current character
+        if p == "*" and next_t != "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
 
@@ -113,40 +112,39 @@ def glob_match(
                 pi = pi + 1
                 p = pattern[pi] if pi < len(pattern) else None
 
-            # '*' followed by '/'
-            #   => Stop star matching
-
-        elif p == "*" and next_t == "/":
+        # '*' followed by '/'
+        #   => Stop star matching
+        if p == "*" and next_t == "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
-            # '?' and character is not '/'
-            #   => Progress matching
 
-        elif p == "?" and t != "/":
+        # '?' and character is not '/'
+        #   => Progress matching
+        if p == "?" and t != "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
-            # 1:1 match
-            #   => Progress matching
 
-        elif p == t:
+        # 1:1 match
+        #   => Progress matching
+        if p == t:
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
-            # Everything else is a non-match
 
         else:
+            # Everything else is a non-match
             return False
 
     # Cleanup
     # Starklark is god-fosaken language
     # while loop is not allowed, so instead
     # of 'while p == "*"' we get this..
-    for i in range(pi, len(pattern)):
+    for _ in range(pi, len(pattern)):
         if p != "*":
             break
 
