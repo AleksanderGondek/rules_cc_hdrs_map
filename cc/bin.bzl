@@ -84,39 +84,78 @@ def _cc_bin_with_hdrs_map_impl(ctx):
 
 cc_bin_with_hdrs_map = rule(
     implementation = _cc_bin_with_hdrs_map_impl,
-    attrs = { 
-        **COMMON_RULES_ATTRS, 
-        **{
-            "additional_linker_inputs": attr.label_list(
-                doc = "",
-            ),
-            "copts": attr.string_list(
-                doc = "",
-            ),
-            "defines": attr.string_list(
-                doc = "",
-            ),
-            "includes": attr.string_list(
-                doc = "",
-            ),
-            "linkopts": attr.string_list(
-                doc = "",
-            ),
-            "linkstatic": attr.bool(
-                default = True,
-                doc = "",
-            ),
-            "local_defines": attr.string_list(
-                doc = "",
-            ),
-            "stamp": attr.int(
-                default = -1,
-                doc = "",
-            ),
-            "_cc_toolchain": attr.label(
-                default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
-            ),
-        },
+    attrs = {
+        "deps": attr.label_list(
+            doc = "",
+        ),
+        "srcs": attr.label_list(
+            mandatory = True,
+            allow_files = [
+                ".c",
+                ".cc",
+                ".cpp",
+                ".cxx",
+                ".c++",
+                ".C",
+            ],
+            doc = "",
+        ),
+        "public_hdrs": attr.label_list(
+            allow_files = [
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
+            ],
+            doc = "",
+        ),
+        "private_hdrs": attr.label_list(
+            allow_files = [
+                ".h",
+                ".hh",
+                ".hpp",
+                ".hxx",
+                ".inc",
+                ".inl",
+                ".H",
+            ],
+            doc = "",
+        ),
+        "hdrs_map": attr.string_list_dict(
+            doc = "",
+        ),
+        "additional_linker_inputs": attr.label_list(
+            doc = "",
+        ),
+        "copts": attr.string_list(
+            doc = "",
+        ),
+        "defines": attr.string_list(
+            doc = "",
+        ),
+        "includes": attr.string_list(
+            doc = "",
+        ),
+        "linkopts": attr.string_list(
+            doc = "",
+        ),
+        "linkstatic": attr.bool(
+            default = True,
+            doc = "",
+        ),
+        "local_defines": attr.string_list(
+            doc = "",
+        ),
+        "stamp": attr.int(
+            default = -1,
+            doc = "",
+        ),
+        "_cc_toolchain": attr.label(
+            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
+        ),
     },
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
