@@ -54,11 +54,18 @@ def _cc_so(ctx):
         public_hdrs = public_hdrs,
         private_hdrs = private_hdrs,
         deps = deps,
-        user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
-        defines = ctx.attr.defines if ctx.attr.defines else [],
-        includes = includes,
-        local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
+        # Includes
+        include_prefix = ctx.attr.include_prefix,
+        strip_include_prefix = ctx.attr.strip_include_prefix,
+        includes = [],
+        quote_includes = includes,
+        system_includes = [],
+        # Other
+        defines = ctx.attr.defines,
+        local_defines = ctx.attr.local_defines,
+        user_compile_flags = ctx.attr.copts,
     )
+
 
     linking_context, linking_output = link_to_so(
         name = ctx.label.name,
@@ -67,10 +74,10 @@ def _cc_so(ctx):
         feature_configuration = feature_configuration,
         compilation_outputs = compilation_outputs,
         deps = deps,
-        user_link_flags = ctx.attr.linkopts if ctx.attr.linkopts else [],
+        user_link_flags = ctx.attr.linkopts,
         alwayslink = ctx.attr.alwayslink,
-        additional_inputs = [],
-        disallow_static_libraries = False,
+        additional_inputs = ctx.attr.additional_linker_inputs,
+        disallow_static_libraries = True,
         disallow_dynamic_library = False,
     )
 

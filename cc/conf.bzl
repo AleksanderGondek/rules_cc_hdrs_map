@@ -9,6 +9,7 @@
 COMMON_RULES_ATTRS = {
     "deps": attr.label_list(
         doc = "",
+        default = [],
     ),
     "srcs": attr.label_list(
         mandatory = True,
@@ -33,6 +34,7 @@ COMMON_RULES_ATTRS = {
             ".H",
         ],
         doc = "",
+        default = [],
     ),
     "private_hdrs": attr.label_list(
         allow_files = [
@@ -45,27 +47,34 @@ COMMON_RULES_ATTRS = {
             ".H",
         ],
         doc = "",
+        default = [],
     ),
     "hdrs_map": attr.string_list_dict(
         doc = "",
+        default = {},
     ),
 }
 
 CC_COMPILABLE_ATTRS = {
     "additional_linker_inputs": attr.label_list(
         doc = "",
+        default = [],
     ),
     "copts": attr.string_list(
         doc = "",
+        default = [],
     ),
     "defines": attr.string_list(
         doc = "",
+        default = [],
     ),
     "includes": attr.string_list(
         doc = "",
+        default = [],
     ),
     "linkopts": attr.string_list(
         doc = "",
+        default = [],
     ),
     "linkstatic": attr.bool(
         default = True,
@@ -73,6 +82,7 @@ CC_COMPILABLE_ATTRS = {
     ),
     "local_defines": attr.string_list(
         doc = "",
+        default = [],
     ),
     "_cc_toolchain": attr.label(
         default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
@@ -80,11 +90,13 @@ CC_COMPILABLE_ATTRS = {
 }
 
 CC_LIB_ATTRS = {
-    "includes_prefix": attr.string(
+    "include_prefix": attr.string(
         doc = "",
+        default = "",
     ),
     "strip_include_prefix": attr.string(
         doc = "",
+        default = "",
     ),
 }
 

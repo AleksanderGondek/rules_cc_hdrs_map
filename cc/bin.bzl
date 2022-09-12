@@ -50,10 +50,16 @@ def _cc_bin_with_hdrs_map_impl(ctx):
         public_hdrs = public_hdrs,
         private_hdrs = private_hdrs,
         deps = deps,
-        user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
-        defines = ctx.attr.defines if ctx.attr.defines else [],
-        includes = includes,
-        local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
+        # Includes
+        include_prefix = "",
+        strip_include_prefix = "",
+        includes = [],
+        quote_includes = includes,
+        system_includes = [],
+        # Other
+        defines = ctx.attr.defines,
+        local_defines = ctx.attr.local_defines,
+        user_compile_flags = ctx.attr.copts,
     )
 
     linking_output = link_to_binary(
@@ -63,10 +69,10 @@ def _cc_bin_with_hdrs_map_impl(ctx):
         feature_configuration = feature_configuration,
         compilation_outputs = compilation_outputs,
         deps = deps,
-        user_link_flags = ctx.attr.linkopts if ctx.attr.linkopts else [],
+        user_link_flags = ctx.attr.linkopts,
         link_deps_statically = ctx.attr.linkstatic,
         stamp = ctx.attr.stamp,
-        additional_inputs = ctx.attr.additional_linker_inputs if ctx.attr.additional_linker_inputs else [],
+        additional_inputs = ctx.attr.additional_linker_inputs,
     )
 
     output_files = []

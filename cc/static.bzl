@@ -44,6 +44,7 @@ def _cc_static(ctx):
     includes = compilation_prep_ctx.includes
     deps = compilation_prep_ctx.deps
 
+    # Compile
     compilation_ctx, compilation_outputs = compile(
         name = ctx.label.name,
         actions = ctx.actions,
@@ -53,10 +54,16 @@ def _cc_static(ctx):
         public_hdrs = public_hdrs,
         private_hdrs = private_hdrs,
         deps = deps,
-        user_compile_flags = ctx.attr.copts if ctx.attr.copts else [],
-        defines = ctx.attr.defines if ctx.attr.defines else [],
-        includes = includes,
-        local_defines = ctx.attr.local_defines if ctx.attr.local_defines else [],
+        # Includes
+        include_prefix = ctx.attr.include_prefix,
+        strip_include_prefix = ctx.attr.strip_include_prefix,
+        includes = [],
+        quote_includes = includes,
+        system_includes = [],
+        # Other
+        defines = ctx.attr.defines,
+        local_defines = ctx.attr.local_defines,
+        user_compile_flags = ctx.attr.copts,
     )
 
     linking_result = link_to_archive(
@@ -66,7 +73,7 @@ def _cc_static(ctx):
         feature_configuration = feature_configuration,
         compilation_outputs = compilation_outputs,
         deps = deps,
-        user_link_flags = ctx.attr.linkopts if ctx.attr.linkopts else [],
+        user_link_flags = ctx.attr.linkopts,
     )
 
     return [
