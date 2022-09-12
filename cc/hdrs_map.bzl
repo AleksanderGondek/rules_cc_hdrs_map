@@ -161,6 +161,7 @@ def materialize_hdrs_mapping(
         hdrs_map,
         hdrs):
     """ To be described. """
+    HEADERS_MAP_DIR_NAME = "vhm"
     materialized_include_path = None
     materialized_hdrs_files = []
 
@@ -175,7 +176,7 @@ def materialize_hdrs_mapping(
 
                 # TODO: Hash the label name and add as prefix?
                 mapping_path = "/".join([
-                    "hdrs_map",
+                    HEADERS_MAP_DIR_NAME,
                     target,
                 ])
                 mapping_file = actions.declare_file(
@@ -197,8 +198,8 @@ def materialize_hdrs_mapping(
     if materialized_hdrs_files:
         hdr = materialized_hdrs_files[0]
         materialized_include_path = "/".join([
-            hdr.path.rsplit("hdrs_map")[0],
-            "hdrs_map",
+            hdr.path.rsplit(HEADERS_MAP_DIR_NAME)[0],
+            HEADERS_MAP_DIR_NAME,
         ])
 
     return materialized_include_path, materialized_hdrs_files
