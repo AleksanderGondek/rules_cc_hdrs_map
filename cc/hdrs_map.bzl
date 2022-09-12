@@ -1,5 +1,11 @@
 """ To be described. """
 
+load(
+    "@rules_cc_hdrs_map//cc:conf.bzl",
+    "CC_COMPILABLE_ATTRS",
+    "CC_LIB_ATTRS",
+)
+
 HdrsMapInfo = provider(
     doc = "",
     fields = {
@@ -7,8 +13,47 @@ HdrsMapInfo = provider(
         "private_hdrs": "To be described",
         "hdrs_map": "To be described, string_list_dict",
         "deps": "To be described",
+        # Params influencing comp / link
+        "cc_compilable_attrs": "dictionary representing cc_compilable_attrs",
+        "cc_lib_attrs": "dictionary representing cc_lib_attrs",
     },
 )
+
+# In future (Bazel >5), one can specify init function for providers..
+# Therefore this method is using certain scheme.
+# 
+# It's possible to define an init accepting positional arguments, but
+# keyword-only arguments are preferred.
+# https://docs.bazel.build/versions/main/skylark/rules.html#custom-initialization-of-providers
+def new_hdrs_map_info(
+    public_hdrs = None,
+    private_hdrs = None,
+    hdrs_map = None,
+    deps = None,
+    cc_compilable_attrs = None,
+    cc_lib_attrs = None,
+):
+    """ To be described. """
+    return HdrsMapInfo(
+        public_hdrs = public_hdrs,
+        private_hdrs = private_hdrs,
+        hdrs_map = hdrs_map,
+        deps = deps,
+        cc_compilable_attrs = cc_compilable_attrs,
+        cc_lib_attrs = cc_lib_attrs,
+    )
+
+def _new_hdr_map_info_cc_compilable_attrs():
+    """ To be descibed. """
+    return {
+        k: None for k in CC_COMPILABLE_ATTRS.keys()
+    }
+
+def _new_hdr_map_info_cc_lib_attrs():
+    """ To be descibed. """
+    return {
+        k: None for k in CC_LIB_ATTRS.keys()
+    }
 
 def glob_match(
         pattern,
@@ -231,6 +276,7 @@ def merge_hdrs_map(
 
     return final_mappings
 
+# TODO: Perhaps remove
 def merge_hdr_maps_info_from_deps(
         deps,
         hdrs_map):
@@ -264,3 +310,76 @@ def merge_hdr_maps_info_from_deps(
             )
 
     return public_hdrs, private_hdrs, hdrs_map, hdr_maps_deps
+
+def merge_hdrs_map_info(
+    hdrs_map_info_one,
+    hdrs_map_info_two,
+):
+    """ To be described. """
+    public_hdrs = []
+    private_hdrs = []
+    hdrs_map = {}
+    deps = []
+    
+    cc_compilable_attrs = _new_hdr_map_info_cc_compilable_attrs()
+    cc_lib_attrs = _new_hdr_map_info_cc_lib_attrs()
+
+    if hdrs_map_info_one.public_hdrs:
+        public_hdrs.extend(
+            hdrs_map_info_one.public_hdrs.to_list()
+        )
+    if hdrs_map_info_two.public_hdrs:
+        public_hdrs.extend(
+            hdrs_map_info_two.public_hdrs.to_list()
+        )
+
+    if hdrs_map_info_one.private_hdrs:
+        private_hdrs.extend(
+            hdrs_map_info_one.private_hdrs.to_list()
+        )
+    if hdrs_map_info_two.private_hdrs:
+        private_hdrs.extend(
+            hdrs_map_info_two.private_hdrs.to_list()
+        )
+
+    if hdrs_map_info_one.hdrs_map:
+        hdrs_map = merge_hdrs_map(
+            hdrs_map,
+            hdrs_map_info_one.hdrs_map,
+        )
+    if hdrs_map_info_two.hdrs_map:
+        hdrs_map = merge_hdrs_map(
+            hdrs_map,
+            hdrs_map_info_two.hdrs_map,
+        )
+
+    for attr_name, attr_value in cc_compilable_attrs.items():
+        attr_type_info = CC_COMPILABLE_ATTRS.get(attr_name, None)
+        if not attr_type_info:
+            continue
+
+        fail(attr_type_info)
+
+    # Starklark does not allow recusion ;/
+    for dep in deps:
+        if HdrsMapInfo not in dep:
+            # Merge hdrs only for HdrsMapInfo-aware deps
+            continue
+
+        if dep[HdrsMapInfo].public_hdrs:
+            public_hdrs.extend(
+                dep[HdrsMapInfo].public_hdrs.to_list(),
+            )
+        if dep[HdrsMapInfo].private_hdrs:
+            private_hdrs.extend(
+                dep[HdrsMapInfo].private_hdrs.to_list(),
+            )
+        if dep[HdrsMapInfo].hdrs_map:
+            hdrs_map = merge_hdrs_map(
+                hdrs_map,
+                dep[HdrsMapInfo].hdrs_map,
+            )
+        if dep[HdrsMapInfo].deps:
+            deps.extend(
+                dep[HdrsMapInfo].deps.to_list(),
+            )

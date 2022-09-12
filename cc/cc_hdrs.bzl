@@ -8,6 +8,7 @@ load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
     "HdrsMapInfo",
     "merge_hdr_maps_info_from_deps",
+    "new_hdrs_map_info",
 )
 
 def _cc_hdrs_impl(ctx):
@@ -35,7 +36,7 @@ def _cc_hdrs_impl(ctx):
                 ],
             ),
         ),
-        HdrsMapInfo(
+        new_hdrs_map_info(
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
             hdrs_map = hdrs_map,

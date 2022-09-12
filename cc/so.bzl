@@ -19,6 +19,7 @@ load(
 load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
     "HdrsMapInfo",
+    "new_hdrs_map_info",
 )
 
 def _cc_so(ctx):
@@ -88,7 +89,7 @@ def _cc_so(ctx):
             compilation_context = compilation_ctx,
             linking_context = linking_context,
         ),
-        HdrsMapInfo(
+        new_hdrs_map_info(
             public_hdrs = depset(public_hdrs),
             private_hdrs = depset(private_hdrs),
             hdrs_map = hdrs_map,
