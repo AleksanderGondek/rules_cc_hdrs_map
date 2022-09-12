@@ -16,26 +16,6 @@ HdrsMapInfo = provider(
     },
 )
 
-# In future (Bazel >5), one can specify init function for providers..
-# Therefore this method is using certain scheme.
-# 
-# It's possible to define an init accepting positional arguments, but
-# keyword-only arguments are preferred.
-# https://docs.bazel.build/versions/main/skylark/rules.html#custom-initialization-of-providers
-def new_hdrs_map_info(
-    public_hdrs = None,
-    private_hdrs = None,
-    hdrs_map = None,
-    deps = None,
-):
-    """ To be described. """
-    return HdrsMapInfo(
-        public_hdrs = public_hdrs,
-        private_hdrs = private_hdrs,
-        hdrs_map = hdrs_map,
-        deps = deps
-    )
-
 def _new_hdr_map_info_cc_compilable_attrs():
     """ To be descibed. """
     return {
