@@ -14,7 +14,7 @@ load(
 )
 load(
     "@rules_cc_hdrs_map//cc:conf.bzl",
-    "COMMON_RULES_ATTRS",
+    "CC_STATIC_ATTRS",
 )
 load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
@@ -92,74 +92,7 @@ def _cc_static(ctx):
 
 cc_static = rule(
     implementation = _cc_static,
-    attrs = {
-        "deps": attr.label_list(
-            doc = "",
-        ),
-        "srcs": attr.label_list(
-            mandatory = True,
-            allow_files = [
-                ".c",
-                ".cc",
-                ".cpp",
-                ".cxx",
-                ".c++",
-                ".C",
-            ],
-            doc = "",
-        ),
-        "public_hdrs": attr.label_list(
-            allow_files = [
-                ".h",
-                ".hh",
-                ".hpp",
-                ".hxx",
-                ".inc",
-                ".inl",
-                ".H",
-            ],
-            doc = "",
-        ),
-        "private_hdrs": attr.label_list(
-            allow_files = [
-                ".h",
-                ".hh",
-                ".hpp",
-                ".hxx",
-                ".inc",
-                ".inl",
-                ".H",
-            ],
-            doc = "",
-        ),
-        "hdrs_map": attr.string_list_dict(
-            doc = "",
-        ),
-        "copts": attr.string_list(
-            doc = "",
-        ),
-        "defines": attr.string_list(
-            doc = "",
-        ),
-        "includes_prefix": attr.string(
-            doc = "",
-        ),
-        "includes": attr.string_list(
-            doc = "",
-        ),
-        "linkopts": attr.string_list(
-            doc = "",
-        ),
-        "local_defines": attr.string_list(
-            doc = "",
-        ),
-        "strip_include_prefix": attr.string(
-            doc = "",
-        ),
-        "_cc_toolchain": attr.label(
-            default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
-        ),
-    },
+    attrs = CC_STATIC_ATTRS,
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     provides = [

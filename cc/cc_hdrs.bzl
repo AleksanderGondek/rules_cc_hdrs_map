@@ -1,6 +1,10 @@
 """ To be described. """
 
 load(
+    "@rules_cc_hdrs_map//cc:conf.bzl",
+    "CC_HDRS_ATTRS",
+)
+load(
     "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
     "HdrsMapInfo",
     "merge_hdr_maps_info_from_deps",
@@ -44,59 +48,7 @@ def _cc_hdrs_impl(ctx):
 
 cc_hdrs = rule(
     implementation = _cc_hdrs_impl,
-    attrs = {
-        "deps": attr.label_list(
-            doc = "",
-        ),
-        "public_hdrs": attr.label_list(
-            allow_files = [
-                ".h",
-                ".hh",
-                ".hpp",
-                ".hxx",
-                ".inc",
-                ".inl",
-                ".H",
-            ],
-            doc = "",
-        ),
-        "private_hdrs": attr.label_list(
-            allow_files = [
-                ".h",
-                ".hh",
-                ".hpp",
-                ".hxx",
-                ".inc",
-                ".inl",
-                ".H",
-            ],
-            doc = "",
-        ),
-        "hdrs_map": attr.string_list_dict(
-            doc = "",
-        ),
-        "copts": attr.string_list(
-            doc = "",
-        ),
-        "defines": attr.string_list(
-            doc = "",
-        ),
-        "include_prefix": attr.string(
-            doc = "",
-        ),
-        "includes": attr.string_list(
-            doc = "",
-        ),
-        "linkopts": attr.string_list(
-            doc = "",
-        ),
-        "local_defines": attr.string_list(
-            doc = "",
-        ),
-        "strip_include_prefix": attr.string(
-            doc = "",
-        ),
-    },
+    attrs = CC_HDRS_ATTRS,
     fragments = ["cpp"],
     provides = [
         DefaultInfo,
