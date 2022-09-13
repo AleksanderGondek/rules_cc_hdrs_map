@@ -1,6 +1,6 @@
 """ Ensure this is a separate package """
 
-load("@rules_cc_hdrs_map//cc:cc_hdrs.bzl", "cc_hdrs")
+load("@rules_cc_hdrs_map//rules:cc_hdrs.bzl", "cc_hdrs")
 
 cc_hdrs(
     name = "a-consts-headers",

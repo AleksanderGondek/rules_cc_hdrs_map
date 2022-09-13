@@ -5,7 +5,7 @@ load(
     "CPP_LINK_STATIC_LIBRARY_ACTION_NAME",
 )
 load(
-    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
+    "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
     "materialize_hdrs_mapping",
     "merge_hdr_maps_info_from_deps",
 )

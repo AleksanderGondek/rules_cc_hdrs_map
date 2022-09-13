@@ -6,18 +6,22 @@ load(
     "use_cpp_toolchain",
 )
 load(
-    "@rules_cc_hdrs_map//cc:common.bzl",
+    "@rules_cc_hdrs_map//rules:lib/common.bzl",
     "get_feature_configuration",
     "prepare_for_compilation",
     "compile",
-    "link_to_binary",
+    "link_to_so",
 )
 load(
-    "@rules_cc_hdrs_map//cc:conf.bzl",
-    "CC_BIN_ATTRS",
+    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
+    "CC_SO_ATTRS",
+)
+load(
+    "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
+    "HdrsMapInfo",
 )
 
-def _cc_bin_with_hdrs_map_impl(ctx):
+def _cc_so(ctx):
     """ To be described. """
 
     cc_toolchain = find_cpp_toolchain(ctx)
@@ -51,8 +55,8 @@ def _cc_bin_with_hdrs_map_impl(ctx):
         private_hdrs = private_hdrs,
         deps = deps,
         # Includes
-        include_prefix = "",
-        strip_include_prefix = "",
+        include_prefix = ctx.attr.include_prefix,
+        strip_include_prefix = ctx.attr.strip_include_prefix,
         includes = [],
         quote_includes = includes,
         system_includes = [],
@@ -62,7 +66,8 @@ def _cc_bin_with_hdrs_map_impl(ctx):
         user_compile_flags = ctx.attr.copts,
     )
 
-    linking_output = link_to_binary(
+
+    linking_context, linking_output = link_to_so(
         name = ctx.label.name,
         actions = ctx.actions,
         cc_toolchain = cc_toolchain,
@@ -70,31 +75,45 @@ def _cc_bin_with_hdrs_map_impl(ctx):
         compilation_outputs = compilation_outputs,
         deps = deps,
         user_link_flags = ctx.attr.linkopts,
-        link_deps_statically = ctx.attr.linkstatic,
-        stamp = ctx.attr.stamp,
+        alwayslink = ctx.attr.alwayslink,
         additional_inputs = ctx.attr.additional_linker_inputs,
+        disallow_static_libraries = True,
+        disallow_dynamic_library = False,
     )
 
     output_files = []
-    if linking_output.executable:
-        output_files.append(linking_output.executable)
-    elif linking_output.library_to_link:
-        fail("'cc_bin_with_hdrs_map' must not output a library!")
+    if linking_output.library_to_link.static_library:
+        output_files.append(linking_output.library_to_link.static_library)
+    if linking_output.library_to_link.dynamic_library:
+        output_files.append(linking_output.library_to_link.dynamic_library)
 
     return [
         DefaultInfo(
-            executable = linking_output.executable,
             files = depset(output_files),
+        ),
+        CcInfo(
+            compilation_context = compilation_ctx,
+            linking_context = linking_context,
+        ),
+        HdrsMapInfo(
+            public_hdrs = depset(public_hdrs),
+            private_hdrs = depset(private_hdrs),
+            hdrs_map = hdrs_map,
+            deps = depset([
+                d
+                for d in deps
+            ]),
         ),
     ]
 
-cc_bin_with_hdrs_map = rule(
-    implementation = _cc_bin_with_hdrs_map_impl,
-    attrs = CC_BIN_ATTRS,
+cc_so = rule(
+    implementation = _cc_so,
+    attrs = CC_SO_ATTRS,
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
-    executable = True,
     provides = [
         DefaultInfo,
+        CcInfo,
+        HdrsMapInfo,
     ],
 )

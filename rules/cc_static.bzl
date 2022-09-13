@@ -6,18 +6,18 @@ load(
     "use_cpp_toolchain",
 )
 load(
-    "@rules_cc_hdrs_map//cc:common.bzl",
+    "@rules_cc_hdrs_map//rules:lib/common.bzl",
     "get_feature_configuration",
     "prepare_for_compilation",
     "compile",
     "link_to_archive",
 )
 load(
-    "@rules_cc_hdrs_map//cc:conf.bzl",
+    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
     "CC_STATIC_ATTRS",
 )
 load(
-    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
+    "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
     "HdrsMapInfo",
 )
 

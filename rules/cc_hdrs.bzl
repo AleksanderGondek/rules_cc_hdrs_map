@@ -1,11 +1,11 @@
 """ To be described. """
 
 load(
-    "@rules_cc_hdrs_map//cc:conf.bzl",
+    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
     "CC_HDRS_ATTRS",
 )
 load(
-    "@rules_cc_hdrs_map//cc:hdrs_map.bzl",
+    "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
     "HdrsMapInfo",
     "merge_hdr_maps_info_from_deps",
 )
