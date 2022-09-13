@@ -24,7 +24,9 @@ def _cc_bin_hdrs_map_impl(ctx):
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
     compilation_prep_ctx = prepare_for_compilation(
+        invoker_label = ctx.label,
         actions = ctx.actions,
+        is_windows = ctx.attr._is_windows,
         cc_toolchain = cc_toolchain,
         feature_configuration = feature_configuration,
         input_hdrs_map = ctx.attr.hdrs_map,

@@ -81,6 +81,10 @@ _CC_COMPILABLE_ATTRS = {
     "_cc_toolchain": attr.label(
         default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
     ),
+    "_is_windows": attr.bool(
+        default = False,
+        doc = "",
+    ),
 }
 
 _CC_LIB_ATTRS = {

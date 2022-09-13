@@ -22,7 +22,9 @@ def get_feature_configuration(ctx, cc_toolchain):
     )
 
 def prepare_for_compilation(
+    invoker_label,
     actions,
+    is_windows,
     cc_toolchain,
     feature_configuration,
     input_hdrs_map,
@@ -49,7 +51,9 @@ def prepare_for_compilation(
 
     # Materialize mappings
     public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
+        invoker_label,
         actions,
+        is_windows,
         hdrs_map,
         public_hdrs,
     )
@@ -57,7 +61,9 @@ def prepare_for_compilation(
         public_hdrs.extend(public_hdrs_extra_files)
 
     private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
+        invoker_label,
         actions,
+        is_windows,
         hdrs_map,
         private_hdrs,
     )

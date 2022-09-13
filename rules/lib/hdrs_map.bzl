@@ -1,5 +1,10 @@
 """ To be described. """
 
+load(
+    "@rules_cc_hdrs_map//rules:lib/copy_file.bzl",
+    "copy_file",
+)
+
 HdrsMapInfo = provider(
     doc = "",
     fields = {
@@ -157,7 +162,9 @@ def glob_match(
     return p == None
 
 def materialize_hdrs_mapping(
+        invoker_label,
         actions,
+        is_windows,
         hdrs_map,
         hdrs):
     """ To be described. """
@@ -182,16 +189,12 @@ def materialize_hdrs_mapping(
                 mapping_file = actions.declare_file(
                     mapping_path,
                 )
-                actions.run_shell(
-                    outputs = [mapping_file],
-                    inputs = [header_file],
-                    # This adds '' before cp command, causing it to fail...
-                    # arguments = [
-                    #     header_file.path,
-                    #     mapping_file.path
-                    # ],
-                    command = "cp {} {}".format(header_file.path, mapping_file.path),
-                    progress_message = "Materializing public hdr mapping from '%{input}' to '%{output}'",
+                copy_file(
+                    invoker_label = invoker_label,
+                    actions = actions,
+                    is_windows = is_windows,
+                    src = header_file,
+                    dst = mapping_file,
                 )
                 materialized_hdrs_files.append(mapping_file)
 
