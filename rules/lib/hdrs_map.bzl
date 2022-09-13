@@ -1,11 +1,5 @@
 """ To be described. """
 
-load(
-    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
-    "CC_COMPILABLE_ATTRS",
-    "CC_LIB_ATTRS",
-)
-
 HdrsMapInfo = provider(
     doc = "",
     fields = {

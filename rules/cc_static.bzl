@@ -13,12 +13,12 @@ load(
     "link_to_archive",
 )
 load(
-    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
-    "CC_STATIC_ATTRS",
-)
-load(
     "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
     "HdrsMapInfo",
+)
+load(
+    "@rules_cc_hdrs_map//rules:lib/rules_attrs.bzl",
+    "get_cc_static_attrs",
 )
 
 def _cc_static(ctx):
@@ -99,7 +99,7 @@ def _cc_static(ctx):
 
 cc_static = rule(
     implementation = _cc_static,
-    attrs = CC_STATIC_ATTRS,
+    attrs = get_cc_static_attrs(),
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     provides = [

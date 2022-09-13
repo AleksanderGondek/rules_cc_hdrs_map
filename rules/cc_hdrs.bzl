@@ -1,13 +1,13 @@
 """ To be described. """
 
 load(
-    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
-    "CC_HDRS_ATTRS",
-)
-load(
     "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
     "HdrsMapInfo",
     "merge_hdr_maps_info_from_deps",
+)
+load(
+    "@rules_cc_hdrs_map//rules:lib/rules_attrs.bzl",
+    "get_cc_hdrs_attrs",
 )
 
 def _cc_hdrs_impl(ctx):
@@ -48,7 +48,7 @@ def _cc_hdrs_impl(ctx):
 
 cc_hdrs = rule(
     implementation = _cc_hdrs_impl,
-    attrs = CC_HDRS_ATTRS,
+    attrs = get_cc_hdrs_attrs(),
     fragments = ["cpp"],
     provides = [
         DefaultInfo,

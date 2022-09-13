@@ -13,12 +13,12 @@ load(
     "link_to_so",
 )
 load(
-    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
-    "CC_SO_ATTRS",
-)
-load(
     "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
     "HdrsMapInfo",
+)
+load(
+    "@rules_cc_hdrs_map//rules:lib/rules_attrs.bzl",
+    "get_cc_so_attrs",
 )
 
 def _cc_so(ctx):
@@ -108,7 +108,7 @@ def _cc_so(ctx):
 
 cc_so = rule(
     implementation = _cc_so,
-    attrs = CC_SO_ATTRS,
+    attrs = get_cc_so_attrs(),
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     provides = [

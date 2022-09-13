@@ -13,8 +13,8 @@ load(
     "link_to_binary",
 )
 load(
-    "@rules_cc_hdrs_map//rules:lib/conf.bzl",
-    "CC_BIN_ATTRS",
+    "@rules_cc_hdrs_map//rules:lib/rules_attrs.bzl",
+    "get_cc_bin_attrs",
 )
 
 def _cc_bin_hdrs_map_impl(ctx):
@@ -90,7 +90,7 @@ def _cc_bin_hdrs_map_impl(ctx):
 
 cc_bin_hdrs_map = rule(
     implementation = _cc_bin_hdrs_map_impl,
-    attrs = CC_BIN_ATTRS,
+    attrs = get_cc_bin_attrs(),
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     executable = True,

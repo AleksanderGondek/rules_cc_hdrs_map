@@ -1,12 +1,6 @@
 """ Contains common configuration-related entities used by cc_hdrs_map rules. """
 
-# Authors' soap box: 
-# I would gladly use _-prefixed names for most of these vars
-# however, once again Starlark does not heed to Python mantras
-# and ENFORCES _named variables being private and thus
-# non-importable.
-
-COMMON_RULES_ATTRS = {
+_COMMON_RULES_ATTRS = {
     "deps": attr.label_list(
         doc = "",
         default = [],
@@ -55,7 +49,7 @@ COMMON_RULES_ATTRS = {
     ),
 }
 
-CC_COMPILABLE_ATTRS = {
+_CC_COMPILABLE_ATTRS = {
     "additional_linker_inputs": attr.label_list(
         doc = "",
         default = [],
@@ -89,7 +83,7 @@ CC_COMPILABLE_ATTRS = {
     ),
 }
 
-CC_LIB_ATTRS = {
+_CC_LIB_ATTRS = {
     "include_prefix": attr.string(
         doc = "",
         default = "",
@@ -105,30 +99,42 @@ CC_LIB_ATTRS = {
 #  "{**dictA, **dictB}" never did..
 #   update modifies in place..
 
-CC_BIN_ATTRS = {
-    "stamp": attr.int(
-        default = -1,
-        doc = "",
-    ),
-}
-CC_BIN_ATTRS.update(COMMON_RULES_ATTRS)
-CC_BIN_ATTRS.update(CC_COMPILABLE_ATTRS)
+def get_cc_bin_attrs():
+    """ To be described """
+    cc_bin_attrs = {
+        "stamp": attr.int(
+            default = -1,
+            doc = "",
+        ),
+    }
+    cc_bin_attrs.update(_COMMON_RULES_ATTRS)
+    cc_bin_attrs.update(_CC_COMPILABLE_ATTRS)
+    return cc_bin_attrs
 
-CC_SO_ATTRS = {
-    "alwayslink": attr.bool(
-        default = True,
-        doc = "",
-    ),
-}
-CC_SO_ATTRS.update(COMMON_RULES_ATTRS)
-CC_SO_ATTRS.update(CC_COMPILABLE_ATTRS)
-CC_SO_ATTRS.update(CC_LIB_ATTRS)
+def get_cc_hdrs_attrs():
+    """ To be described. """
+    cc_hdrs_attrs = {}
+    cc_hdrs_attrs.update(_COMMON_RULES_ATTRS)
+    cc_hdrs_attrs.pop("srcs")
+    return cc_hdrs_attrs
 
-CC_STATIC_ATTRS = {}
-CC_STATIC_ATTRS.update(COMMON_RULES_ATTRS)
-CC_STATIC_ATTRS.update(CC_COMPILABLE_ATTRS)
-CC_STATIC_ATTRS.update(CC_LIB_ATTRS)
+def get_cc_so_attrs():
+    """ To be described. """
+    cc_so_attrs = {
+        "alwayslink": attr.bool(
+            default = True,
+            doc = "",
+        ),
+    }
+    cc_so_attrs.update(_COMMON_RULES_ATTRS)
+    cc_so_attrs.update(_CC_COMPILABLE_ATTRS)
+    cc_so_attrs.update(_CC_LIB_ATTRS)
+    return cc_so_attrs
 
-CC_HDRS_ATTRS = {}
-CC_HDRS_ATTRS.update(COMMON_RULES_ATTRS)
-CC_HDRS_ATTRS.pop("srcs")
+def get_cc_static_attrs():
+    """ To be described. """
+    cc_static_attrs = {}
+    cc_static_attrs.update(_COMMON_RULES_ATTRS)
+    cc_static_attrs.update(_CC_COMPILABLE_ATTRS)
+    cc_static_attrs.update(_CC_LIB_ATTRS)
+    return cc_static_attrs
