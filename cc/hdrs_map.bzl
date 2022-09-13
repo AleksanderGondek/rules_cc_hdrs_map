@@ -16,18 +16,6 @@ HdrsMapInfo = provider(
     },
 )
 
-def _new_hdr_map_info_cc_compilable_attrs():
-    """ To be descibed. """
-    return {
-        k: None for k in CC_COMPILABLE_ATTRS.keys()
-    }
-
-def _new_hdr_map_info_cc_lib_attrs():
-    """ To be descibed. """
-    return {
-        k: None for k in CC_LIB_ATTRS.keys()
-    }
-
 def glob_match(
         pattern,
         text):
