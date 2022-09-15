@@ -17,7 +17,7 @@ load(
     "get_cc_bin_attrs",
 )
 
-def _cc_bin_hdrs_map_impl(ctx):
+def _cc_bin_impl(ctx):
     """ To be described. """
 
     cc_toolchain = find_cpp_toolchain(ctx)
@@ -81,7 +81,7 @@ def _cc_bin_hdrs_map_impl(ctx):
     if linking_output.executable:
         output_files.append(linking_output.executable)
     elif linking_output.library_to_link:
-        fail("'cc_bin_hdrs_map' must not output a library!")
+        fail("'cc_bin' must not output a library!")
 
     return [
         DefaultInfo(
@@ -90,8 +90,8 @@ def _cc_bin_hdrs_map_impl(ctx):
         ),
     ]
 
-cc_bin_hdrs_map = rule(
-    implementation = _cc_bin_hdrs_map_impl,
+cc_bin = rule(
+    implementation = _cc_bin_impl,
     attrs = get_cc_bin_attrs(),
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],

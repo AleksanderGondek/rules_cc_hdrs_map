@@ -1,6 +1,6 @@
 """ Simple examples. """
 
-load("@rules_cc_hdrs_map//rules:cc_bin_hdrs_map.bzl", "cc_bin_hdrs_map")
+load("@rules_cc_hdrs_map//rules:cc_bin.bzl", "cc_bin")
 load("@rules_cc_hdrs_map//rules:cc_so.bzl", "cc_so")
 
 cc_so(
@@ -25,7 +25,7 @@ cc_so(
     ],
 )
 
-cc_bin_hdrs_map(
+cc_bin(
     name = "pingpong",
     srcs = [
         "pingpong.cpp",
