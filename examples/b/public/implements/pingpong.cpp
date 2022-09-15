@@ -8,11 +8,11 @@ int main() {
   b::pong::Pong* pon = NULL;
 
   while (pin != NULL || pon != NULL) {
-    if (pin != NULL && pin == NULL) {
+    if (pin != NULL && pon == NULL) {
       pon = pin->ping2();
       pin = NULL;
     }
-    else if (pin == NULL && pin != NULL) {
+    else if (pin == NULL && pon != NULL) {
       pin = pon->pong2();
       pon = NULL;
     }
