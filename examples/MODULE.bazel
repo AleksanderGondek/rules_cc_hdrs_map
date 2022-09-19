@@ -1,0 +1,36 @@
+module(
+    name = "rules_cc_hdrs_map_examples",
+    version = "0.0.1",
+)
+
+bazel_dep(name = "rules_cc", version = "0.0.0")
+
+archive_override(
+    module_name = "rules_cc",
+    strip_prefix = "rules_cc-2f8c04c04462ab83c545ab14c0da68c3b4c96191",
+    urls = [
+        "https://github.com/bazelbuild/rules_cc/archive/2f8c04c04462ab83c545ab14c0da68c3b4c96191.tar.gz",
+    ],
+    #integrity = "sha256-???",
+)
+
+bazel_dep(name = "com_github_nelhage_rules_boost", version = "0.0.0")
+
+archive_override(
+    module_name = "com_github_nelhage_rules_boost",
+    #integrity = "sha256-???",
+    patches = [
+        "//:patches/000-modularize-rules-boost.patch",
+    ],
+    strip_prefix = "rules_boost-ea2991b24d68439121130845f7dbef8d1dd383d2",
+    urls = [
+        "https://github.com/nelhage/rules_boost/archive/ea2991b24d68439121130845f7dbef8d1dd383d2.tar.gz",
+    ],
+)
+
+bazel_dep(name = "rules_cc_hdrs_map", version = "0.0.0")
+
+local_path_override(
+    module_name = "rules_cc_hdrs_map",
+    path = "../",
+)

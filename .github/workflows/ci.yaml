@@ -33,3 +33,4 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - run: nix-shell --pure --run 'cd examples && bazel build //...'
+    - run: nix-shell --pure --run 'cd examples && bazel build //... --experimental_enable_bzlmod'

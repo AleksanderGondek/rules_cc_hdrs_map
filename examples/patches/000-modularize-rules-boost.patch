@@ -1,0 +1,10 @@
+diff --git MODULE.bazel MODULE.bazel
+new file mode 100644
+index 0000000..e28145f
+--- /dev/null
++++ MODULE.bazel
+@@ -0,0 +1,4 @@
++module(
++    name = "com_github_nelhage_rules_boost",
++    version = "0.0.0",
++)

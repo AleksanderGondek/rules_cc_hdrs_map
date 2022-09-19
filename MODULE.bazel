@@ -1,0 +1,4 @@
+module(
+    name = "rules_cc_hdrs_map",
+    version = "0.0.1",
+)
