@@ -7,9 +7,9 @@ cc_so(
     srcs = [
         "ping.cpp",
     ],
-    deps = [
-        "//b/private/includes:ping_headers",
-        "//a/private/includes:pong_headers",
-    ],
     visibility = ["//b:__subpackages__"],
+    deps = [
+        "//a/private/includes:pong_headers",
+        "//b/private/includes:ping_headers",
+    ],
 )

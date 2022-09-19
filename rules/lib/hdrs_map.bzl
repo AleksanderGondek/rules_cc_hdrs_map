@@ -49,9 +49,12 @@ def glob_match(
     ti = 0
     t = text[ti] if text else None
 
-    # Starklark is god-fosaken language
-    # while loop is not allowed, so instead
-    # of 'while t' we get this...
+    # Authors' soap box:
+    # 1) Starklark is god-fosaken language
+    #    while loop is not allowed, so instead
+    #    of 'while t' we get this...
+    # 2) Buildifier formats comments that should
+    #    describe elifs as part of pervious if..
     for _ in range(1073741824):
         # Equivalent to 'while t':
         # if selected t is non None
@@ -105,8 +108,9 @@ def glob_match(
                 ti = ti + 1
                 t = text[ti] if ti < len(text) else None
 
-        # '*' not followed by '/'
-        #   => Match the current character
+            # '*' not followed by '/'
+            #   => Match the current character
+
         elif p == "*" and next_t != "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
@@ -117,32 +121,34 @@ def glob_match(
                 pi = pi + 1
                 p = pattern[pi] if pi < len(pattern) else None
 
+            # '*' followed by '/'
+            #   => Stop star matching
 
-        # '*' followed by '/'
-        #   => Stop star matching
         elif p == "*" and next_t == "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
 
-        # '?' and character is not '/'
-        #   => Progress matching
+            # '?' and character is not '/'
+            #   => Progress matching
+
         elif p == "?" and t != "/":
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
 
-        # 1:1 match
-        #   => Progress matching
+            # 1:1 match
+            #   => Progress matching
+
         elif p == t:
             ti = ti + 1
             t = text[ti] if ti < len(text) else None
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
 
-        # Everything else is a non-match
+            # Everything else is a non-match
         else:
             return False
 

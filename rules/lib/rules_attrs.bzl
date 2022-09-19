@@ -98,7 +98,7 @@ _CC_LIB_ATTRS = {
     ),
 }
 
-# Authors' soap box: 
+# Authors' soap box:
 # + no longer works, neither does |
 #  "{**dictA, **dictB}" never did..
 #   update modifies in place..

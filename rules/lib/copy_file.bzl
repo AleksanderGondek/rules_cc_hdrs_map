@@ -48,15 +48,15 @@ def _copy_shell(actions, src, dst):
 def copy_file(invoker_label, actions, is_windows, src, dst):
     """ To be described. """
     if is_windows:
-      _copy_cmd(
-        invoker_label,
-        actions,
-        src,
-        dst,
-      )
+        _copy_cmd(
+            invoker_label,
+            actions,
+            src,
+            dst,
+        )
     else:
-      _copy_shell(
-        actions,
-        src,
-        dst,
-      )
+        _copy_shell(
+            actions,
+            src,
+            dst,
+        )

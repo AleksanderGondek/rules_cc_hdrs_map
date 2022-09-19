@@ -22,17 +22,16 @@ def get_feature_configuration(ctx, cc_toolchain):
     )
 
 def prepare_for_compilation(
-    invoker_label,
-    actions,
-    is_windows,
-    cc_toolchain,
-    feature_configuration,
-    input_hdrs_map,
-    input_public_hdrs,
-    input_private_hdrs,
-    input_deps,
-    input_includes
-):
+        invoker_label,
+        actions,
+        is_windows,
+        cc_toolchain,
+        feature_configuration,
+        input_hdrs_map,
+        input_public_hdrs,
+        input_private_hdrs,
+        input_deps,
+        input_includes):
     """ To be described. """
 
     hdrs_map = input_hdrs_map if input_hdrs_map else {}
@@ -81,7 +80,7 @@ def prepare_for_compilation(
         public_hdrs = public_hdrs,
         private_hdrs = private_hdrs,
         includes = includes,
-        deps = deps
+        deps = deps,
     )
 
 def compile(

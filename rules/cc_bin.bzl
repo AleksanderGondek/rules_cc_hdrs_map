@@ -7,10 +7,10 @@ load(
 )
 load(
     "@rules_cc_hdrs_map//rules:lib/common.bzl",
-    "get_feature_configuration",
-    "prepare_for_compilation",
     "compile",
+    "get_feature_configuration",
     "link_to_binary",
+    "prepare_for_compilation",
 )
 load(
     "@rules_cc_hdrs_map//rules:lib/rules_attrs.bzl",
@@ -33,7 +33,7 @@ def _cc_bin_impl(ctx):
         input_public_hdrs = ctx.files.public_hdrs,
         input_private_hdrs = ctx.files.private_hdrs,
         input_deps = ctx.attr.deps,
-        input_includes = ctx.attr.includes
+        input_includes = ctx.attr.includes,
     )
 
     hdrs_map = compilation_prep_ctx.hdrs_map
