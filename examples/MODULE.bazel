@@ -11,14 +11,14 @@ archive_override(
     urls = [
         "https://github.com/bazelbuild/rules_cc/archive/2f8c04c04462ab83c545ab14c0da68c3b4c96191.tar.gz",
     ],
-    #integrity = "sha256-???",
+    integrity = "sha256-SusQLvvPrVCYV9fLnFRWcx6M5Wa/vylgKGouwjZ5bMM=",
 )
 
 bazel_dep(name = "com_github_nelhage_rules_boost", version = "0.0.0")
 
 archive_override(
     module_name = "com_github_nelhage_rules_boost",
-    #integrity = "sha256-???",
+    integrity = "sha256-DbFMfresx4y+YBpFDXFh5JLX/8mBUHdc/vbizfXsfmo=",
     patches = [
         "//:patches/000-modularize-rules-boost.patch",
     ],
