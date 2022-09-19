@@ -26,7 +26,11 @@ in nixpkgs.mkShell {
   inherit NIX_PATH TERM TMPDIR;
 
   buildInputs = with nixpkgs; [
-    bazel_5
+    nixpkgs_latest.bazel_6
+    # Bazel >= 5.3.0 required
+    # to test backward incompatible changes
+    # done to the bzlmod api - toolchain registration
+    # bazel_5
     bazel-buildtools
     cacert
     coreutils-full
