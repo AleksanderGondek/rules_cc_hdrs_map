@@ -5,8 +5,8 @@ load("@rules_cc_hdrs_map//rules:cc_hdrs.bzl", "cc_hdrs")
 cc_hdrs(
     name = "a-consts-headers",
     hdrs_map = {
-        "a/private/includes/*.hpp": ["{filename}"],
-        "a/private/includes/**/*.hpp": ["{filename}"],
+        "a/private/includes/*consts*.hpp": ["{filename}"],
+        "a/private/includes/**/*consts*.hpp": ["{filename}"],
         "a/private/other/a-consts-four.hpp": ["{filename}"],
     },
     public_hdrs = [
@@ -30,4 +30,15 @@ cc_hdrs(
     deps = [
         "@boost//:math",
     ],
+)
+
+cc_hdrs(
+    name = "pong_headers",
+    hdrs_map = {
+        "a/private/includes/pong.hpp": ["{filename}"],
+    },
+    public_hdrs = [
+        "pong.hpp",
+    ],
+    visibility = ["//visibility:public"],
 )

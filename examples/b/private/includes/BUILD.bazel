@@ -10,16 +10,5 @@ cc_hdrs(
     public_hdrs = [
         "ping.hpp",
     ],
-    visibility = ["//b:__subpackages__"]
-)
-
-cc_hdrs(
-    name = "pong_headers",
-    hdrs_map = {
-        "b/private/includes/**": ["{filename}"],
-    },
-    public_hdrs = [
-        "pong.hpp",
-    ],
-    visibility = ["//b:__subpackages__"]
+    visibility = ["//visibility:public"],
 )

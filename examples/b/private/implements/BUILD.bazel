@@ -9,19 +9,7 @@ cc_so(
     ],
     deps = [
         "//b/private/includes:ping_headers",
-        "//b/private/includes:pong_headers",
-    ],
-    visibility = ["//b:__subpackages__"],
-)
-
-cc_so(
-    name = "libpong",
-    srcs = [
-        "pong.cpp",
-    ],
-    deps = [
-        "//b/private/includes:ping_headers",
-        "//b/private/includes:pong_headers",
+        "//a/private/includes:pong_headers",
     ],
     visibility = ["//b:__subpackages__"],
 )

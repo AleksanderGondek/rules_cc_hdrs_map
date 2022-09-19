@@ -39,3 +39,15 @@ cc_bin(
         ":list-cheeses",
     ],
 )
+
+cc_so(
+    name = "libpong",
+    srcs = [
+        "pong.cpp",
+    ],
+    deps = [
+        "//a/private/includes:pong_headers",
+        "//b/private/includes:ping_headers",
+    ],
+    visibility = ["//visibility:public"],
+)
