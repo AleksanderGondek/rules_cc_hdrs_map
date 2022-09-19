@@ -1,29 +1,6 @@
 """ Simple examples. """
 
 load("@rules_cc_hdrs_map//rules:cc_bin.bzl", "cc_bin")
-load("@rules_cc_hdrs_map//rules:cc_so.bzl", "cc_so")
-
-cc_so(
-    name = "libping",
-    srcs = [
-        "ping.cpp",
-    ],
-    deps = [
-        "//b/public/includes:ping_headers",
-        "//b/public/includes:pong_headers",
-    ],
-)
-
-cc_so(
-    name = "libpong",
-    srcs = [
-        "pong.cpp",
-    ],
-    deps = [
-        "//b/public/includes:ping_headers",
-        "//b/public/includes:pong_headers",
-    ],
-)
 
 cc_bin(
     name = "pingpong",
@@ -31,7 +8,7 @@ cc_bin(
         "pingpong.cpp",
     ],
     deps = [
-        ":libping",
-        ":libpong",
+        "//b/private/implements:libping",
+        "//b/private/implements:libpong",
     ],
 )

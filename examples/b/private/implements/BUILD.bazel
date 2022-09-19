@@ -1,0 +1,27 @@
+""" Simple examples. """
+
+load("@rules_cc_hdrs_map//rules:cc_so.bzl", "cc_so")
+
+cc_so(
+    name = "libping",
+    srcs = [
+        "ping.cpp",
+    ],
+    deps = [
+        "//b/private/includes:ping_headers",
+        "//b/private/includes:pong_headers",
+    ],
+    visibility = ["//b:__subpackages__"],
+)
+
+cc_so(
+    name = "libpong",
+    srcs = [
+        "pong.cpp",
+    ],
+    deps = [
+        "//b/private/includes:ping_headers",
+        "//b/private/includes:pong_headers",
+    ],
+    visibility = ["//b:__subpackages__"],
+)
