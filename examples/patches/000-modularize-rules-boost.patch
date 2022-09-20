@@ -1,10 +1,69 @@
+diff --git BUILD.boost BUILD.boost
+index 3988a39..a8d73ce 100644
+--- BUILD.boost
++++ BUILD.boost
+@@ -322,7 +322,7 @@ cc_library(
+     copts = [
+         "-msse2",
+         "-msse4.1",
+-        "-Iexternal/boost/libs/atomic/src",
++        "-Iexternal/@com_github_nelhage_rules_boost~override~boost_deps_ext~boost/libs/atomic/src",
+     ],
+     visibility = ["//visibility:private"],
+     deps = BOOST_ATOMIC_DEPS,
+@@ -337,7 +337,7 @@ boost_library(
+     hdrs = [
+         "boost/memory_order.hpp",
+     ],
+-    copts = ["-Iexternal/boost/libs/atomic/src"],
++    copts = ["-Iexternal/@com_github_nelhage_rules_boost~override~boost_deps_ext~boost/libs/atomic/src"],
+     exclude_src = ["libs/atomic/src/wait_on_address.cpp"] + BOOST_ATOMIC_SSE_SRCS,
+     deps = BOOST_ATOMIC_DEPS + select({
+         "@platforms//cpu:x86_64": [":atomic_sse"],
+@@ -2369,7 +2369,7 @@ boost_library(
+         "libs/log/src/setup/*.cpp",
+     ]) + ["boost/locale/utf.hpp"],
+     copts = BOOST_LOG_CFLAGS + [
+-        "-Iexternal/boost/libs/log/src/",
++        "-Iexternal/@com_github_nelhage_rules_boost~override~boost_deps_ext~boost/libs/log/src",
+     ],
+     exclude_src = [
+         "libs/log/src/dump_avx2.cpp",
 diff --git MODULE.bazel MODULE.bazel
 new file mode 100644
-index 0000000..e28145f
+index 0000000..e626746
 --- /dev/null
 +++ MODULE.bazel
-@@ -0,0 +1,4 @@
+@@ -0,0 +1,16 @@
 +module(
 +    name = "com_github_nelhage_rules_boost",
 +    version = "0.0.0",
 +)
++
++bazel_dep(name = "platforms", version = "0.0.4")
++
++boost_deps_ext = use_extension("//:boost/boost.bzl", "boost_deps_ext")
++use_repo(boost_deps_ext, "bazel_skylib")
++use_repo(boost_deps_ext, "net_zlib_zlib")
++use_repo(boost_deps_ext, "org_bzip_bzip2")
++use_repo(boost_deps_ext, "org_lzma_lzma")
++use_repo(boost_deps_ext, "com_github_facebook_zstd")
++use_repo(boost_deps_ext, "boost")
++use_repo(boost_deps_ext, "openssl")
++
+diff --git boost/boost.bzl boost/boost.bzl
+index 7bcad91..a54454c 100644
+--- boost/boost.bzl
++++ boost/boost.bzl
+@@ -225,3 +225,11 @@ def boost_deps():
+         strip_prefix = "boringssl-fc44652a42b396e1645d5e72aba053349992136a",
+         url = "https://github.com/google/boringssl/archive/fc44652a42b396e1645d5e72aba053349992136a.tar.gz",
+     )
++
++def _boost_deps_ext_impl(ctx):
++    boost_deps()
++
++boost_deps_ext = module_extension(
++    implementation = _boost_deps_ext_impl,
++)
++

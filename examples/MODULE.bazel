@@ -5,16 +5,18 @@ module(
 
 bazel_dep(name = "rules_cc", version = "0.0.0")
 
+RULES_CC_COMMIT = "2f8c04c04462ab83c545ab14c0da68c3b4c96191"
+
 archive_override(
     module_name = "rules_cc",
-    strip_prefix = "rules_cc-2f8c04c04462ab83c545ab14c0da68c3b4c96191",
-    urls = [
-        "https://github.com/bazelbuild/rules_cc/archive/2f8c04c04462ab83c545ab14c0da68c3b4c96191.tar.gz",
-    ],
+    strip_prefix = "rules_cc-%s" % RULES_CC_COMMIT,
+    urls = ["https://github.com/bazelbuild/rules_cc/archive/%s.tar.gz" % RULES_CC_COMMIT],
     integrity = "sha256-SusQLvvPrVCYV9fLnFRWcx6M5Wa/vylgKGouwjZ5bMM=",
 )
 
 bazel_dep(name = "com_github_nelhage_rules_boost", version = "0.0.0")
+
+RULES_BOOST_COMMIT = "ea2991b24d68439121130845f7dbef8d1dd383d2"
 
 archive_override(
     module_name = "com_github_nelhage_rules_boost",
@@ -22,11 +24,20 @@ archive_override(
     patches = [
         "//:patches/000-modularize-rules-boost.patch",
     ],
-    strip_prefix = "rules_boost-ea2991b24d68439121130845f7dbef8d1dd383d2",
+    strip_prefix = "rules_boost-%s" % RULES_BOOST_COMMIT,
     urls = [
-        "https://github.com/nelhage/rules_boost/archive/ea2991b24d68439121130845f7dbef8d1dd383d2.tar.gz",
+        "https://github.com/nelhage/rules_boost/archive/%s.tar.gz" % RULES_BOOST_COMMIT,
     ],
 )
+
+boost_deps_ext = use_extension("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps_ext")
+use_repo(boost_deps_ext, "bazel_skylib")
+use_repo(boost_deps_ext, "net_zlib_zlib")
+use_repo(boost_deps_ext, "org_bzip_bzip2")
+use_repo(boost_deps_ext, "org_lzma_lzma")
+use_repo(boost_deps_ext, "com_github_facebook_zstd")
+use_repo(boost_deps_ext, "boost")
+use_repo(boost_deps_ext, "openssl")
 
 bazel_dep(name = "rules_cc_hdrs_map", version = "0.0.0")
 
