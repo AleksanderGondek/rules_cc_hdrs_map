@@ -2,3 +2,16 @@ module(
     name = "rules_cc_hdrs_map",
     version = "0.0.1",
 )
+
+# This project does not rely on any dependencies to function properly.
+# Entries below are solely for the purposes of development.
+bazel_dep(
+    name = "bazel_skylib",
+    dev_dependency = True,
+    version = "1.0.3",
+)
+bazel_dep(
+    name = "stardoc",
+    dev_dependency = True,
+    version = "0.5.1",
+)
