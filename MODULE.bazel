@@ -16,15 +16,18 @@ bazel_dep(
     version = "0.5.2",
 )
 
-archive_override(
-    integrity = "sha256-BftXu0rWijYEcEIKO29TF+T3IoOavFsX7E747UZaqkc=",
-    module_name = "stardoc",
-    patches = [
-        "//:patches/000-modularize-stardoc.patch",
-    ],
-    urls = ["https://github.com/bazelbuild/stardoc/releases/download/0.5.2/stardoc-0.5.2.tar.gz"],
-)
-
-stardoc_ext = use_extension("@stardoc//:setup.bzl", "stardoc_ext")
-
-use_repo(stardoc_ext, "rules_java")
+# Pathetic
+# 'The MODULE.bazel file of rules_cc_hdrs_map@_ declares overrides' if used by other module 
+#
+# archive_override(
+#     integrity = "sha256-BftXu0rWijYEcEIKO29TF+T3IoOavFsX7E747UZaqkc=",
+#     module_name = "stardoc",
+#     patches = [
+#         "//:patches/000-modularize-stardoc.patch",
+#     ],
+#     urls = ["https://github.com/bazelbuild/stardoc/releases/download/0.5.2/stardoc-0.5.2.tar.gz"],
+# )
+#
+# stardoc_ext = use_extension("@stardoc//:setup.bzl", "stardoc_ext")
+# 
+# use_repo(stardoc_ext, "rules_java")
