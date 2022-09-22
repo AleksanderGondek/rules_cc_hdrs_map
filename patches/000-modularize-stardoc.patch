@@ -1,0 +1,38 @@
+diff --git MODULE.bazel MODULE.bazel
+new file mode 100644
+index 0000000..b68017a
+--- /dev/null
++++ MODULE.bazel
+@@ -0,0 +1,8 @@
++module(
++    name = "stardoc",
++    compatibility_level = 1,
++    version = "0.5.2",
++)
++
++bazel_dep(name = "bazel_skylib", version = "1.2.1")
++bazel_dep(name = "rules_java", version = "5.1.0")
+diff --git setup.bzl setup.bzl
+index dd39565..4f2b5a6 100644
+--- setup.bzl
++++ setup.bzl
+@@ -35,8 +35,16 @@ def stardoc_repositories():
+         http_archive,
+         name = "rules_java",
+         urls = [
+-            "https://mirror.bazel.build/github.com/bazelbuild/rules_java/releases/download/4.0.0/rules_java-4.0.0.tar.gz",
+-            "https://github.com/bazelbuild/rules_java/releases/download/4.0.0/rules_java-4.0.0.tar.gz",
++            "https://mirror.bazel.build/github.com/bazelbuild/rules_java/releases/download/5.1.0/rules_java-5.1.0.tar.gz",
++            "https://github.com/bazelbuild/rules_java/releases/download/5.1.0/rules_java-5.1.0.tar.g",
+         ],
+-        sha256 = "34b41ec683e67253043ab1a3d1e8b7c61e4e8edefbcad485381328c934d072fe",
++        sha256 = "d974a2d6e1a534856d1b60ad6a15e57f3970d8596fbb0bb17b9ee26ca209332a",
+     )
++
++def _stardoc_ext_impl(ctx):
++    stardoc_repositories()
++
++stardoc_ext = module_extension(
++    implementation = _stardoc_ext_impl,
++)
++

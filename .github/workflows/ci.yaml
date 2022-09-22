@@ -19,6 +19,8 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - run: nix-shell --pure --run 'bazel build //...'
+    # https://github.com/bazelbuild/stardoc/issues/117
+    # - run: nix-shell --pure --run 'bazel build //... --experimental_enable_bzlmod'
   bzl-test:
     name: Run bazel test
     runs-on: ubuntu-latest
@@ -33,6 +35,8 @@ jobs:
         extra_nix_config: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - run: nix-shell --pure --run 'bazel test //...'
+    # https://github.com/bazelbuild/stardoc/issues/117
+    # - run: nix-shell --pure --run 'bazel test //... --experimental_enable_bzlmod'
   bzl-build-examples:
     name: Build examples workspace
     runs-on: ubuntu-latest
