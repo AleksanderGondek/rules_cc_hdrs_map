@@ -37,6 +37,8 @@ in nixpkgs.mkShell {
     curlFull
     git
     gnutar
+    # docs generation
+    jdk11_headless
     less
     nix
     nixfmt

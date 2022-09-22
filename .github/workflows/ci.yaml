@@ -20,7 +20,21 @@ jobs:
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - run: nix-shell --pure --run 'bazel build //...'
   bzl-test:
-    name: Run tests (examples workspace)
+    name: Run bazel test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3.0.2
+       # Flakes do not like shallow clones
+      with:
+        fetch-depth: 0
+    - uses: cachix/install-nix-action@v15
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.8.1/install
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+    - run: nix-shell --pure --run 'bazel test //...'
+  bzl-build-examples:
+    name: Build examples workspace
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3.0.2
