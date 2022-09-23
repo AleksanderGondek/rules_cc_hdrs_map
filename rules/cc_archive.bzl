@@ -18,10 +18,10 @@ load(
 )
 load(
     "@rules_cc_hdrs_map//rules:lib/rules_attrs.bzl",
-    "get_cc_static_attrs",
+    "get_cc_archive_attrs",
 )
 
-def _cc_static(ctx):
+def _cc_archive(ctx):
     """ To be described. """
 
     cc_toolchain = find_cpp_toolchain(ctx)
@@ -99,9 +99,9 @@ def _cc_static(ctx):
         ),
     ]
 
-cc_static = rule(
-    implementation = _cc_static,
-    attrs = get_cc_static_attrs(),
+cc_archive = rule(
+    implementation = _cc_archive,
+    attrs = get_cc_archive_attrs(),
     toolchains = use_cpp_toolchain(),
     fragments = ["cpp"],
     provides = [

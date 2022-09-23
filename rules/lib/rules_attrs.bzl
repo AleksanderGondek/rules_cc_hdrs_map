@@ -135,10 +135,10 @@ def get_cc_so_attrs():
     cc_so_attrs.update(_CC_LIB_ATTRS)
     return cc_so_attrs
 
-def get_cc_static_attrs():
+def get_cc_archive_attrs():
     """ To be described. """
-    cc_static_attrs = {}
-    cc_static_attrs.update(_COMMON_RULES_ATTRS)
-    cc_static_attrs.update(_CC_COMPILABLE_ATTRS)
-    cc_static_attrs.update(_CC_LIB_ATTRS)
-    return cc_static_attrs
+    cc_archive_attrs = {}
+    cc_archive_attrs.update(_COMMON_RULES_ATTRS)
+    cc_archive_attrs.update(_CC_COMPILABLE_ATTRS)
+    cc_archive_attrs.update(_CC_LIB_ATTRS)
+    return cc_archive_attrs

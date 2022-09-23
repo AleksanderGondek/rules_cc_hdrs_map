@@ -7,7 +7,7 @@ RULES_CC_HDRS_MAP_NAMES = [
     "bin",
     "hdrs",
     "so",
-    "static",
+    "archive",
 ]
 
 bzl_library(

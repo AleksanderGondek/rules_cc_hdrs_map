@@ -2,7 +2,7 @@
 
 load("@rules_cc_hdrs_map//rules:cc_bin.bzl", "cc_bin")
 load("@rules_cc_hdrs_map//rules:cc_so.bzl", "cc_so")
-load("@rules_cc_hdrs_map//rules:cc_static.bzl", "cc_static")
+load("@rules_cc_hdrs_map//rules:cc_archive.bzl", "cc_archive")
 
 cc_so(
     name = "list-cheeses",
@@ -17,7 +17,7 @@ cc_so(
     ],
 )
 
-cc_static(
+cc_archive(
     name = "list-cheeses-static",
     srcs = [
         "cheeses.cpp",

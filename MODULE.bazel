@@ -17,7 +17,7 @@ bazel_dep(
 )
 
 # Pathetic
-# 'The MODULE.bazel file of rules_cc_hdrs_map@_ declares overrides' if used by other module 
+# 'The MODULE.bazel file of rules_cc_hdrs_map@_ declares overrides' if used by other module
 #
 # archive_override(
 #     integrity = "sha256-BftXu0rWijYEcEIKO29TF+T3IoOavFsX7E747UZaqkc=",
@@ -29,5 +29,5 @@ bazel_dep(
 # )
 #
 # stardoc_ext = use_extension("@stardoc//:setup.bzl", "stardoc_ext")
-# 
+#
 # use_repo(stardoc_ext, "rules_java")

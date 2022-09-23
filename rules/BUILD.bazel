@@ -8,5 +8,5 @@ exports_files([
     "cc_bin.bzl",
     "cc_hdrs.bzl",
     "cc_so.bzl",
-    "cc_static.bzl",
+    "cc_archive.bzl",
 ])
