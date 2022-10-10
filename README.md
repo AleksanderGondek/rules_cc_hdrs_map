@@ -26,3 +26,10 @@ Said header map is propagated across all compatible C/C++ rules (meaning those f
 
 No action is being performed up until the moment of compilation - header mappings, resulting from the header map dictionary, are created only for the purposes of compilation and are _NOT_ part of any rule output. This ensures the impact for the Bazel cache is minimal and the compatibility with original `rules_cc`.
 
+## Broad overview of the rules
+
+* cc_hdrs - groups header files and enriches them with hdrs_map. Can be used with `rules_cc` targets the same way a filegroup can, although header map data will be lost. ([read more](docs/cc_hdrs_docs.md))
+* cc_bin - equivalent of `cc_binary`, able to properly use hdrs_map data. ([read more](docs/cc_bin_docs.md))
+* cc_so - equivalent of `cc_library`, able to properly use hdrs_map data. Will only output a shared object library. Can be used with `rules_cc` targets the same way `cc_lib` can. ([read more](docs/cc_so_docs.md))
+* cc_archive - equivalent of `cc_library`, able to properly use hdrs_map data. Will only output an archive object. Can be used with `rules_cc` targets the same way `cc_lib` can. ([read more](docs/cc_archive_docs.md))
+
