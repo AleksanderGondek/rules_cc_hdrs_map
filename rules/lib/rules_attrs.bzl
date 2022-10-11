@@ -2,7 +2,7 @@
 
 _COMMON_RULES_ATTRS = {
     "deps": attr.label_list(
-        doc = "",
+        doc = "The list of dependencies of current target",
         default = [],
     ),
     "srcs": attr.label_list(
@@ -15,7 +15,7 @@ _COMMON_RULES_ATTRS = {
             ".c++",
             ".C",
         ],
-        doc = "",
+        doc = "The list of source files.",
     ),
     "public_hdrs": attr.label_list(
         allow_files = [
@@ -27,7 +27,7 @@ _COMMON_RULES_ATTRS = {
             ".inl",
             ".H",
         ],
-        doc = "",
+        doc = "List of headers that may be included by dependent rules transitively.",
         default = [],
     ),
     "private_hdrs": attr.label_list(
@@ -40,12 +40,23 @@ _COMMON_RULES_ATTRS = {
             ".inl",
             ".H",
         ],
-        doc = "",
+        doc = "List of headers that CANNOT be included by dependent rules.",
         default = [],
     ),
     "hdrs_map": attr.string_list_dict(
-        doc = "",
         default = {},
+        doc = """
+        Dictionary describing paths under which header files should be avaiable as.
+
+        Keys are simple glob pathnames, used to match agains all header files avaiable in the rule.
+        Values are list of paths to which matching header files should be mapped.
+
+        '{filename}' is special token used to signify to matching file name.
+
+        For example:
+        '"**/*o.hpp": ["a/{filename}"]' - will ensure all hpp files with names ending with '0'
+        will be also avaible as if they were placed in a subdirectory. 
+        """,
     ),
 }
 

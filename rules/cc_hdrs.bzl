@@ -1,4 +1,4 @@
-""" To be described. """
+""" Module providing means of enriching header file groups with mapping metadata. """
 
 load(
     "@rules_cc_hdrs_map//rules:lib/hdrs_map.bzl",
@@ -54,4 +54,24 @@ cc_hdrs = rule(
         DefaultInfo,
         HdrsMapInfo,
     ],
+    doc = """
+This rule allows for grouping header files as a unit and 
+equipping them with a headers map. Thanks to this approach, 
+information about expected include paths may be kept close
+to the header files themselve, instead of being repeated 
+in multiple compilation targets. 
+
+Example:
+```python
+cc_hdrs(
+    name = "foo_hdrs",
+    hdrs_map = {
+        "**/*.hpp": ["bar/{filename}"],
+    },
+    public_hdrs = [
+        "foo.hpp",
+    ],
+)
+```
+""",
 )
