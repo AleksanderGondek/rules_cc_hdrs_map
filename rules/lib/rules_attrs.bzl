@@ -27,7 +27,10 @@ _COMMON_RULES_ATTRS = {
             ".inl",
             ".H",
         ],
-        doc = "List of headers that may be included by dependent rules transitively.",
+        doc = """ 
+        List of headers that may be included by dependent rules transitively.
+        Notice: the cutoff happens during compilation.
+        """,
         default = [],
     ),
     "private_hdrs": attr.label_list(
@@ -40,7 +43,10 @@ _COMMON_RULES_ATTRS = {
             ".inl",
             ".H",
         ],
-        doc = "List of headers that CANNOT be included by dependent rules.",
+        doc = """
+        List of headers that CANNOT be included by dependent rules.
+        Notice: the cutoff happens during compilation.
+        """,
         default = [],
     ),
     "hdrs_map": attr.string_list_dict(

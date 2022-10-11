@@ -28,8 +28,8 @@ cc_bin(<a href="#cc_bin-name">name</a>, <a href="#cc_bin-additional_linker_input
 | <a id="cc_bin-linkopts"></a>linkopts |  -   | List of strings | optional | [] |
 | <a id="cc_bin-linkstatic"></a>linkstatic |  -   | Boolean | optional | True |
 | <a id="cc_bin-local_defines"></a>local_defines |  -   | List of strings | optional | [] |
-| <a id="cc_bin-private_hdrs"></a>private_hdrs |  List of headers that CANNOT be included by dependent rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
-| <a id="cc_bin-public_hdrs"></a>public_hdrs |  List of headers that may be included by dependent rules transitively.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="cc_bin-private_hdrs"></a>private_hdrs |  List of headers that CANNOT be included by dependent rules.         Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="cc_bin-public_hdrs"></a>public_hdrs |  List of headers that may be included by dependent rules transitively.         Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
 | <a id="cc_bin-srcs"></a>srcs |  The list of source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
 | <a id="cc_bin-stamp"></a>stamp |  -   | Integer | optional | -1 |
 

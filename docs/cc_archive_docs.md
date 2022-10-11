@@ -29,8 +29,8 @@ cc_archive(<a href="#cc_archive-name">name</a>, <a href="#cc_archive-additional_
 | <a id="cc_archive-linkopts"></a>linkopts |  -   | List of strings | optional | [] |
 | <a id="cc_archive-linkstatic"></a>linkstatic |  -   | Boolean | optional | True |
 | <a id="cc_archive-local_defines"></a>local_defines |  -   | List of strings | optional | [] |
-| <a id="cc_archive-private_hdrs"></a>private_hdrs |  List of headers that CANNOT be included by dependent rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
-| <a id="cc_archive-public_hdrs"></a>public_hdrs |  List of headers that may be included by dependent rules transitively.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="cc_archive-private_hdrs"></a>private_hdrs |  List of headers that CANNOT be included by dependent rules.         Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
+| <a id="cc_archive-public_hdrs"></a>public_hdrs |  List of headers that may be included by dependent rules transitively.         Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional | [] |
 | <a id="cc_archive-srcs"></a>srcs |  The list of source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
 | <a id="cc_archive-strip_include_prefix"></a>strip_include_prefix |  -   | String | optional | "" |
 
