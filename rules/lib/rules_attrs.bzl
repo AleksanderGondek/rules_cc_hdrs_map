@@ -148,8 +148,11 @@ def get_cc_bin_attrs():
             default = -1,
             doc = """
             Whether to encode build information into the binary. Possible values:
+
               * stamp = 1: Always stamp the build information into the binary, even in --nostamp builds. This setting should be avoided, since it potentially kills remote caching for the binary and any downstream actions that depend on it.
+
               * stamp = 0: Always replace build information by constant values. This gives good build result caching.
+
               * stamp = -1: Embedding of build information is controlled by the --[no]stamp flag.
             
             Stamped binaries are not rebuilt unless their dependencies change.
