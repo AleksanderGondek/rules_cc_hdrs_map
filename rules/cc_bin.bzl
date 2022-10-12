@@ -1,4 +1,4 @@
-""" To be described. """
+""" Module providing means of compiling executables with usage of mapping metadata. """
 
 load(
     "@bazel_tools//tools/cpp:toolchain_utils.bzl",
