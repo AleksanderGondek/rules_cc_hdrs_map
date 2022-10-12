@@ -99,4 +99,21 @@ cc_bin = rule(
     provides = [
         DefaultInfo,
     ],
+    doc = """
+This rule allows for compiling code into executables.
+
+Example:
+```python
+cc_bin(
+    name = "foo",
+    hdrs_map = {
+        "**/*.hpp": ["bar/{filename}"],
+    },
+    srcs = [
+        "foo.cpp",
+        "foo.hpp",
+    ],
+)
+```
+""",
 )
