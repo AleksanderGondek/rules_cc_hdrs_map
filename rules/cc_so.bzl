@@ -1,4 +1,4 @@
-""" To be described. """
+""" Module providing means of creating so files which use mapping metadata. """
 
 load(
     "@bazel_tools//tools/cpp:toolchain_utils.bzl",
@@ -22,8 +22,6 @@ load(
 )
 
 def _cc_so(ctx):
-    """ To be described. """
-
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
@@ -117,4 +115,25 @@ cc_so = rule(
         CcInfo,
         HdrsMapInfo,
     ],
+    doc = """
+This rule allows for creating shared library object,
+which can utilize the headers map and propagate them
+futher down the dependency chain.
+
+Example:
+```python
+cc_so(
+    name = "libfoo",
+    hdrs_map = {
+        "**/*.hpp": ["bar/{filename}"],
+    },
+    public_hdrs = [
+        "foo.hpp",
+    ],
+    srcs = [
+        "foo.cpp",
+    ],
+)
+```
+""",
 )

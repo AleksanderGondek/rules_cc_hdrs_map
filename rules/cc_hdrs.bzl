@@ -11,7 +11,6 @@ load(
 )
 
 def _cc_hdrs_impl(ctx):
-    """ To be described. """
     public_hdrs = [h for h in ctx.files.public_hdrs]
     private_hdrs = [h for h in ctx.files.private_hdrs]
     deps = [d for d in ctx.attr.deps]

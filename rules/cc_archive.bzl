@@ -1,4 +1,4 @@
-""" To be described. """
+""" Module providing means of creating archive files which use mapping metadata. """
 
 load(
     "@bazel_tools//tools/cpp:toolchain_utils.bzl",
@@ -22,8 +22,6 @@ load(
 )
 
 def _cc_archive(ctx):
-    """ To be described. """
-
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 
@@ -109,4 +107,25 @@ cc_archive = rule(
         CcInfo,
         HdrsMapInfo,
     ],
+    doc = """
+This rule allows for creating archive objects,
+which can utilize the headers map and propagate them
+futher down the dependency chain.
+
+Example:
+```python
+cc_archive(
+    name = "foo",
+    hdrs_map = {
+        "**/*.hpp": ["bar/{filename}"],
+    },
+    deps = [
+        ":foo_hdrs",
+    ],
+    srcs = [
+        "foo.cpp",
+    ],
+)
+```
+""",
 )

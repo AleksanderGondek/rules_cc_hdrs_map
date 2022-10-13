@@ -18,8 +18,6 @@ load(
 )
 
 def _cc_bin_impl(ctx):
-    """ To be described. """
-
     cc_toolchain = find_cpp_toolchain(ctx)
     feature_configuration = get_feature_configuration(ctx, cc_toolchain)
 

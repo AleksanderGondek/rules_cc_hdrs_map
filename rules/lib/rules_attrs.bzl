@@ -127,12 +127,24 @@ _CC_COMPILABLE_ATTRS = {
 
 _CC_LIB_ATTRS = {
     "include_prefix": attr.string(
-        doc = "",
         default = "",
+        doc = """
+        The prefix to add to the paths of the headers of this rule.
+        When set, the headers in the hdrs attribute of this rule are accessible at is the value of this attribute prepended to their repository-relative path.
+
+        The prefix in the strip_include_prefix attribute is removed before this prefix is added.
+        """,
     ),
     "strip_include_prefix": attr.string(
-        doc = "",
         default = "",
+        doc = """
+        The prefix to strip from the paths of the headers of this rule.
+        When set, the headers in the hdrs attribute of this rule are accessible at their path with this prefix cut off.
+
+        If it's a relative path, it's taken as a package-relative one. If it's an absolute one, it's understood as a repository-relative path.
+
+        The prefix in the include_prefix attribute is added after this prefix is stripped.
+        """,
     ),
 }
 
@@ -175,7 +187,9 @@ def get_cc_so_attrs():
     cc_so_attrs = {
         "alwayslink": attr.bool(
             default = True,
-            doc = "",
+            doc = """
+            If 1, any binary that depends (directly or indirectly) on this C++ library will link in all the object files for the files listed in srcs, even if some contain no symbols referenced by the binary. This is useful if your code isn't explicitly called by code in the binary, e.g., if your code registers to receive some callback provided by some service.
+            """,
         ),
     }
     cc_so_attrs.update(_COMMON_RULES_ATTRS)
