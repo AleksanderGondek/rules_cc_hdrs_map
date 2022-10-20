@@ -1,4 +1,4 @@
-""" To be described. """
+""" Module describing HdrsMapInfo provider and common operations on it. """
 
 load(
     "@rules_cc_hdrs_map//rules:lib/copy_file.bzl",
@@ -173,7 +173,22 @@ def materialize_hdrs_mapping(
         is_windows,
         hdrs_map,
         hdrs):
-    """ To be described. """
+    """ Materialize the expected file hierarchy.
+
+    Creates the header file hierarchy accordingly to specifications
+    in passed-in hdrs_map under 'vhm' directory.
+
+    Args:
+        invoker_label: label of rule invoking the method
+        actions: bazel ctx.actions
+        is_windows: steers execution of windows/unix copying mechanism.
+        hdrs_map: HdrsMapInfo representing the headers mapping
+        hdrs: list of all header files that should be matched against the map
+
+    Returns:
+        (materialized_include_path, materialized_hdrs_files): tuple of include_path to
+        the created header files dir and list of paths to all header files created.
+    """
     HEADERS_MAP_DIR_NAME = "vhm"
     materialized_include_path = None
     materialized_hdrs_files = []
@@ -216,7 +231,15 @@ def materialize_hdrs_mapping(
 def merge_hdrs_map(
         hdr_maps_one,
         hdr_maps_two):
-    """ To be described. """
+    """ Merge two HdrsMapInfo hdrs_maps together.
+
+    Args:
+        hdr_maps_one: first HdrsMapInfo to be merged
+        hdr_maps_two: second HdrsMapInfo to be merged
+
+    Returns:
+        Dict: merged together hdrs_maps
+    """
     final_mappings = {}
     for pattern, mappings in hdr_maps_one.items():
         if pattern not in final_mappings:
@@ -243,7 +266,19 @@ def merge_hdrs_map(
 def merge_hdr_maps_info_from_deps(
         deps,
         hdrs_map):
-    """To be described. """
+    """ Aggregate any HdrsMapInfo from the dependencies.
+
+    Merges all HdrsMapInfos from the dependencies of a bazel target into
+    a singular description of mappings that exists.
+
+    Args:
+        deps: list of dependencies of the Bazel target
+        hdrs_map: map of headers of the Bazel target
+
+    Returns:
+        (public_hdrs, private_hdrs, hdrs_map, hdr_maps_deps): tuple
+        containing list of public headers, private headers, merged hdrs_map and other dependencies.
+    """
     public_hdrs = []
     private_hdrs = []
     hdrs_map = hdrs_map if hdrs_map else {}

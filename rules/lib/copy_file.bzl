@@ -1,4 +1,9 @@
-""" To be described. """
+""" Module describing helper function that copies files.
+
+The project "rolls it's own" implementation in order not to depend
+on any other rules / libs.
+
+"""
 
 # Definitions copied near verbatim from bazel-skylib
 #  Apart from exec requirements
@@ -46,7 +51,15 @@ def _copy_shell(actions, src, dst):
     )
 
 def copy_file(invoker_label, actions, is_windows, src, dst):
-    """ To be described. """
+    """ Copy file from one place to another.
+
+    Args:
+        invoker_label: label of rule invoking the method
+        actions: bazel ctx.actions
+        is_windows: steers execution of windows/unix copying mechanism
+        src: path to file that needs to be copied
+        dst: path to place the src file need to be copied
+    """
     if is_windows:
         _copy_cmd(
             invoker_label,

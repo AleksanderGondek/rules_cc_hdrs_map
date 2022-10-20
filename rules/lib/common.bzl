@@ -1,4 +1,4 @@
-""" To be described. """
+""" Module encompassing `cc_common`-related operations (i.e. compilation). """
 
 load(
     "@bazel_tools//tools/build_defs/cc:action_names.bzl",
