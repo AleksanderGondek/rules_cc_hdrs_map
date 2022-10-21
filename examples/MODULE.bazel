@@ -5,10 +5,10 @@ module(
 
 bazel_dep(name = "rules_cc", version = "0.0.0")
 
-RULES_CC_COMMIT = "2f8c04c04462ab83c545ab14c0da68c3b4c96191"
+RULES_CC_COMMIT = "18fc41cd0a872cf647dd866908abe8acc29b7345"
 
 archive_override(
-    integrity = "sha256-SusQLvvPrVCYV9fLnFRWcx6M5Wa/vylgKGouwjZ5bMM=",
+    integrity = "sha256-cEJLn4X29/P86hAgkWwqvaijIEkFjsWpkft0MMh/IWw=",
     module_name = "rules_cc",
     strip_prefix = "rules_cc-%s" % RULES_CC_COMMIT,
     urls = ["https://github.com/bazelbuild/rules_cc/archive/%s.tar.gz" % RULES_CC_COMMIT],
