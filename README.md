@@ -6,6 +6,45 @@ This project extends Bazel C/CPP build capabilities with headers map implementat
 
 See [examples](/examples) for how to use `rules_cc_hdrs_map` (and why).
 
+## Table of Contents
+- [Shortest possible example](#shortest-possible-example)
+- [Rules overview](#rules-overview)
+- [What issue is being addressed?](#what-issue-is-being-addressed)
+- [How the issue is being addressed?](#how-the-issue-is-being-addressed)
+
+## Shortest possible example
+
+```
+$ cat foo.hpp
+const std::string GREETINGS = "Hello";
+
+$ cat foo.cpp
+#include "bar/foo.h"
+...
+
+$ cat BUILD.bazel
+load("@rules_cc_hdrs_map//rules:cc_bin.bzl", "cc_bin")
+
+cc_bin(
+    name = "foo",
+    srcs = [
+        "foo.cpp",
+    ],
+    hdrs_map = {
+        "**/foo.hpp": ["bar/{filename}"],
+    }
+)
+
+```
+
+## Rules overview
+
+* [cc_hdrs](/docs/cc_hdrs_docs.md) - groups header files and enriches them with hdrs_map. Can be used with `rules_cc` targets the same way a filegroup can, although header map data will be lost.
+* [cc_bin](/docs/cc_bin_docs.md) - equivalent of `cc_binary`, able to properly use hdrs_map data.
+* [cc_so](/docs/cc_so_docs.md) - equivalent of `cc_library`, able to properly use hdrs_map data. Will only output a shared object library. Can be used with `rules_cc` targets the same way `cc_lib` can.
+* [cc_archive](/docs/cc_archive_docs.md) - equivalent of `cc_library`, able to properly use hdrs_map data. Will only output an archive object. Can be used with `rules_cc` targets the same way `cc_lib` can.
+
+
 ## What issue is being addressed?
 
 _Scenario_: we want to build a C/CPP codebase with Bazel. 
@@ -27,11 +66,3 @@ The concept of header map is introduced - it is a dictionary, containing mapping
 Said header map is propagated across all compatible C/C++ rules (meaning those from this WORKSPACE) and is being merged with all other header maps present. 
 
 No action is being performed up until the moment of compilation - header mappings, resulting from the header map dictionary, are created only for the purposes of compilation and are _NOT_ part of any rule output. This ensures the impact for the Bazel cache is minimal and the compatibility with original `rules_cc`.
-
-## Broad overview of the rules
-
-* [cc_hdrs](/docs/cc_hdrs_docs.md) - groups header files and enriches them with hdrs_map. Can be used with `rules_cc` targets the same way a filegroup can, although header map data will be lost.
-* [cc_bin](/docs/cc_bin_docs.md) - equivalent of `cc_binary`, able to properly use hdrs_map data.
-* [cc_so](/docs/cc_so_docs.md) - equivalent of `cc_library`, able to properly use hdrs_map data. Will only output a shared object library. Can be used with `rules_cc` targets the same way `cc_lib` can.
-* [cc_archive](/docs/cc_archive_docs.md) - equivalent of `cc_library`, able to properly use hdrs_map data. Will only output an archive object. Can be used with `rules_cc` targets the same way `cc_lib` can.
-
