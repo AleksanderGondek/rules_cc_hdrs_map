@@ -28,6 +28,7 @@ load("@rules_cc_hdrs_map//rules:cc_bin.bzl", "cc_bin")
 cc_bin(
     name = "foo",
     srcs = [
+        "foo.hpp",
         "foo.cpp",
     ],
     hdrs_map = {
