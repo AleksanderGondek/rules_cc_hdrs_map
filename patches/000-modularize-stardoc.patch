@@ -1,13 +1,13 @@
 diff --git MODULE.bazel MODULE.bazel
 new file mode 100644
-index 0000000..b68017a
+index 0000000..34e651e
 --- /dev/null
 +++ MODULE.bazel
 @@ -0,0 +1,8 @@
 +module(
 +    name = "stardoc",
 +    compatibility_level = 1,
-+    version = "0.5.2",
++    version = "0.5.3",
 +)
 +
 +bazel_dep(name = "bazel_skylib", version = "1.2.1")

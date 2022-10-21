@@ -1,6 +1,6 @@
 module(
     name = "rules_cc_hdrs_map_examples",
-    version = "0.0.1",
+    version = "0.0.2",
 )
 
 bazel_dep(name = "rules_cc", version = "0.0.0")
