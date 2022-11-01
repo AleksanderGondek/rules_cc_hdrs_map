@@ -16,14 +16,3 @@ bazel_dep(
     version = "0.5.3",
 )
 
-# TODO: Stardoc fails when running with bzlmod
-# archive_override(
-#   integrity = "sha256-BftXu0rWijYEcEIKO29TF+T3IoOavFsX7E747UZaqkc=",
-#   module_name = "stardoc",
-#   patches = [
-#       "//:patches/000-modularize-stardoc.patch",
-#   ],
-#   urls = ["https://github.com/bazelbuild/stardoc/releases/download/0.5.2/stardoc-0.5.2.tar.gz"],
-# )
-# stardoc_ext = use_extension("@stardoc//:setup.bzl", "stardoc_ext")
-# use_repo(stardoc_ext, "rules_java")
