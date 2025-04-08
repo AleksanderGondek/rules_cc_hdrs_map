@@ -1,37 +1,5 @@
-workspace(
-    name = "rules_cc_hdrs_map",
-)
+# This WORKSPACE file will be used if bzlmod is disabled
+workspace(name = "rules_cc_hdrs_map")
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
-# This project does not rely on any dependencies to function properly.
-# Entries below are solely for the purposes of development.
-http_archive(
-    name = "bazel_skylib",
-    sha256 = "f7be3474d42aae265405a592bb7da8e171919d74c16f082a5457840f06054728",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/1.2.1/bazel-skylib-1.2.1.tar.gz",
-        "https://github.com/bazelbuild/bazel-skylib/releases/download/1.2.1/bazel-skylib-1.2.1.tar.gz",
-    ],
-)
-
-load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
-bazel_skylib_workspace()
-
-# Author's soap box:
-# I need to keep this named 'stardoc' as it should match the dep download namming from bzlmod
-# https://github.com/bazelbuild/bazel-central-registry/pull/25/files
-# Not a fan.
-http_archive(
-    name = "stardoc",
-    sha256 = "05fb57bb4ad68a360470420a3b6f5317e4f722839abc5b17ec4ef8ed465aaa47",
-    urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/stardoc/releases/download/0.5.2/stardoc-0.5.2.tar.gz",
-        "https://github.com/bazelbuild/stardoc/releases/download/0.5.2/stardoc-0.5.2.tar.gz",
-    ],
-)
-
-load("@stardoc//:setup.bzl", "stardoc_repositories")
-
-stardoc_repositories()
+# ! Important !
+# Development of 'rules_cc_hdrs_map' without bzlmod enabled is not supported!

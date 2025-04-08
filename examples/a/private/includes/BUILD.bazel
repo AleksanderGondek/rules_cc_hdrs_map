@@ -1,6 +1,6 @@
 """ Ensure this is a separate package """
 
-load("@rules_cc_hdrs_map//rules:cc_hdrs.bzl", "cc_hdrs")
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_hdrs")
 
 cc_hdrs(
     name = "a-consts-headers",
@@ -28,7 +28,7 @@ cc_hdrs(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@boost//:math",
+        "@boost.math",
     ],
 )
 

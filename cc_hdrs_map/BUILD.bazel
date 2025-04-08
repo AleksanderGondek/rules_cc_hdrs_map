@@ -1,0 +1,29 @@
+""" This package contains all definitions that should be publicly accessible. """
+
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "defs.bzl",
+    "workspace_deps.bzl",
+])
+
+bzl_library(
+    name = "defs",
+    srcs = ["defs.bzl"],
+    deps = [
+        "//cc_hdrs_map/actions:defs",
+        "//cc_hdrs_map/private:cc_archive",
+        "//cc_hdrs_map/private:cc_bin",
+        "//cc_hdrs_map/private:cc_hdrs",
+        "//cc_hdrs_map/private:cc_so",
+        "//cc_hdrs_map/providers:hdrs_map",
+    ],
+)
+
+bzl_library(
+    name = "workspace_deps",
+    srcs = ["workspace_deps.bzl"],
+    deps = [],
+)

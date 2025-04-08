@@ -1,0 +1,50 @@
+""" This package contains defintions of rules. """
+
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+bzl_library(
+    name = "attrs",
+    srcs = ["attrs.bzl"],
+    deps = [],
+)
+
+bzl_library(
+    name = "cc_archive",
+    srcs = ["cc_archive.bzl"],
+    deps = [
+        "//cc_hdrs_map/actions:defs",
+        "//cc_hdrs_map/private:attrs",
+        "//cc_hdrs_map/providers:hdrs_map",
+    ],
+)
+
+bzl_library(
+    name = "cc_bin",
+    srcs = ["cc_bin.bzl"],
+    deps = [
+        "//cc_hdrs_map/actions:defs",
+        "//cc_hdrs_map/private:attrs",
+    ],
+)
+
+bzl_library(
+    name = "cc_hdrs",
+    srcs = ["cc_hdrs.bzl"],
+    deps = [
+        "//cc_hdrs_map/actions:defs",
+        "//cc_hdrs_map/private:attrs",
+        "//cc_hdrs_map/providers:hdrs_map",
+    ],
+)
+
+bzl_library(
+    name = "cc_so",
+    srcs = ["cc_so.bzl"],
+    deps = [
+        "//cc_hdrs_map/actions:defs",
+        "//cc_hdrs_map/private:attrs",
+        "//cc_hdrs_map/providers:hdrs_map",
+    ],
+)

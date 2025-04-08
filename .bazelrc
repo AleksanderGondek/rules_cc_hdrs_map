@@ -1,6 +1,13 @@
-try-import %workspace%/.output-bazelrc
+# All default settings
+import %workspace%/.bazelrcs/common.bazelrc
 
-# Cannot do the following:
-# startup --output_base=%workspace%/.bazel-output-base
-# build --disk_cache=%workspace%/.bazel-disk-cache
-# as Bazel will not resolve %workspace%
+# Project's author convinence
+# --bazelrc=.bazelrcs/remote-execution.bazelrc
+# Enablement will break stardoc related rules,
+# because they rely on JavaToolchain which has
+# implict depenency on libz in the execution environment
+# - something that starterkit does not provide.
+# try-import %workspace%/.bazelrcs/remote-execution.bazelrc
+
+# 'github.com/f0rmiga/gcc-toolchain' is not bzlmod ready
+common --enable_workspace # gcc_toolchain made me do it

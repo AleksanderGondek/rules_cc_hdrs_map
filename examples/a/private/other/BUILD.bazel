@@ -1,4 +1,4 @@
-""" To be described. """
+""" This package exposes a raw file. """
 
 exports_files([
     "a-consts-four.hpp",

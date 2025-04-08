@@ -1,19 +1,19 @@
 {
-  description = "Escape weird includes path hell with header maps";
+  description = "rules_cc_hdrs_map developer environment.";
 
-  inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
-      flake = false;
+  # As personally, I am not too keen on the flake mechanism
+  # this files is a simple shim, created for compatiblity.
+  # All actual logic is bound to default.nix.
+  inputs = {};
+
+  outputs = {self}: let
+    supportedSystems = ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"];
+    forSupportedSystems = f: builtins.map f supportedSystems;
+    defineDevShells = system: {
+      name = system;
+      value = {default = (import ./default.nix {localSystem = system;}).devShell;};
     };
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05";
-    nixpkgs_latest.url = "github:NixOS/nixpkgs/nixos-unstable";
+  in {
+    devShells = builtins.listToAttrs (forSupportedSystems defineDevShells);
   };
-
-  outputs = { self, nixpkgs_latest, nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system: {
-      "nixpkgs" = import nixpkgs { inherit system; };
-      "nixpkgs_latest" = import nixpkgs_latest { inherit system; };
-    });
 }

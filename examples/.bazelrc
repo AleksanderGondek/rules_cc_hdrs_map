@@ -1,1 +1,9 @@
-../.bazelrc
+# All default settings
+import %workspace%/.bazelrcs/common.bazelrc
+
+# Project's author convinence
+# --bazelrc=.bazelrcs/remote-execution.bazelrc
+# try-import %workspace%/.bazelrcs/remote-execution.bazelrc
+
+# 'github.com/f0rmiga/gcc-toolchain' is not bzlmod ready
+common --enable_workspace # gcc_toolchain made me do it

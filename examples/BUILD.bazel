@@ -1,1 +1,15 @@
-""" rules_cc_hdrs_map_examples. """
+# This is /dev/null platform that is purposefully unusable
+platform(name = "DEV_NULL_PLATFORM")
+
+platform(
+    name = "x86_64_linux_remote",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+    exec_properties = {
+        "OSFamily": "Linux",
+        "container-image": "docker://harbor.apps.morrigna.rules-nix.build/explore-bzl/ash-bash-coreutils-i686-cc-x86_64-cc:myl0xwv1z442sc5ci982qny9lb0c0giv",
+    },
+    visibility = ["//visibility:public"],
+)

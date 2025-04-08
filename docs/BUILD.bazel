@@ -1,89 +1,14 @@
-load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
-load("@bazel_skylib//rules:write_file.bzl", "write_file")
-load("@stardoc//stardoc:stardoc.bzl", "stardoc")
+""" This package defines the documentation-related targets. """
 
-RULES_CC_HDRS_MAP_NAMES = [
-    "bin",
-    "hdrs",
-    "so",
-    "archive",
-]
+load("@aspect_bazel_lib//lib:docs.bzl", "stardoc_with_diff_test", "update_docs")
 
-bzl_library(
-    name = "bazel_tools_modules",
-    srcs = [
-        "@bazel_tools//tools/build_defs/cc:action_names.bzl",
-        "@bazel_tools//tools/cpp:toolchain_utils.bzl",
-    ],
+package(default_visibility = ["//:__subpackages__"])
+
+stardoc_with_diff_test(
+    name = "README",
+    bzl_library_target = "//cc_hdrs_map:defs",
 )
 
-bzl_library(
-    name = "rules_cc_hdrs_map_lib_modules",
-    srcs = [
-        "//rules:lib/common.bzl",
-        "//rules:lib/copy_file.bzl",
-        "//rules:lib/hdrs_map.bzl",
-        "//rules:lib/rules_attrs.bzl",
-    ],
-)
-
-bzl_library(
-    name = "rules_cc_hdrs_map_modules",
-    srcs = [
-        "//rules:cc_%s.bzl" % name
-        for name in RULES_CC_HDRS_MAP_NAMES
-    ],
-    deps = [
-        ":bazel_tools_modules",
-        ":rules_cc_hdrs_map_lib_modules",
-    ],
-)
-
-[
-    stardoc(
-        name = "cc_%s_docs" % rule_name,
-        out = "cc_%s_docs.md" % rule_name,
-        input = "//rules:cc_%s.bzl" % rule_name,
-        symbol_names = ["cc_%s" % rule_name],
-        deps = [
-            ":rules_cc_hdrs_map_modules",
-        ],
-    )
-    for rule_name in RULES_CC_HDRS_MAP_NAMES
-]
-
-[
-    diff_test(
-        name = "check_%s_docs.md" % rule_name,
-        failure_message = "Please ensure the generated documentation is up to date",
-        file1 = "//docs:cc_%s_docs.md" % rule_name,
-        file2 = "cc_%s_docs.md" % rule_name,
-    )
-    for rule_name in RULES_CC_HDRS_MAP_NAMES
-]
-
-write_file(
-    name = "create-update-docs.sh",
-    out = "update-docs.sh",
-    content = [
-        "#!/usr/bin/env bash",
-        "set -euo pipefail",
-        "echo $PWD",
-        "ls -lah",
-    ] + [
-        "cp -fv ./docs/cc_{x}_docs.md $BUILD_WORKSPACE_DIRECTORY/docs/cc_{x}_docs.md".format(
-            x = rule_name,
-        )
-        for rule_name in RULES_CC_HDRS_MAP_NAMES
-    ],
-)
-
-sh_binary(
+update_docs(
     name = "update",
-    srcs = [":create-update-docs.sh"],
-    data = [
-        ":cc_%s_docs.md" % rule_name
-        for rule_name in RULES_CC_HDRS_MAP_NAMES
-    ],
 )

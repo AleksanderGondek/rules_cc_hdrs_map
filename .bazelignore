@@ -1,5 +1,4 @@
-.bazel-output-base
-.bazel-disk-cache
-.output-bazelrc
-bazel-output
+.bazel
+.bazel-user-root
+# Weird that it does not break on the WORKSPACE on its own
 examples

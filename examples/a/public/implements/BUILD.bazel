@@ -1,8 +1,6 @@
 """ Simple examples. """
 
-load("@rules_cc_hdrs_map//rules:cc_bin.bzl", "cc_bin")
-load("@rules_cc_hdrs_map//rules:cc_so.bzl", "cc_so")
-load("@rules_cc_hdrs_map//rules:cc_archive.bzl", "cc_archive")
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_archive", "cc_bin", "cc_so")
 
 cc_so(
     name = "list-cheeses",

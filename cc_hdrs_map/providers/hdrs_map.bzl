@@ -1,17 +1,17 @@
 """ Module describing HdrsMapInfo provider and common operations on it. """
 
 load(
-    "@rules_cc_hdrs_map//rules:lib/copy_file.bzl",
+    "@rules_cc_hdrs_map//cc_hdrs_map/actions:copy_file.bzl",
     "copy_file",
 )
 
 HdrsMapInfo = provider(
-    doc = "",
+    doc = "Represents grouping of CC header files, alongsdie with their intended include paths.",
     fields = {
-        "public_hdrs": "To be described",
-        "private_hdrs": "To be described",
-        "hdrs_map": "To be described, string_list_dict",
-        "deps": "To be described",
+        "public_hdrs": "Headers which should be exposed after the compilation is done.",
+        "private_hdrs": "Headers that should not be propagated after the compilation.",
+        "hdrs_map": "(string_list_dict) which represents mapping between pattern and its intended include paths (i.e. \"**/foo.hpp\": [\"bar/{filename}\"])",
+        "deps": "CcInfo-aware dependencies that need to be propagated, for this provider to compile and link",
     },
 )
 
@@ -170,7 +170,6 @@ def glob_match(
 def materialize_hdrs_mapping(
         invoker_label,
         actions,
-        is_windows,
         hdrs_map,
         hdrs):
     """ Materialize the expected file hierarchy.
@@ -181,7 +180,6 @@ def materialize_hdrs_mapping(
     Args:
         invoker_label: label of rule invoking the method
         actions: bazel ctx.actions
-        is_windows: steers execution of windows/unix copying mechanism.
         hdrs_map: HdrsMapInfo representing the headers mapping
         hdrs: list of all header files that should be matched against the map
 
@@ -189,7 +187,7 @@ def materialize_hdrs_mapping(
         (materialized_include_path, materialized_hdrs_files): tuple of include_path to
         the created header files dir and list of paths to all header files created.
     """
-    HEADERS_MAP_DIR_NAME = "vhm"
+    HEADERS_MAP_DIR_NAME = invoker_label.name + ".vhm"
     materialized_include_path = None
     materialized_hdrs_files = []
 
@@ -211,9 +209,7 @@ def materialize_hdrs_mapping(
                     mapping_path,
                 )
                 copy_file(
-                    invoker_label = invoker_label,
-                    actions = actions,
-                    is_windows = is_windows,
+                    ctx_actions = actions,
                     src = header_file,
                     dst = mapping_file,
                 )
@@ -263,7 +259,7 @@ def merge_hdrs_map(
 
     return final_mappings
 
-def merge_hdr_maps_info_from_deps(
+def merge_hdrs_maps_info_from_deps(
         deps,
         hdrs_map):
     """ Aggregate any HdrsMapInfo from the dependencies.
