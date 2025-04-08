@@ -1,52 +1,19 @@
 module(
     name = "rules_cc_hdrs_map_examples",
-    version = "0.0.3",
+    version = "0.9.0",
 )
 
-bazel_dep(name = "rules_cc", version = "0.0.0")
+bazel_dep(name = "rules_cc_hdrs_map", version = "0.9.0")
+bazel_dep(name = "rules_cc", version = "0.1.1")
+bazel_dep(name = "platforms", version = "0.0.11")
 
-RULES_CC_COMMIT = "18fc41cd0a872cf647dd866908abe8acc29b7345"
+# The gcc_toolchain requires skylib
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
 
-archive_override(
-    integrity = "sha256-cEJLn4X29/P86hAgkWwqvaijIEkFjsWpkft0MMh/IWw=",
-    module_name = "rules_cc",
-    strip_prefix = "rules_cc-%s" % RULES_CC_COMMIT,
-    urls = ["https://github.com/bazelbuild/rules_cc/archive/%s.tar.gz" % RULES_CC_COMMIT],
-)
+# Some examples depend on boost, to prove interopability
+bazel_dep(name = "boost.math", version = "1.87.0")
 
-bazel_dep(name = "com_github_nelhage_rules_boost", version = "0.0.0")
-
-RULES_BOOST_COMMIT = "ea2991b24d68439121130845f7dbef8d1dd383d2"
-
-archive_override(
-    integrity = "sha256-DbFMfresx4y+YBpFDXFh5JLX/8mBUHdc/vbizfXsfmo=",
-    module_name = "com_github_nelhage_rules_boost",
-    patches = [
-        "//:patches/000-modularize-rules-boost.patch",
-    ],
-    strip_prefix = "rules_boost-%s" % RULES_BOOST_COMMIT,
-    urls = [
-        "https://github.com/nelhage/rules_boost/archive/%s.tar.gz" % RULES_BOOST_COMMIT,
-    ],
-)
-
-boost_deps_ext = use_extension("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps_ext")
-
-use_repo(boost_deps_ext, "bazel_skylib")
-
-use_repo(boost_deps_ext, "net_zlib_zlib")
-
-use_repo(boost_deps_ext, "org_bzip_bzip2")
-
-use_repo(boost_deps_ext, "org_lzma_lzma")
-
-use_repo(boost_deps_ext, "com_github_facebook_zstd")
-
-use_repo(boost_deps_ext, "boost")
-
-use_repo(boost_deps_ext, "openssl")
-
-bazel_dep(name = "rules_cc_hdrs_map", version = "0.0.0")
+register_execution_platforms("@rules_cc_hdrs_map_examples//:x86_64_linux_remote")
 
 local_path_override(
     module_name = "rules_cc_hdrs_map",

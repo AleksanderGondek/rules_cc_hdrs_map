@@ -1,2 +1,28 @@
-# When Bzlmod is enabled, this file replaces the content of the original WORKSPACE
-# and makes sure no WORKSPACE prefix or suffix are added when Bzlmod is enabled.
+# This WORKSPACE file will be used if bzlmod is enabled
+workspace(name = "rules_cc_hdrs_map")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "gcc_toolchain",
+    integrity = "sha256-iqcSkkfwbhKrNWeX957qE/I4fzKuj3GEB06OZAJ5Apk=",
+    patch_args = ["-p1"],
+    patches = ["@rules_cc_hdrs_map//patches/github.com-f0rmiga-gcc-toolchain:0001-fix-toolchain-allow-empty-include-globs.patch"],
+    strip_prefix = "gcc-toolchain-0.6.0",
+    urls = ["https://github.com/f0rmiga/gcc-toolchain/archive/refs/tags/0.6.0.tar.gz"],
+)
+
+load("@gcc_toolchain//toolchain:defs.bzl", "ARCHS", "gcc_register_toolchain")
+
+gcc_register_toolchain(
+    name = "gcc_toolchain_x86_64",
+    target_arch = ARCHS.x86_64,
+    extra_cxxflags = [
+        "-fdiagnostics-color=never",
+        "-nostdinc",
+        "-nostdinc++",
+        "-B%workspace%/bin",
+        # Force C++14
+        "-std=c++14",
+    ],
+)

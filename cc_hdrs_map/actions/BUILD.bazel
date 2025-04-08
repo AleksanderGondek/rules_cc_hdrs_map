@@ -1,0 +1,60 @@
+""" This package contains the subrules with CC compilation phases. """
+
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+bzl_library(
+    name = "defs",
+    srcs = ["defs.bzl"],
+    deps = [
+        ":compile",
+        ":link_to_archive",
+        ":link_to_binary",
+        ":link_to_so",
+    ],
+)
+
+bzl_library(
+    name = "compile",
+    srcs = ["compile.bzl"],
+    deps = [
+        "//cc_hdrs_map/providers:hdrs_map",
+        "@rules_cc//cc:find_cc_toolchain_bzl",
+        "@rules_cc//cc/common",
+    ],
+)
+
+bzl_library(
+    name = "copy_file",
+    srcs = ["copy_file.bzl"],
+    deps = [],
+)
+
+bzl_library(
+    name = "link_to_archive",
+    srcs = ["link_to_archive.bzl"],
+    deps = [
+        "@rules_cc//cc:action_names_bzl",
+        "@rules_cc//cc:find_cc_toolchain_bzl",
+        "@rules_cc//cc/common",
+    ],
+)
+
+bzl_library(
+    name = "link_to_binary",
+    srcs = ["link_to_binary.bzl"],
+    deps = [
+        "@rules_cc//cc:find_cc_toolchain_bzl",
+        "@rules_cc//cc/common",
+    ],
+)
+
+bzl_library(
+    name = "link_to_so",
+    srcs = ["link_to_so.bzl"],
+    deps = [
+        "@rules_cc//cc:find_cc_toolchain_bzl",
+        "@rules_cc//cc/common",
+    ],
+)

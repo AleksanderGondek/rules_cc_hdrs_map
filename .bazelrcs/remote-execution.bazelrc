@@ -1,0 +1,4 @@
+import %workspace%/.bazelrcs/rbe.bazelrc
+
+# TODO: make it nicer
+build --remote_executor=grpc://192.168.66.1:30430

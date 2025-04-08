@@ -1,6 +1,3 @@
-.bazel-output-base
-.bazel-disk-cache
-.output-bazelrc
-bazel-*
-examples/.output-bazelrc
+.bazel
+.bazel-*
 result

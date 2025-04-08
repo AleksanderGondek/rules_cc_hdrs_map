@@ -1,0 +1,25 @@
+From 4b029ed60a90edc103485c5ca76849b53f0fb0e4 Mon Sep 17 00:00:00 2001
+From: Aleksander Gondek <gondekaleksander@protonmail.com>
+Date: Wed, 16 Apr 2025 12:36:19 +0200
+Subject: [PATCH] fix: toolchain allow empty include globs
+
+---
+ toolchain/defs.bzl | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/toolchain/defs.bzl b/toolchain/defs.bzl
+index 372213b..8fee5f7 100644
+--- a/toolchain/defs.bzl
++++ b/toolchain/defs.bzl
+@@ -438,7 +438,7 @@ filegroup(
+         "{platform_directory_glob_pattern}/include/c++/*/**",
+         "{platform_directory_glob_pattern}/include/c++/*/{platform_directory_glob_pattern}/**",
+         "{platform_directory_glob_pattern}/include/c++/*/backward/**",
+-    ]),
++    ], allow_empty=True),
+     visibility = ["//visibility:public"],
+ )
+ 
+-- 
+2.47.2
+

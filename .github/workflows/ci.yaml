@@ -1,67 +1,52 @@
-name: "continous-integration"
+name: "ci"
+run-name: "Validate commit ${{ github.sha }}"
+
 on:
   pull_request:
+    branches: ["master"]
   push:
-    branches:
-      - "master"
+    branches: ["master", "v0.1.0"]
+
 jobs:
-  bzl-build:
-    name: Run bazel build
-    runs-on: ubuntu-latest
+  validate:
+    name: "validate"
+    # Note: Using bubblwrap on 24.04 requires some work!
+    runs-on: ["ubuntu-24.04"]
+    defaults:
+      run:
+        shell: nix-shell ./non-nixos-shell.nix --run "set -eo pipefail; source {0}"
+ 
     steps:
-    - uses: actions/checkout@v3.0.2
-       # Flakes do not like shallow clones
-      with:
-        fetch-depth: 0
-    - uses: cachix/install-nix-action@v15
-      with:
-        install_url: https://releases.nixos.org/nix/nix-2.8.1/install
-        extra_nix_config: |
-          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-    - run: nix-shell --pure --run 'bazel build //...'
-    # https://github.com/bazelbuild/stardoc/issues/117
-    # - run: nix-shell --pure --run 'bazel build //... --experimental_enable_bzlmod'
-  bzl-test:
-    name: Run bazel test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3.0.2
-       # Flakes do not like shallow clones
-      with:
-        fetch-depth: 0
-    - uses: cachix/install-nix-action@v15
-      with:
-        install_url: https://releases.nixos.org/nix/nix-2.8.1/install
-        extra_nix_config: |
-          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-    - run: nix-shell --pure --run 'bazel test //...'
-    # https://github.com/bazelbuild/stardoc/issues/117
-    # - run: nix-shell --pure --run 'bazel test //... --experimental_enable_bzlmod'
-  bzl-build-examples:
-    name: Build examples workspace
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3.0.2
-       # Flakes do not like shallow clones
-      with:
-        fetch-depth: 0
-    - uses: cachix/install-nix-action@v15
-      with:
-        install_url: https://releases.nixos.org/nix/nix-2.8.1/install
-        extra_nix_config: |
-          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-    - run: nix-shell --pure --run 'cd examples && bazel build //...'
-  bzl-build-examples-bzlmod:
-    name: Build examples workspace with bzlmod enabled
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3.0.2
-       # Flakes do not like shallow clones
-      with:
-        fetch-depth: 0
-    - uses: cachix/install-nix-action@v15
-      with:
-        install_url: https://releases.nixos.org/nix/nix-2.8.1/install
-        extra_nix_config: |
-          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
-    - run: nix-shell --pure --run 'cd examples && bazel build //... --experimental_enable_bzlmod'
+      - name: "Install nix"
+        uses: cachix/install-nix-action@v31
+        # with:
+          # This should not be here
+          # as it introduces the possibility of someone
+          # loading the wrong dependency by accident.
+          # However, lack of this entry,
+          # makes the github action log output have
+          # warnings regarding this, which makes
+          # debuging harder if someone does not know 
+          # it can be ignored. 
+          # nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: "Checkout HEAD of target branch"
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+          fetch-tags: true
+          # This is important, we do not do merges
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: "Validate the linters requirements"
+        run: |2
+          ./pre-commit.hook.sh
+
+      - name: "Validate the project tests"
+        run: |2
+          bazel test //... && bazel shutdown
+
+      - name: "Validate the examples directory [e2e tests]"
+        run: |2
+          cd examples && bazel build //... && bazel shutdown

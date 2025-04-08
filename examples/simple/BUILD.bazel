@@ -1,0 +1,38 @@
+""" This package contains the simplest example of usage of cc_hdrs_map rules. """
+
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_archive", "cc_bin", "cc_hdrs", "cc_so")
+
+cc_hdrs(
+    name = "messenger-headers",
+    hdrs_map = {
+        "**/messenger.hpp": ["messenger/{filename}"],
+    },
+    public_hdrs = ["messenger.hpp"],
+)
+
+cc_archive(
+    name = "archive",
+    srcs = ["messenger.cpp"],
+    deps = [
+        ":messenger-headers",
+    ],
+)
+
+cc_bin(
+    name = "main",
+    srcs = ["main.cpp"],
+    hdrs_map = {
+        "**/messenger.hpp": ["jolly/{filename}"],
+    },
+    deps = [
+        ":libMessenger",
+    ],
+)
+
+cc_so(
+    name = "libMessenger",
+    srcs = ["messenger.cpp"],
+    deps = [
+        ":messenger-headers",
+    ],
+)

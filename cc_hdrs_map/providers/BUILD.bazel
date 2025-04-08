@@ -1,0 +1,11 @@
+""" This package contains modules with rule-specific providers. """
+
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+
+package(default_visibility = ["//:__subpackages__"])
+
+bzl_library(
+    name = "hdrs_map",
+    srcs = ["hdrs_map.bzl"],
+    deps = ["//cc_hdrs_map/actions:copy_file"],
+)
