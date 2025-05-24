@@ -12,6 +12,7 @@ on:
       - "CHANGELOG.md"
       - "README.md"
       - "docs/README.md"
+      - "examples/MODULE.bazel"
 # Author soapbox:
 # GitHub actions do not honor combination of branches and tags-ignore as logical AND
 # statement - instead, it treats it as an OR requirements. This is counter-intuitive

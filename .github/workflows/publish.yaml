@@ -48,18 +48,20 @@ jobs:
           # This is important, we do not do merges
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: "Get project meta"
-        id: get_project_meta
+      - name: "Generate files to be published"
+        id: gen_files_to_publish
         shell: bash
         run: |2
-          export version="v$(nix-shell ./non-nixos-shell.nix --run 'cog get-version 2>/dev/null')"
+          export outs="$(nix-shell ./non-nixos-shell.nix --run 'scripts/gen-release-artifacts.bash')"
+          echo "outs=${outs}" >> "$GITHUB_OUTPUT"
+          export version="$(cat ${outs}/version)"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-          nix-shell ./non-nixos-shell.nix --run "cog changelog --at ${version}" >./release-notes.md 2>/dev/null
 
       - name: "Create GitHub release"
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.gh_pat }}
-          bodyFile: ./release-notes.md
+          artifacts: ${{ steps.gen_files_to_publish.outputs.outs}}/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.tar.gz
+          bodyFile: ${{ steps.gen_files_to_publish.outputs.outs}}/release-notes.md
           makeLatest: "legacy"
-          tag: ${{ steps.get_project_meta.outputs.version }}
+          tag: ${{ steps.gen_files_to_publish.outputs.version }}
