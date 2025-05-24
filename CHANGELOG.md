@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.2.0 - 2025-05-24
+#### Build system
+- **(cog)** keep the examples version synced - (4df18f8) - Aleksander Gondek
+#### Continuous Integration
+- **(gh-actions)** automatically create release archive - (454d15d) - Aleksander Gondek
+#### Features
+- **(update)** dependencies to latest as of 2025-05-24 - (3d4cf12) - Aleksander Gondek
+
+- - -
+
 ## v0.1.0 - 2025-04-30
 #### Features
 - cc compilation/linking as bazel subrules - (7bc201b) - Aleksander Gondek
