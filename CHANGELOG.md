@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.3.0 - 2025-07-10
+#### Bug Fixes
+- **(bazelrc)** disable repo_contents_cache - (14d1c1f) - Aleksander Gondek
+#### Features
+- **(update)** dependencies to latest as of 2025-07-10 - (4ffe6b0) - Aleksander Gondek
+
+- - -
+
 ## v0.2.0 - 2025-05-24
 #### Build system
 - **(cog)** keep the examples version synced - (4df18f8) - Aleksander Gondek
