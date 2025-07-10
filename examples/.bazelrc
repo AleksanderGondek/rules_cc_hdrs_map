@@ -7,3 +7,6 @@ import %workspace%/.bazelrcs/common.bazelrc
 
 # 'github.com/f0rmiga/gcc-toolchain' is not bzlmod ready
 common --enable_workspace # gcc_toolchain made me do it
+
+# Until https://github.com/bazelbuild/bazel/issues/26384 is fixed
+common --repo_contents_cache=''
