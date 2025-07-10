@@ -15,6 +15,8 @@
     bazel-buildtools
     cocogitto
     findutils
+    # TMP
+    jdk
     git
     helix
     niv
