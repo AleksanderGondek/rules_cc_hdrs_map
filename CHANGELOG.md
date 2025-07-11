@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.4.0 - 2025-07-11
+#### Features
+- **(cc_so)** implement actual linking with cutoff - (3d2520b) - Aleksander Gondek
+
+- - -
+
 ## v0.3.1 - 2025-07-11
 #### Bug Fixes
 - **(hdrs_map.bzl)** pattern match and actions duplication - (4c266e5) - Aleksander Gondek
