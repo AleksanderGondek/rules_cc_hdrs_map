@@ -203,7 +203,8 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so")
 
 cc_so(<a href="#cc_so-name">name</a>, <a href="#cc_so-deps">deps</a>, <a href="#cc_so-srcs">srcs</a>, <a href="#cc_so-additional_linker_inputs">additional_linker_inputs</a>, <a href="#cc_so-alwayslink">alwayslink</a>, <a href="#cc_so-conlyopts">conlyopts</a>, <a href="#cc_so-copts">copts</a>, <a href="#cc_so-cxxopts">cxxopts</a>, <a href="#cc_so-defines">defines</a>,
       <a href="#cc_so-dynamic_deps">dynamic_deps</a>, <a href="#cc_so-hdrs_map">hdrs_map</a>, <a href="#cc_so-include_prefix">include_prefix</a>, <a href="#cc_so-includes">includes</a>, <a href="#cc_so-link_extra_lib">link_extra_lib</a>, <a href="#cc_so-linkopts">linkopts</a>, <a href="#cc_so-linkstatic">linkstatic</a>,
-      <a href="#cc_so-local_defines">local_defines</a>, <a href="#cc_so-malloc">malloc</a>, <a href="#cc_so-nocopts">nocopts</a>, <a href="#cc_so-private_hdrs">private_hdrs</a>, <a href="#cc_so-public_hdrs">public_hdrs</a>, <a href="#cc_so-reexport_deps">reexport_deps</a>, <a href="#cc_so-strip_include_prefix">strip_include_prefix</a>)
+      <a href="#cc_so-local_defines">local_defines</a>, <a href="#cc_so-malloc">malloc</a>, <a href="#cc_so-nocopts">nocopts</a>, <a href="#cc_so-private_hdrs">private_hdrs</a>, <a href="#cc_so-public_hdrs">public_hdrs</a>, <a href="#cc_so-reexport_deps">reexport_deps</a>, <a href="#cc_so-shared_lib_name">shared_lib_name</a>,
+      <a href="#cc_so-strip_include_prefix">strip_include_prefix</a>)
 </pre>
 
 Produce shared object library.
@@ -239,6 +240,7 @@ to unify handling of dependencies that are equipped with CcInfo and CcSharedLibr
 | <a id="cc_so-private_hdrs"></a>private_hdrs |  List of headers that CANNOT be included by dependent rules. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_so-public_hdrs"></a>public_hdrs |  List of headers that may be included by dependent rules transitively. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_so-reexport_deps"></a>reexport_deps |  -   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so-shared_lib_name"></a>shared_lib_name |  This allows to override the library name. <A further description of how it deals with custom suffixes to come>   | String | optional |  `""`  |
 | <a id="cc_so-strip_include_prefix"></a>strip_include_prefix |  The prefix to strip from the paths of the headers of this rule. When set, the headers in the hdrs attribute of this rule are accessible at their path with this prefix cut off.<br><br>If it's a relative path, it's taken as a package-relative one. If it's an absolute one, it's understood as a repository-relative path.<br><br>The prefix in the include_prefix attribute is added after this prefix is stripped.   | String | optional |  `""`  |
 
 

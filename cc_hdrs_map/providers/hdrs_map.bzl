@@ -148,7 +148,12 @@ def glob_match(
             pi = pi + 1
             p = pattern[pi] if pi < len(pattern) else None
 
+        elif p != t and ti < len(text) and pi > 0:
+            # Partial match with more text to follow
+            pi = 0
+            p = pattern[pi]
             # Everything else is a non-match
+
         else:
             return False
 
@@ -193,6 +198,9 @@ def materialize_hdrs_mapping(
 
     for pattern, mappings in hdrs_map.items():
         for header_file in hdrs:
+            if ".vhm" in header_file.path:
+                # This is important! Improve the check
+                continue
             if not glob_match(pattern, header_file.path):
                 continue
 
