@@ -1,0 +1,32 @@
+""" This package contains the simplest example of usage of cc_hdrs_map rules. """
+
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_hdrs", "cc_so")
+
+cc_hdrs(
+    name = "messenger-headers",
+    hdrs_map = {
+        "**/messenger.hpp": ["messenger/{filename}"],
+    },
+    public_hdrs = ["messenger.hpp"],
+)
+
+cc_so(
+    name = "libMessenger",
+    srcs = ["messenger.cpp"],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    linkopts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wl,--unresolved-symbols=report-all",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":messenger-headers",
+        "//simple/random:libRandom",
+    ],
+)

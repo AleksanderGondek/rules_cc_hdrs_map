@@ -26,9 +26,20 @@ cc_bin(
     srcs = [
         "print-half-a-bee.cpp",
     ],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
     hdrs_map = {
         "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
     },
+    linkopts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wl,--unresolved-symbols=report-all",
+    ],
     deps = [
         "//a/private/includes:a-half-a-bee-headers",
     ],

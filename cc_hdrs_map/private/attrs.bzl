@@ -458,6 +458,20 @@ def get_cc_so_attrs():
                 link_to_so = lambda ctx_attr: ("alwayslink", getattr(ctx_attr, "alwayslink", False)),
             ),
         ),
+        "shared_lib_name": struct(
+            attr = attr.string(
+                default = "",
+                doc = """
+                This allows to override the library name. <A further description of how it deals with custom suffixes to come>
+                """,
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: ("shared_lib_name", getattr(ctx_attr, "shared_lib_name", "")),
+            ),
+        ),
     }
     cc_so_attrs.update(_COMMON_RULES_ATTRS)
     cc_so_attrs.update(_CC_COMPILABLE_ATTRS)

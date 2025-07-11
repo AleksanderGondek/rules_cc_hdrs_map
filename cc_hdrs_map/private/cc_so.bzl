@@ -1,5 +1,6 @@
 """ This module contains the implementation of the cc_so rule. """
 
+load("@rules_cc//cc/common:cc_shared_library_info.bzl", "CcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_so_attrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo")
@@ -7,26 +8,37 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo")
 CC_SO_ATTRS = get_cc_so_attrs()
 
 def _cc_so_impl(ctx):
-    compilation_ctx, compilation_outputs, hdrs_map_ctx = actions.compile(**actions.compile_kwargs(ctx, CC_SO_ATTRS))
-
-    linking_context, linking_outputs = actions.link_to_so(
+    _, compilation_outputs, hdrs_map_ctx = actions.compile(**actions.compile_kwargs(ctx, CC_SO_ATTRS))
+    shared_cc, linking_outputs = actions.link_to_so(
         compilation_outputs,
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
 
+    # TODO: improve
     output_files = []
-    if linking_outputs.library_to_link.static_library:
-        output_files.append(linking_outputs.library_to_link.static_library)
-    if linking_outputs.library_to_link.dynamic_library:
+    if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
+        output_files.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
+    else:
         output_files.append(linking_outputs.library_to_link.dynamic_library)
+
+    runfiles = []
+    if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
+        runfiles.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
+
+    runfiles.append(linking_outputs.library_to_link.dynamic_library)
 
     return [
         DefaultInfo(
             files = depset(output_files),
+            runfiles = ctx.runfiles(
+                files = runfiles,
+            ),
         ),
-        CcInfo(
-            compilation_context = compilation_ctx,
-            linking_context = linking_context,
+        CcSharedLibraryInfo(
+            dynamic_deps = shared_cc.dynamic_deps,
+            exports = shared_cc.exports,
+            link_once_static_libs = shared_cc.link_once_static_libs,
+            linker_input = shared_cc.linker_input,
         ),
         HdrsMapInfo(
             public_hdrs = depset(hdrs_map_ctx.public_hdrs),
@@ -51,6 +63,6 @@ cc_so = rule(
     (use singular attribute of deps to track them both).
     """,
     fragments = ["cpp"],
-    provides = [DefaultInfo, CcInfo, HdrsMapInfo],
+    provides = [DefaultInfo, CcSharedLibraryInfo, HdrsMapInfo],
     subrules = [actions.compile, actions.link_to_so],
 )

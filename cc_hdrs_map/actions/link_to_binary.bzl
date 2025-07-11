@@ -13,7 +13,7 @@ def _link_to_binary_impl(
         features = [],
         disabled_features = [],
         deps = [],
-        link_deps_statically = True,
+        link_deps_statically = False,
         user_link_flags = [],
         stamp = 0,
         additional_inputs = [],
@@ -53,11 +53,31 @@ def _link_to_binary_impl(
 
     cc_toolchain = find_cc_toolchain(sctx)
 
-    linking_contexts = [
-        dep[CcInfo].linking_context
-        for dep in deps
-        if CcInfo in dep
-    ]
+    # TODO: Extract SOLs from CcInfo? Doesit even makes sense?
+    linking_contexts = []
+    linking_inputs = []
+    transitive_sols = []
+
+    for dep in deps:
+        if CcInfo in dep:
+            linking_contexts.append(dep[CcInfo].linking_context)
+            continue
+        if CcSharedLibraryInfo in dep:
+            dynamic_dep = dep[CcSharedLibraryInfo]
+            linking_inputs.append(dynamic_dep.linker_input)
+
+            for transitive_dynamic_dep in dynamic_dep.dynamic_deps.to_list():
+                for transitive_dynamic_lib in transitive_dynamic_dep.linker_input.libraries:
+                    transitive_sols.append(transitive_dynamic_lib.dynamic_library)
+
+    linking_contexts.append(
+        cc_common.create_linking_context(
+            linker_inputs = depset(
+                direct = linking_inputs,
+                order = "topological",
+            ),
+        ),
+    )
 
     return cc_common.link(
         actions = sctx.actions,
@@ -74,7 +94,9 @@ def _link_to_binary_impl(
         linking_contexts = linking_contexts,
         user_link_flags = user_link_flags,
         stamp = stamp,
-        additional_inputs = additional_inputs,
+        # Adding transitive sols makes the compilation
+        # work with --unresolved-symbols='report-all'
+        additional_inputs = additional_inputs + transitive_sols,
     )
 
 link_to_binary = subrule(

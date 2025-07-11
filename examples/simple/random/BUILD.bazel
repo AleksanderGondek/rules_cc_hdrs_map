@@ -1,0 +1,26 @@
+""" This package contains the simplest example of usage of cc_hdrs_map rules. """
+
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so")
+
+cc_so(
+    name = "libRandom",
+    srcs = ["random.cpp"],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+    hdrs_map = {
+        "**/random.hpp": ["modnar/{filename}"],
+    },
+    linkopts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wl,--unresolved-symbols=report-all",
+    ],
+    public_hdrs = ["random.hpp"],
+    # TODO: This should be 1-1 how the lib is linked b default
+    shared_lib_name = "libRandom.so.x86_64.3",
+    visibility = ["//visibility:public"],
+)
