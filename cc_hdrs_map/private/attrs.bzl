@@ -111,9 +111,9 @@ _CC_COMPILABLE_ATTRS = {
         attr = attr.label_list(
             default = [],
             doc = """
-        Pass these files to the C++ linker command.
-
-        For example, compiled Windows .res files can be provided here to be embedded in the binary target.
+            Any additional files that you may want to pass to the linker, for example, linker scripts.
+            You have to separately pass any linker flags that the linker needs in order to be aware of this file.
+            You can do so via the linkopts attribute.
         """,
         ),
         as_action_param = struct(
@@ -183,21 +183,19 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: Important!
     "dynamic_deps": struct(
         attr = attr.label_list(
             default = [],
             doc = """
-            These are other cc_shared_library dependencies the current target depends on.
-
-            The cc_shared_library implementation will use the list of dynamic_deps (transitively, i.e. also the dynamic_deps of the current target's dynamic_deps) to decide which cc_libraries in the transitive deps should not be linked in because they are already provided by a different cc_shared_library. 
+            In contrast to `rules_cc`, the dynamic_deps of `rules_cc_hdrs_map` are simply translated into deps parameter,
+            and the providers (CcInfo vs CcSharedInfo) are used to steer the behavior further.
             """,
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
             link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: ("deps", getattr(ctx_attr, "dynamic_deps", [])),
+            link_to_so = lambda ctx_attr: ("deps", getattr(ctx_attr, "dynamic_deps", [])),
         ),
     ),
     "includes": struct(
@@ -217,7 +215,6 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: Can I make it work?
     "link_extra_lib": struct(
         attr = attr.label(
             default = "@bazel_tools//tools/cpp:link_extra_lib",
@@ -227,6 +224,7 @@ _CC_COMPILABLE_ATTRS = {
             By default, C++ binaries are linked against //tools/cpp:link_extra_lib, which by default depends on the label flag //tools/cpp:link_extra_libs. Without setting the flag, this library is empty by default. Setting the label flag allows linking optional dependencies, such as overrides for weak symbols, interceptors for shared library functions, or special runtime libraries (for malloc replacements, prefer malloc or --custom_malloc). Setting this attribute to None disables this behaviour. 
             """,
         ),
+        # TODO: Implement this
         as_action_param = struct(
             compile = lambda ctx_attr: None,
             link_to_archive = lambda ctx_attr: None,
@@ -252,12 +250,12 @@ _CC_COMPILABLE_ATTRS = {
     "linkstatic": struct(
         attr = attr.bool(
             default = True,
-            doc = "Link the binary in static mode.",
+            doc = "(Unsupported) As there is clear distinction between targets that are SOLs and archives, the parameter is not applicable. ",
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
             link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: ("link_deps_statically", getattr(ctx_attr, "linkstatic", True)),
+            link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
     ),
@@ -275,7 +273,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: Can I make it work?
+    # TODO: Implement this
     "malloc": struct(
         attr = attr.label(
             default = "@bazel_tools//tools/cpp:malloc",
@@ -292,8 +290,8 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: support for module_interfaces
-    # TODO: Can I make it  work?
+    # TODO: Implement support for module interfaces
+    # TODO: Implement this
     "nocopts": struct(
         attr = attr.string(
             default = "",
@@ -308,7 +306,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: Can I make it work?
+    # TODO: Implement this
     "reexport_deps": struct(
         attr = attr.label_list(
             default = [],
@@ -331,18 +329,6 @@ _CC_COMPILABLE_ATTRS = {
             link_to_archive = lambda ctx_attr: None,
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
-        ),
-    ),
-    "_is_windows": struct(
-        attr = attr.bool(
-            default = False,
-            doc = "Signify Windows execution platform. To be improved upon (should not require manual input)",
-        ),
-        as_action_param = struct(
-            compile = lambda ctx_attr: getattr(ctx_attr, "_is_windows", False),
-            link_to_archive = lambda ctx_attr: getattr(ctx_attr, "_is_windows", False),
-            link_to_bin = lambda ctx_attr: getattr(ctx_attr, "_is_windows", False),
-            link_to_so = lambda ctx_attr: getattr(ctx_attr, "_is_windows", False),
         ),
     ),
 }
@@ -448,21 +434,23 @@ def get_cc_so_attrs():
             attr = attr.bool(
                 default = True,
                 doc = """
-                If 1, any binary that depends (directly or indirectly) on this C++ library will link in all the object files for the files listed in srcs, even if some contain no symbols referenced by the binary. This is useful if your code isn't explicitly called by code in the binary, e.g., if your code registers to receive some callback provided by some service.
+                (Unsupported) Not yet implemented.
                 """,
             ),
             as_action_param = struct(
                 compile = lambda ctx_attr: None,
                 link_to_archive = lambda ctx_attr: None,
                 link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: ("alwayslink", getattr(ctx_attr, "alwayslink", False)),
+                link_to_so = lambda ctx_attr: None,
             ),
         ),
         "shared_lib_name": struct(
             attr = attr.string(
                 default = "",
                 doc = """
-                This allows to override the library name. <A further description of how it deals with custom suffixes to come>
+                Specify the name of the created SOL file (that is decoupled from the rule instance name).
+                Note, that the 'cc_so' is opinionated and will remove any leading 'lib' prefix and any '.so' in the name
+                (mening 'libTest.so.x64.so' will become 'Test.x64' and will produce 'libTest.x64.so')
                 """,
             ),
             as_action_param = struct(
