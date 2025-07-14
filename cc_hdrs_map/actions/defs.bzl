@@ -22,8 +22,16 @@ def _attrs_into_action_kwargs(ctx, rule_attrs, action_name):
         if not kwarg_meta:
             continue
 
-        # TODO: extend existing key
-        compile_kwargs[kwarg_meta[0]] = kwarg_meta[1]
+        if type(kwarg_meta[1]) == "list":
+            compile_kwarg = compile_kwargs.setdefault(kwarg_meta[0], [])
+            for kwarg in kwarg_meta[1]:
+                if kwarg in compile_kwarg:
+                    continue
+                compile_kwarg.append(kwarg)
+
+            # TODO: Handling of a dictionaries merge
+        else:
+            compile_kwargs[kwarg_meta[0]] = kwarg_meta[1]
 
     return compile_kwargs
 

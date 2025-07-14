@@ -34,11 +34,8 @@ def _link_to_so_impl(
         features = [],
         disabled_features = [],
         deps = [],
-        disallow_static_libraries = True,
-        disallow_dynamic_library = False,
         shared_lib_name = None,
         user_link_flags = [],
-        alwayslink = True,
         additional_inputs = [],
         variables_extension = {}):
     """Link into a shared object library.
@@ -52,11 +49,8 @@ def _link_to_so_impl(
         features: list of features specified for the linking
         disabled_features: list of disabled features specified for the linking
         deps: list of dependencies provided for the linking
-        disallow_static_libraries: whether static libraries should be created
-        disallow_dynamic_library: whether a dynamic library should be created
         shared_lib_name: overwrite the default name of the library
         user_link_flags: additional list of linking options
-        alwayslink: whether this library should always be linked
         additional_inputs: for additional inputs to the linking action, e.g.: linking scripts
         variables_extension: additional variables to pass to the toolchain configuration when creating link command line
     """
@@ -95,7 +89,7 @@ def _link_to_so_impl(
         ),
         cc_toolchain = cc_toolchain,
         output_type = "dynamic_library",
-        link_deps_statically = False,
+        link_deps_statically = True,
         compilation_outputs = compilation_outputs,
         linking_contexts = [cc_common.create_linking_context(
             linker_inputs = depset(direct = linking_inputs, order = "topological"),
@@ -106,6 +100,7 @@ def _link_to_so_impl(
         # Error in check_private_api: file '@@rules_cc_hdrs_map+//cc_hdrs_map/actions:link_to_so.bzl' cannot use private API
         # main_output = sctx.actions.declare_file(shared_lib_name) if shared_lib_name else None,
         additional_inputs = additional_inputs + transitive_sols,
+        variables_extension = variables_extension,
     )
 
     linker_input = cc_common.create_linker_input(
