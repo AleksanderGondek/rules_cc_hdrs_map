@@ -4,8 +4,6 @@
 #include <iostream>
 #include <string>
 
-const std::string MESSAGE = "🃜 🃚 🃖 🃁 🂭 🂺!";
-
-void messengerSays();
+void printRandomDeckCard();
 
 #endif

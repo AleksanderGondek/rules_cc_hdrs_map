@@ -1,6 +1,6 @@
 #include "jolly/messenger.hpp"
 
 int main() {
-  messengerSays();
+  printRandomDeckCard();
   return 0;
 }
