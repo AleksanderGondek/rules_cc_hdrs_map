@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.5.0 - 2025-07-14
+#### Features
+- **(cc_so)** opinionated sol names - (152cfd6) - Aleksander Gondek
+
+- - -
+
 ## v0.4.0 - 2025-07-11
 #### Features
 - **(cc_so)** implement actual linking with cutoff - (3d2520b) - Aleksander Gondek
