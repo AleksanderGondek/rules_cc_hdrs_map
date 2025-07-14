@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.5.1 - 2025-07-14
+#### Bug Fixes
+- **(cc_so)** defintions of attrs for link_to_so action - (e8bc4b7) - Aleksander Gondek
+
+- - -
+
 ## v0.5.0 - 2025-07-14
 #### Features
 - **(cc_so)** opinionated sol names - (152cfd6) - Aleksander Gondek
