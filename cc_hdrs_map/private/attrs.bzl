@@ -121,6 +121,21 @@ _COMMON_RULES_ATTRS = {
 }
 
 _CC_COMPILABLE_ATTRS = {
+    "additional_compiler_inputs": struct(
+        attr = attr.label_list(
+            default = [],
+            doc = """
+            Any additional files you might want to pass to the compiler command line, such as sanitizer ignorelists, for example.
+            Files specified here can then be used in copts with the $(location) function. 
+        """,
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: ("additional_inputs", getattr(ctx_attr, "additional_compiler_inputs")),
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
     "additional_linker_inputs": struct(
         attr = attr.label_list(
             default = [],
