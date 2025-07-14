@@ -5,6 +5,7 @@ load(
     "find_cc_toolchain",
     "use_cc_toolchain",
 )
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 
 def _link_to_binary_impl(
         sctx,
@@ -88,11 +89,11 @@ def _link_to_binary_impl(
         link_deps_statically = True,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
-        user_link_flags = user_link_flags,
+        user_link_flags = cc_helper.get_linking_opts(sctx, user_link_flags, additional_inputs),
         stamp = stamp,
         # Adding transitive sols makes the compilation
         # work with --unresolved-symbols='report-all'
-        additional_inputs = additional_inputs + transitive_sols,
+        additional_inputs = [f for t in additional_inputs for f in t.files] + transitive_sols,
         variables_extension = variables_extension,
     )
 

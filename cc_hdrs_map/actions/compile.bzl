@@ -5,6 +5,7 @@ load(
     "find_cc_toolchain",
     "use_cc_toolchain",
 )
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo", "materialize_hdrs_mapping", "merge_hdrs_maps_info_from_deps")
 
 def prepare_for_compilation(
@@ -180,39 +181,52 @@ def _compile_impl(
         if CcInfo in dep
     ]
 
-    # TODO: module_interfaces
+    feature_configuration = configure_features_func(
+        cc_toolchain,
+        features = features,
+        disabled_features = disabled_features,
+    )
+
+    # Additional make variable substitutions
+    amvs = cc_helper.get_toolchain_global_make_variables(cc_toolchain)
+    amvs.update(cc_helper.get_cc_flags_make_variable(cc_toolchain, feature_configuration))
+
     compilation_ctx, compilation_outputs = cc_common.compile(
         name = sctx.label.name,
         actions = sctx.actions,
-        feature_configuration = configure_features_func(
-            cc_toolchain,
-            features = features,
-            disabled_features = disabled_features,
-        ),
+        feature_configuration = feature_configuration,
         cc_toolchain = cc_toolchain,
         compilation_contexts = compilation_contexts,
+        # Error in check_private_api: file '@@rules_cc_hdrs_map+//cc_hdrs_map/actions:compile.bzl' cannot use private API :<
+        # Therfore: no implementation_deps
+        # implementation_compilation_contexts = None,
+        #
         # Source files
+        # TODO: Guard against duplicates
         srcs = srcs,
+        # TODO: Guard against duplicates, read headers from srcs
         public_hdrs = hdrs,
         private_hdrs = implementation_hdrs,
-        additional_inputs = additional_inputs,
+        additional_inputs = [f for t in additional_inputs for f in t.files],
         # Includes magic
         include_prefix = include_prefix,
         strip_include_prefix = strip_include_prefix,
         includes = includes,
+        # For now, the 2 includes below are effectively noop
         quote_includes = quote_includes,
         system_includes = system_includes,
         # Defines
-        defines = defines,
-        local_defines = local_defines,
+        defines = cc_helper.get_compilation_defines(sctx, defines, deps, amvs, []),
+        local_defines = cc_helper.get_compilation_defines(sctx, local_defines, deps, amvs, additional_inputs) + cc_helper.get_local_defines_for_runfiles_lookup(sctx, deps),
         # Cflags
-        user_compile_flags = user_compile_flags,
-        conly_flags = conly_flags,
-        cxx_flags = cxx_flags,
+        user_compile_flags = cc_helper.get_compilation_opts(sctx, user_compile_flags, feature_configuration, amvs, additional_inputs),
+        conly_flags = cc_helper.get_compilation_opts(sctx, conly_flags, feature_configuration, amvs, additional_inputs),
+        cxx_flags = cc_helper.get_compilation_opts(sctx, cxx_flags, feature_configuration, amvs, additional_inputs),
         disallow_pic_outputs = disallow_pic_outputs,
         disallow_nopic_outputs = disallow_nopic_outputs,
         # Apple framework
         framework_includes = [],
+        # TODO: Implment module interfaces
     )
     return compilation_ctx, compilation_outputs, hdrs_map_ctx
 

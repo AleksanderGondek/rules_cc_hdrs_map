@@ -16,9 +16,19 @@ bzl_library(
 )
 
 bzl_library(
+    name = "cc_helper",
+    srcs = ["cc_helper.bzl"],
+    deps = [
+        "@rules_cc//cc/common",
+        "@rules_cc//cc/common:cc_helper_bzl",
+    ],
+)
+
+bzl_library(
     name = "compile",
     srcs = ["compile.bzl"],
     deps = [
+        ":cc_helper",
         "//cc_hdrs_map/providers:hdrs_map",
         "@rules_cc//cc:find_cc_toolchain_bzl",
         "@rules_cc//cc/common",
