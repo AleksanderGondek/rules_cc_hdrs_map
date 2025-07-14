@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.6.0 - 2025-07-14
+#### Features
+- **(hdrs_map)** rename atrributes to align with rules_cc - (a9c9e0f) - Aleksander Gondek
+
+- - -
+
 ## v0.5.1 - 2025-07-14
 #### Bug Fixes
 - **(cc_so)** defintions of attrs for link_to_so action - (e8bc4b7) - Aleksander Gondek
