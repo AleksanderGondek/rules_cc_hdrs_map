@@ -3,16 +3,16 @@
 load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so")
 
 cc_so(
-    name = "libRandom",
-    srcs = ["random.cpp"],
-    hdrs = ["random.hpp"],
+    name = "libDeck",
+    srcs = ["deck.cpp"],
+    hdrs = ["deck.hpp"],
     copts = [
         "-Wall",
         "-Wextra",
         "-Werror",
     ],
     hdrs_map = {
-        "**/random.hpp": ["modnar/{filename}"],
+        "**/deck.hpp": ["kced/{filename}"],
     },
     linkopts = [
         "-Wall",
@@ -20,7 +20,6 @@ cc_so(
         "-Werror",
         "-Wl,--unresolved-symbols=report-all",
     ],
-    # SOL name, even with such wierd name request, should be: libRandom.so
-    shared_lib_name = "lib.soRandom.so",
     visibility = ["//visibility:public"],
+    deps = ["//simple/random:libRandom"],
 )

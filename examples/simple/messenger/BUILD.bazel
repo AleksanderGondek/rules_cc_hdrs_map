@@ -27,6 +27,6 @@ cc_so(
     visibility = ["//visibility:public"],
     deps = [
         ":messenger-headers",
-        "//simple/random:libRandom",
+        "//simple/deck:libDeck",
     ],
 )

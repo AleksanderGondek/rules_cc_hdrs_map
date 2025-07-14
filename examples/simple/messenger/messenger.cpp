@@ -1,7 +1,8 @@
 #include "messenger/messenger.hpp"
-#include "modnar/random.hpp"
+#include "kced/deck.hpp"
 
-void messengerSays() {
-   std::cout << "Messenger says: " << MESSAGE << std::endl;
-   printRandomNumber();
+void printRandomDeckCard() {
+   auto deck = new Deck();
+   deck->shuffle();
+   std::cout << "Random card from a deck: " << deck->getRandomCard() << std::endl;
 }
