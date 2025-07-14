@@ -66,7 +66,9 @@ def _link_to_so_impl(
     cc_toolchain = find_cc_toolchain(sctx)
 
     sol_name = shared_lib_name if shared_lib_name else sctx.label.name
-    sol_name = sol_name.removeprefix("lib")
+
+    # Opinionated part: prevent any liblibName or libName.so.so or libName.so.test.so
+    sol_name = sol_name.removeprefix("lib").replace(".so", "")
 
     # TODO: Linker inputs from CcInfo ?
     # TODO: dedup with cc_bin
