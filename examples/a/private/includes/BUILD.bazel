@@ -4,28 +4,28 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_hdrs")
 
 cc_hdrs(
     name = "a-consts-headers",
+    hdrs = [
+        "a-consts-one.hpp",
+        "pointless-subdir/a-consts-three.hpp",
+        "pointless-subdir/a-consts-two.hpp",
+        "//a/private/other:a-consts-four.hpp",
+    ],
     hdrs_map = {
         "a/private/includes/*consts*.hpp": ["{filename}"],
         "a/private/includes/**/*consts*.hpp": ["{filename}"],
         "a/private/other/a-consts-four.hpp": ["{filename}"],
     },
-    public_hdrs = [
-        "a-consts-one.hpp",
-        "pointless-subdir/a-consts-two.hpp",
-        "pointless-subdir/a-consts-three.hpp",
-        "//a/private/other:a-consts-four.hpp",
-    ],
     visibility = ["//visibility:public"],
 )
 
 cc_hdrs(
     name = "a-half-a-bee-headers",
+    hdrs = [
+        "half-a-bee.hpp",
+    ],
     hdrs_map = {
         "a/private/includes/half-a-bee.hpp": ["half-a-bee.hpp"],
     },
-    public_hdrs = [
-        "half-a-bee.hpp",
-    ],
     visibility = ["//visibility:public"],
     deps = [
         "@boost.math",
@@ -34,11 +34,11 @@ cc_hdrs(
 
 cc_hdrs(
     name = "pong_headers",
+    hdrs = [
+        "pong.hpp",
+    ],
     hdrs_map = {
         "a/private/includes/pong.hpp": ["{filename}"],
     },
-    public_hdrs = [
-        "pong.hpp",
-    ],
     visibility = ["//visibility:public"],
 )

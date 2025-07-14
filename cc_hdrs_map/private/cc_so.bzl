@@ -41,8 +41,9 @@ def _cc_so_impl(ctx):
             linker_input = shared_cc.linker_input,
         ),
         HdrsMapInfo(
-            public_hdrs = depset(hdrs_map_ctx.public_hdrs),
-            private_hdrs = depset(hdrs_map_ctx.private_hdrs),
+            hdrs = depset(hdrs_map_ctx.hdrs),
+            # Implementation hdrs do not leave the scope of this lib
+            implementation_hdrs = depset([]),
             hdrs_map = hdrs_map_ctx.hdrs_map,
             deps = depset([
                 d
@@ -58,9 +59,10 @@ cc_so = rule(
     },
     doc = """Produce shared object library.
 
-    The intended difference between this rule and the rules_cc's cc_shared_library is
-    to unify handling of dependencies that are equipped with CcInfo and CcSharedLibraryInfo
-    (use singular attribute of deps to track them both).
+    The intended difference between this rule and the rules_cc's cc_shared_library is to:
+     1) remove 'cc_library' out of the equation (no more targets that produce either archive or sol)
+     2) unify handling of dependencies that are equipped with CcInfo and CcSharedLibraryInfo
+        (use singular attribute of deps to track them both).
     """,
     fragments = ["cpp"],
     provides = [DefaultInfo, CcSharedLibraryInfo, HdrsMapInfo],

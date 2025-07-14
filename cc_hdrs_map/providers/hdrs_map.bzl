@@ -8,8 +8,8 @@ load(
 HdrsMapInfo = provider(
     doc = "Represents grouping of CC header files, alongsdie with their intended include paths.",
     fields = {
-        "public_hdrs": "Headers which should be exposed after the compilation is done.",
-        "private_hdrs": "Headers that should not be propagated after the compilation.",
+        "hdrs": "Headers which should be exposed after the compilation is done.",
+        "implementation_hdrs": "Headers that should not be propagated after the compilation.",
         "hdrs_map": "(string_list_dict) which represents mapping between pattern and its intended include paths (i.e. \"**/foo.hpp\": [\"bar/{filename}\"])",
         "deps": "CcInfo-aware dependencies that need to be propagated, for this provider to compile and link",
     },
@@ -280,11 +280,11 @@ def merge_hdrs_maps_info_from_deps(
         hdrs_map: map of headers of the Bazel target
 
     Returns:
-        (public_hdrs, private_hdrs, hdrs_map, hdr_maps_deps): tuple
+        (hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps): tuple
         containing list of public headers, private headers, merged hdrs_map and other dependencies.
     """
-    public_hdrs = []
-    private_hdrs = []
+    hdrs = []
+    implementation_hdrs = []
     hdrs_map = hdrs_map if hdrs_map else {}
     hdr_maps_deps = []
 
@@ -293,13 +293,13 @@ def merge_hdrs_maps_info_from_deps(
             # Merge hdrs only for HdrsMapInfo-aware deps
             continue
 
-        if dependency[HdrsMapInfo].public_hdrs:
-            public_hdrs.extend(
-                dependency[HdrsMapInfo].public_hdrs.to_list(),
+        if dependency[HdrsMapInfo].hdrs:
+            hdrs.extend(
+                dependency[HdrsMapInfo].hdrs.to_list(),
             )
-        if dependency[HdrsMapInfo].private_hdrs:
-            private_hdrs.extend(
-                dependency[HdrsMapInfo].private_hdrs.to_list(),
+        if dependency[HdrsMapInfo].implementation_hdrs:
+            implementation_hdrs.extend(
+                dependency[HdrsMapInfo].implementation_hdrs.to_list(),
             )
         if dependency[HdrsMapInfo].hdrs_map:
             hdrs_map = merge_hdrs_map(
@@ -311,4 +311,4 @@ def merge_hdrs_maps_info_from_deps(
                 dependency[HdrsMapInfo].deps.to_list(),
             )
 
-    return public_hdrs, private_hdrs, hdrs_map, hdr_maps_deps
+    return hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps

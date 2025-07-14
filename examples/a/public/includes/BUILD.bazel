@@ -4,15 +4,15 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_hdrs")
 
 cc_hdrs(
     name = "headers",
+    hdrs = [
+        "cheeses.hpp",
+    ],
     hdrs_map = {
         "a/private/includes/a-consts-one.hpp": ["alpha/{filename}"],
         "a/private/includes/pointless-subdir/a-consts-two.hpp": ["beta/{filename}"],
         "a/private/includes/pointless-subdir/a-consts-three.hpp": ["gamma/{filename}"],
         "a/private/other/a-consts-four.hpp": ["delta/epsilon/{filename}"],
     },
-    public_hdrs = [
-        "cheeses.hpp",
-    ],
     visibility = ["//visibility:public"],
     deps = [
         "//a/private/includes:a-consts-headers",
