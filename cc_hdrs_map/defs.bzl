@@ -24,8 +24,10 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_bin")
 cc_bin(
     name = "foo",
     srcs = [
-        "foo.hpp",
         "foo.cpp",
+    ],
+    hdrs = [
+        "foo.hpp",
     ],
     hdrs_map = {
         "**/foo.hpp": ["bar/{filename}"],

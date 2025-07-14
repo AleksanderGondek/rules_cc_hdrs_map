@@ -33,7 +33,7 @@ _COMMON_RULES_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    "public_hdrs": struct(
+    "hdrs": struct(
         attr = attr.label_list(
             allow_files = [
                 ".h",
@@ -51,13 +51,13 @@ _COMMON_RULES_ATTRS = {
             default = [],
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: ("public_hdrs", [f for t in getattr(ctx_attr, "public_hdrs", []) for f in t.files.to_list()]),
+            compile = lambda ctx_attr: ("hdrs", [f for t in getattr(ctx_attr, "hdrs", []) for f in t.files.to_list()]),
             link_to_archive = lambda ctx_attr: None,
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    "private_hdrs": struct(
+    "implementation_hdrs": struct(
         attr = attr.label_list(
             allow_files = [
                 ".h",
@@ -75,7 +75,7 @@ _COMMON_RULES_ATTRS = {
             default = [],
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: ("private_hdrs", [f for t in getattr(ctx_attr, "private_hdrs", []) for f in t.files.to_list()]),
+            compile = lambda ctx_attr: ("implementation_hdrs", [f for t in getattr(ctx_attr, "implementation_hdrs", []) for f in t.files.to_list()]),
             link_to_archive = lambda ctx_attr: None,
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,

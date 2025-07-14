@@ -4,11 +4,11 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_hdrs")
 
 cc_hdrs(
     name = "ping_headers",
+    hdrs = [
+        "ping.hpp",
+    ],
     hdrs_map = {
         "b/private/includes/**": ["{filename}"],
     },
-    public_hdrs = [
-        "ping.hpp",
-    ],
     visibility = ["//visibility:public"],
 )

@@ -10,8 +10,8 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo", "m
 def prepare_for_compilation(
         sctx,
         input_hdrs_map,
-        input_public_hdrs,
-        input_private_hdrs,
+        input_hdrs,
+        input_implementation_hdrs,
         input_deps,
         input_includes):
     """Materialize information from hdrs map.
@@ -23,14 +23,14 @@ def prepare_for_compilation(
     Args:
         sctx: subrule context
         input_hdrs_map: list of HdrsMapInfo which should be used for materialization of compilation context
-        input_public_hdrs: direct headers provided to the action
-        input_private_hdrs: direct headers provided to the action
+        input_hdrs: direct headers provided to the action
+        input_implementation_hdrs: direct headers provided to the action
         input_deps: dependencies specified for the action
         input_includes: include statements specified for the action
     """
     hdrs_map = input_hdrs_map if input_hdrs_map else {}
-    public_hdrs = [h for h in input_public_hdrs]
-    private_hdrs = [h for h in input_private_hdrs]
+    hdrs = [h for h in input_hdrs]
+    implementation_hdrs = [h for h in input_implementation_hdrs]
     deps = [d for d in input_deps]
 
     # Merge with deps
@@ -38,39 +38,39 @@ def prepare_for_compilation(
         deps,
         hdrs_map,
     )
-    public_hdrs.extend(deps_pub_hdrs)
-    private_hdrs.extend(deps_prv_hdrs)
+    hdrs.extend(deps_pub_hdrs)
+    implementation_hdrs.extend(deps_prv_hdrs)
     deps.extend(deps_deps)
 
     # Materialize mappings
-    public_hdrs_extra_include_path, public_hdrs_extra_files = materialize_hdrs_mapping(
+    hdrs_extra_include_path, hdrs_extra_files = materialize_hdrs_mapping(
         sctx.label,
         sctx.actions,
         hdrs_map,
-        public_hdrs,
+        hdrs,
     )
-    if public_hdrs_extra_files:
-        public_hdrs.extend(public_hdrs_extra_files)
+    if hdrs_extra_files:
+        hdrs.extend(hdrs_extra_files)
 
-    private_hdrs_extra_include_path, private_hdrs_extra_files = materialize_hdrs_mapping(
+    implementation_hdrs_extra_include_path, implementation_hdrs_extra_files = materialize_hdrs_mapping(
         sctx.label,
         sctx.actions,
         hdrs_map,
-        private_hdrs,
+        implementation_hdrs,
     )
-    if private_hdrs_extra_files:
-        private_hdrs.extend(private_hdrs_extra_files)
+    if implementation_hdrs_extra_files:
+        implementation_hdrs.extend(implementation_hdrs_extra_files)
 
     includes = input_includes if input_includes else []
-    if public_hdrs_extra_include_path:
-        includes.append(public_hdrs_extra_include_path)
-    if private_hdrs_extra_include_path:
-        includes.append(private_hdrs_extra_include_path)
+    if hdrs_extra_include_path:
+        includes.append(hdrs_extra_include_path)
+    if implementation_hdrs_extra_include_path:
+        includes.append(implementation_hdrs_extra_include_path)
 
     return struct(
         hdrs_map = hdrs_map,
-        public_hdrs = public_hdrs,
-        private_hdrs = private_hdrs,
+        hdrs = hdrs,
+        implementation_hdrs = implementation_hdrs,
         includes = includes,
         deps = deps,
     )
@@ -83,8 +83,8 @@ def _compile_impl(
         # Sources
         srcs = [],
         hdrs_map = {},
-        public_hdrs = [],
-        private_hdrs = [],
+        hdrs = [],
+        implementation_hdrs = [],
         deps = [],
         additional_inputs = [],
         # Includes
@@ -117,9 +117,9 @@ def _compile_impl(
         disabled_features = list of disabled features specified for the compilation
         srcs: the list of source files to be compiled.
         hdrs_map: the list of HdrsMapInfo providers that should be used during compilation,
-        public_hdrs: list of headers needed for compilation of srcs and may be
+        hdrs: list of headers needed for compilation of srcs and may be
             included by dependent rules transitively
-        private_hdrs: list of headers needed for compilation of srcs and NOT to be
+        implementation_hdrs: list of headers needed for compilation of srcs and NOT to be
             included by dependent rules.
         deps: list of dependencies provided for the compilation,
         additional_inputs: list of additional files needed for compilation of srcs
@@ -162,15 +162,15 @@ def _compile_impl(
     hdrs_map_ctx = prepare_for_compilation(
         sctx,
         input_hdrs_map = hdrs_map,
-        input_public_hdrs = public_hdrs,
-        input_private_hdrs = private_hdrs,
+        input_hdrs = hdrs,
+        input_implementation_hdrs = implementation_hdrs,
         input_deps = deps,
         input_includes = includes,
     )
 
     _ = hdrs_map_ctx.hdrs_map
-    public_hdrs = hdrs_map_ctx.public_hdrs
-    private_hdrs = hdrs_map_ctx.private_hdrs
+    hdrs = hdrs_map_ctx.hdrs
+    implementation_hdrs = hdrs_map_ctx.implementation_hdrs
     includes = hdrs_map_ctx.includes
     deps = hdrs_map_ctx.deps
 
@@ -193,8 +193,8 @@ def _compile_impl(
         compilation_contexts = compilation_contexts,
         # Source files
         srcs = srcs,
-        public_hdrs = public_hdrs,
-        private_hdrs = private_hdrs,
+        public_hdrs = hdrs,
+        private_hdrs = implementation_hdrs,
         additional_inputs = additional_inputs,
         # Includes magic
         include_prefix = include_prefix,

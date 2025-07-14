@@ -25,8 +25,8 @@ def _cc_archive_impl(ctx):
             linking_context = linking_results.linking_context,
         ),
         HdrsMapInfo(
-            public_hdrs = depset(hdrs_map_ctx.public_hdrs),
-            private_hdrs = depset(hdrs_map_ctx.private_hdrs),
+            hdrs = depset(hdrs_map_ctx.hdrs),
+            implementation_hdrs = depset(hdrs_map_ctx.implementation_hdrs),
             hdrs_map = hdrs_map_ctx.hdrs_map,
             deps = depset([
                 d

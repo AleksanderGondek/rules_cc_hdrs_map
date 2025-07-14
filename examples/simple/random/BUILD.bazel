@@ -5,6 +5,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so")
 cc_so(
     name = "libRandom",
     srcs = ["random.cpp"],
+    hdrs = ["random.hpp"],
     copts = [
         "-Wall",
         "-Wextra",
@@ -19,7 +20,6 @@ cc_so(
         "-Werror",
         "-Wl,--unresolved-symbols=report-all",
     ],
-    public_hdrs = ["random.hpp"],
     # TODO: This should be 1-1 how the lib is linked b default
     shared_lib_name = "libRandom.so.x86_64.3",
     visibility = ["//visibility:public"],

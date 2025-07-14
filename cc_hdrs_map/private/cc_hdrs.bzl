@@ -7,8 +7,8 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo", "m
 CC_HDRS_ATTRS = get_cc_hdrs_attrs()
 
 def _cc_hdrs_impl(ctx):
-    public_hdrs = [h for h in ctx.files.public_hdrs]
-    private_hdrs = [h for h in ctx.files.private_hdrs]
+    hdrs = [h for h in ctx.files.hdrs]
+    implementation_hdrs = [h for h in ctx.files.implementation_hdrs]
     deps = [d for d in ctx.attr.deps]
 
     deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdrs_maps_info_from_deps(
@@ -16,8 +16,8 @@ def _cc_hdrs_impl(ctx):
         ctx.attr.hdrs_map if ctx.attr.hdrs_map else {},
     )
 
-    public_hdrs.extend(deps_pub_hdrs)
-    private_hdrs.extend(deps_prv_hdrs)
+    hdrs.extend(deps_pub_hdrs)
+    implementation_hdrs.extend(deps_prv_hdrs)
     deps.extend(deps_deps)
 
     return [
@@ -25,14 +25,14 @@ def _cc_hdrs_impl(ctx):
             files = depset(
                 [],
                 transitive = [
-                    depset(public_hdrs),
-                    depset(private_hdrs),
+                    depset(hdrs),
+                    depset(implementation_hdrs),
                 ],
             ),
         ),
         HdrsMapInfo(
-            public_hdrs = depset(public_hdrs),
-            private_hdrs = depset(private_hdrs),
+            hdrs = depset(hdrs),
+            implementation_hdrs = depset(implementation_hdrs),
             hdrs_map = hdrs_map,
             deps = depset([
                 d
