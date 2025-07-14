@@ -14,10 +14,25 @@ def _cc_archive_impl(ctx):
         **actions.link_to_archive_kwargs(ctx, CC_ARCHIVE_ATTRS)
     )
 
+    runfiles = []
+
+    # TODO: Extract to separate module
+    for data_dep in ctx.attr.data:
+        if data_dep[DefaultInfo].data_runfiles.files:
+            runfiles.append(data_dep[DefaultInfo].data_runfiles)
+        else:
+            # This branch ensures interop with custom Starlark rules following
+            # https://bazel.build/extending/rules#runfiles_features_to_avoid
+            runfiles.append(ctx.runfiles(transitive_files = data_dep[DefaultInfo].files))
+            runfiles.append(data_dep[DefaultInfo].default_runfiles)
+
     return [
         DefaultInfo(
             files = depset(
                 linking_results.cc_linking_outputs.static_libraries,
+            ),
+            runfiles = ctx.runfiles(
+                files = runfiles,
             ),
         ),
         CcInfo(

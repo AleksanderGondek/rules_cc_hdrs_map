@@ -14,18 +14,26 @@ def _cc_so_impl(ctx):
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
 
-    # TODO: improve
+    runfiles = []
+
+    # TODO: Extract to separate module
+    for data_dep in ctx.attr.data:
+        if data_dep[DefaultInfo].data_runfiles.files:
+            runfiles.append(data_dep[DefaultInfo].data_runfiles)
+        else:
+            # This branch ensures interop with custom Starlark rules following
+            # https://bazel.build/extending/rules#runfiles_features_to_avoid
+            runfiles.append(ctx.runfiles(transitive_files = data_dep[DefaultInfo].files))
+            runfiles.append(data_dep[DefaultInfo].default_runfiles)
+
     output_files = []
     if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
-        output_files.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
-    else:
-        output_files.append(linking_outputs.library_to_link.dynamic_library)
-
-    runfiles = []
-    if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
         runfiles.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
+        output_files.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
 
-    runfiles.append(linking_outputs.library_to_link.dynamic_library)
+    if linking_outputs.library_to_link.dynamic_library:
+        runfiles.append(linking_outputs.library_to_link.dynamic_library)
+        output_files.append(linking_outputs.library_to_link.dynamic_library)
 
     return [
         DefaultInfo(
