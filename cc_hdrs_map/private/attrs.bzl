@@ -1,6 +1,20 @@
 """ Contains common configuration-related entities used by cc_hdrs_map rules. """
 
 _COMMON_RULES_ATTRS = {
+    "data": struct(
+        attr = attr.label_list(
+            default = [],
+            doc = """
+                The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.
+                """,
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
     "deps": struct(
         attr = attr.label_list(
             default = [],
@@ -375,24 +389,6 @@ _CC_LIB_ATTRS = {
 def get_cc_bin_attrs():
     """ To be described """
     cc_bin_attrs = {
-        "data": struct(
-            attr = attr.label_list(
-                default = [],
-                doc = """
-                The list of files needed by this library at runtime. See general comments about data at Typical attributes defined by most build rules.
-
-                If a data is the name of a generated file, then this cc_library rule automatically depends on the generating rule.
-
-                If a data is a rule name, then this cc_library rule automatically depends on that rule, and that rule's outs are automatically added to this cc_library's data files. 
-                """,
-            ),
-            as_action_param = struct(
-                compile = lambda ctx_attr: None,
-                link_to_archive = lambda ctx_attr: None,
-                link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: None,
-            ),
-        ),
         "stamp": struct(
             attr = attr.int(
                 default = -1,
@@ -424,6 +420,7 @@ def get_cc_hdrs_attrs():
     """ To be described. """
     cc_hdrs_attrs = {}
     cc_hdrs_attrs.update(_COMMON_RULES_ATTRS)
+    cc_hdrs_attrs.pop("data")
     cc_hdrs_attrs.pop("srcs")
     return cc_hdrs_attrs
 

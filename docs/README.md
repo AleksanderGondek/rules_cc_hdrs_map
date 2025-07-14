@@ -80,9 +80,10 @@ No action is being performed up until the moment of compilation - header mapping
 <pre>
 load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_archive")
 
-cc_archive(<a href="#cc_archive-name">name</a>, <a href="#cc_archive-deps">deps</a>, <a href="#cc_archive-srcs">srcs</a>, <a href="#cc_archive-hdrs">hdrs</a>, <a href="#cc_archive-additional_linker_inputs">additional_linker_inputs</a>, <a href="#cc_archive-conlyopts">conlyopts</a>, <a href="#cc_archive-copts">copts</a>, <a href="#cc_archive-cxxopts">cxxopts</a>, <a href="#cc_archive-defines">defines</a>,
-           <a href="#cc_archive-dynamic_deps">dynamic_deps</a>, <a href="#cc_archive-hdrs_map">hdrs_map</a>, <a href="#cc_archive-implementation_hdrs">implementation_hdrs</a>, <a href="#cc_archive-include_prefix">include_prefix</a>, <a href="#cc_archive-includes">includes</a>, <a href="#cc_archive-link_extra_lib">link_extra_lib</a>,
-           <a href="#cc_archive-linkopts">linkopts</a>, <a href="#cc_archive-linkstatic">linkstatic</a>, <a href="#cc_archive-local_defines">local_defines</a>, <a href="#cc_archive-malloc">malloc</a>, <a href="#cc_archive-nocopts">nocopts</a>, <a href="#cc_archive-reexport_deps">reexport_deps</a>, <a href="#cc_archive-strip_include_prefix">strip_include_prefix</a>)
+cc_archive(<a href="#cc_archive-name">name</a>, <a href="#cc_archive-deps">deps</a>, <a href="#cc_archive-srcs">srcs</a>, <a href="#cc_archive-data">data</a>, <a href="#cc_archive-hdrs">hdrs</a>, <a href="#cc_archive-additional_linker_inputs">additional_linker_inputs</a>, <a href="#cc_archive-conlyopts">conlyopts</a>, <a href="#cc_archive-copts">copts</a>, <a href="#cc_archive-cxxopts">cxxopts</a>,
+           <a href="#cc_archive-defines">defines</a>, <a href="#cc_archive-dynamic_deps">dynamic_deps</a>, <a href="#cc_archive-hdrs_map">hdrs_map</a>, <a href="#cc_archive-implementation_hdrs">implementation_hdrs</a>, <a href="#cc_archive-include_prefix">include_prefix</a>, <a href="#cc_archive-includes">includes</a>,
+           <a href="#cc_archive-link_extra_lib">link_extra_lib</a>, <a href="#cc_archive-linkopts">linkopts</a>, <a href="#cc_archive-linkstatic">linkstatic</a>, <a href="#cc_archive-local_defines">local_defines</a>, <a href="#cc_archive-malloc">malloc</a>, <a href="#cc_archive-nocopts">nocopts</a>, <a href="#cc_archive-reexport_deps">reexport_deps</a>,
+           <a href="#cc_archive-strip_include_prefix">strip_include_prefix</a>)
 </pre>
 
 Produce an archive file.
@@ -98,6 +99,7 @@ is that this rule does not intend to pull-in all static dependencies.
 | <a id="cc_archive-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="cc_archive-deps"></a>deps |  The list of dependencies of current target   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_archive-srcs"></a>srcs |  The list of source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
+| <a id="cc_archive-data"></a>data |  The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_archive-hdrs"></a>hdrs |  List of headers that may be included by dependent rules transitively. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_archive-additional_linker_inputs"></a>additional_linker_inputs |  Any additional files that you may want to pass to the linker, for example, linker scripts. You have to separately pass any linker flags that the linker needs in order to be aware of this file. You can do so via the linkopts attribute.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_archive-conlyopts"></a>conlyopts |  Add these options to the C compilation command. Subject to "Make variable" substitution and Bourne shell tokenization.   | List of strings | optional |  `[]`  |
@@ -145,7 +147,7 @@ available during binary execution.
 | <a id="cc_bin-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="cc_bin-deps"></a>deps |  The list of dependencies of current target   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_bin-srcs"></a>srcs |  The list of source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
-| <a id="cc_bin-data"></a>data |  The list of files needed by this library at runtime. See general comments about data at Typical attributes defined by most build rules.<br><br>If a data is the name of a generated file, then this cc_library rule automatically depends on the generating rule.<br><br>If a data is a rule name, then this cc_library rule automatically depends on that rule, and that rule's outs are automatically added to this cc_library's data files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_bin-data"></a>data |  The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_bin-hdrs"></a>hdrs |  List of headers that may be included by dependent rules transitively. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_bin-additional_linker_inputs"></a>additional_linker_inputs |  Any additional files that you may want to pass to the linker, for example, linker scripts. You have to separately pass any linker flags that the linker needs in order to be aware of this file. You can do so via the linkopts attribute.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_bin-conlyopts"></a>conlyopts |  Add these options to the C compilation command. Subject to "Make variable" substitution and Bourne shell tokenization.   | List of strings | optional |  `[]`  |
@@ -202,7 +204,7 @@ be used with their intended include paths.
 <pre>
 load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so")
 
-cc_so(<a href="#cc_so-name">name</a>, <a href="#cc_so-deps">deps</a>, <a href="#cc_so-srcs">srcs</a>, <a href="#cc_so-hdrs">hdrs</a>, <a href="#cc_so-additional_linker_inputs">additional_linker_inputs</a>, <a href="#cc_so-alwayslink">alwayslink</a>, <a href="#cc_so-conlyopts">conlyopts</a>, <a href="#cc_so-copts">copts</a>, <a href="#cc_so-cxxopts">cxxopts</a>,
+cc_so(<a href="#cc_so-name">name</a>, <a href="#cc_so-deps">deps</a>, <a href="#cc_so-srcs">srcs</a>, <a href="#cc_so-data">data</a>, <a href="#cc_so-hdrs">hdrs</a>, <a href="#cc_so-additional_linker_inputs">additional_linker_inputs</a>, <a href="#cc_so-alwayslink">alwayslink</a>, <a href="#cc_so-conlyopts">conlyopts</a>, <a href="#cc_so-copts">copts</a>, <a href="#cc_so-cxxopts">cxxopts</a>,
       <a href="#cc_so-defines">defines</a>, <a href="#cc_so-dynamic_deps">dynamic_deps</a>, <a href="#cc_so-hdrs_map">hdrs_map</a>, <a href="#cc_so-implementation_hdrs">implementation_hdrs</a>, <a href="#cc_so-include_prefix">include_prefix</a>, <a href="#cc_so-includes">includes</a>, <a href="#cc_so-link_extra_lib">link_extra_lib</a>,
       <a href="#cc_so-linkopts">linkopts</a>, <a href="#cc_so-linkstatic">linkstatic</a>, <a href="#cc_so-local_defines">local_defines</a>, <a href="#cc_so-malloc">malloc</a>, <a href="#cc_so-nocopts">nocopts</a>, <a href="#cc_so-reexport_deps">reexport_deps</a>, <a href="#cc_so-shared_lib_name">shared_lib_name</a>,
       <a href="#cc_so-strip_include_prefix">strip_include_prefix</a>)
@@ -223,6 +225,7 @@ The intended difference between this rule and the rules_cc's cc_shared_library i
 | <a id="cc_so-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="cc_so-deps"></a>deps |  The list of dependencies of current target   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_so-srcs"></a>srcs |  The list of source files.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | required |  |
+| <a id="cc_so-data"></a>data |  The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_so-hdrs"></a>hdrs |  List of headers that may be included by dependent rules transitively. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_so-additional_linker_inputs"></a>additional_linker_inputs |  Any additional files that you may want to pass to the linker, for example, linker scripts. You have to separately pass any linker flags that the linker needs in order to be aware of this file. You can do so via the linkopts attribute.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_so-alwayslink"></a>alwayslink |  (Unsupported) Not yet implemented.   | Boolean | optional |  `True`  |

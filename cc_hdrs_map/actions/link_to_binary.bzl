@@ -13,11 +13,9 @@ def _link_to_binary_impl(
         features = [],
         disabled_features = [],
         deps = [],
-        link_deps_statically = False,
         user_link_flags = [],
         stamp = 0,
         additional_inputs = [],
-        additional_outputs = [],
         variables_extension = {}):
     """Create execute binary.
 
@@ -36,7 +34,6 @@ def _link_to_binary_impl(
         features: list of features specified for the linking
         disabled_features = list of disabled features specified for the linking
         deps: list of dependencies provided for the linking
-        link_deps_statically: True to link dependencies statically, False dynamically.
         user_link_flags: additional list of linker options.
         stamp: whether to include build information in the linked executable,
             if output_type is 'executable'.If 1, build information is
@@ -45,7 +42,6 @@ def _link_to_binary_impl(
             the --[no]stamp flag. This should be unset (or set to 0) when
             generating the executable output for test rules.
         additional_inputs: for additional inputs to the linking action, e.g.: linking scripts
-        additional_outputs: for additional outputs to the linking action, e.g.: map files.
         variables_extension: additional variables to pass to the toolchain configuration when create link command line
     """
     if not configure_features_func:
@@ -89,7 +85,7 @@ def _link_to_binary_impl(
         ),
         cc_toolchain = cc_toolchain,
         output_type = "executable",
-        link_deps_statically = link_deps_statically,
+        link_deps_statically = True,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
         user_link_flags = user_link_flags,
@@ -97,6 +93,7 @@ def _link_to_binary_impl(
         # Adding transitive sols makes the compilation
         # work with --unresolved-symbols='report-all'
         additional_inputs = additional_inputs + transitive_sols,
+        variables_extension = variables_extension,
     )
 
 link_to_binary = subrule(
