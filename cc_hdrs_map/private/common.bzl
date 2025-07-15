@@ -1,7 +1,7 @@
 """ Contains common logic shared between rules implementation(s). """
 
 def prepare_default_runfiles(attr_data, ctx_runfiles_fun):
-    """ aaa """
+    """ The default list of runfiles, gathered from the data attribute. """
     runfiles = []
     for data_dep in attr_data:
         if data_dep[DefaultInfo].data_runfiles.files:

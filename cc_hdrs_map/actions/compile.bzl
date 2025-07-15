@@ -164,7 +164,7 @@ def _compile_impl(
         sctx,
         input_hdrs_map = hdrs_map,
         input_hdrs = hdrs,
-        input_implementation_hdrs = implementation_hdrs,
+        input_implementation_hdrs = implementation_hdrs + cc_helper.extract_headers(srcs),
         input_deps = deps,
         input_includes = includes,
     )
@@ -203,7 +203,7 @@ def _compile_impl(
         #
         # Source files
         # TODO: Guard against duplicates
-        srcs = srcs,
+        srcs = cc_helper.extract_sources(srcs),
         # TODO: Guard against duplicates, read headers from srcs
         public_hdrs = hdrs,
         private_hdrs = implementation_hdrs,
