@@ -2,6 +2,7 @@
 
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_bin_attrs")
+load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")
 
 CC_BIN_ATTRS = get_cc_bin_attrs()
 
@@ -13,24 +14,12 @@ def _cc_bin_impl(ctx):
         **actions.link_to_binary_kwargs(ctx, CC_BIN_ATTRS)
     )
 
-    runfiles = []
-
-    # TODO: Extract to separate module
-    for data_dep in ctx.attr.data:
-        if data_dep[DefaultInfo].data_runfiles.files:
-            runfiles.append(data_dep[DefaultInfo].data_runfiles)
-        else:
-            # This branch ensures interop with custom Starlark rules following
-            # https://bazel.build/extending/rules#runfiles_features_to_avoid
-            runfiles.append(ctx.runfiles(transitive_files = data_dep[DefaultInfo].files))
-            runfiles.append(data_dep[DefaultInfo].default_runfiles)
-
     return [
         DefaultInfo(
             executable = linking_outputs.executable,
             files = depset([linking_outputs.executable]),
             runfiles = ctx.runfiles(
-                files = runfiles,
+                files = prepare_default_runfiles(ctx.attr.data, ctx.runfiles),
             ),
         ),
     ]

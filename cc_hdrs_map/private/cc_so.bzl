@@ -3,6 +3,7 @@
 load("@rules_cc//cc/common:cc_shared_library_info.bzl", "CcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_so_attrs")
+load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo")
 
 CC_SO_ATTRS = get_cc_so_attrs()
@@ -14,18 +15,7 @@ def _cc_so_impl(ctx):
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
 
-    runfiles = []
-
-    # TODO: Extract to separate module
-    for data_dep in ctx.attr.data:
-        if data_dep[DefaultInfo].data_runfiles.files:
-            runfiles.append(data_dep[DefaultInfo].data_runfiles)
-        else:
-            # This branch ensures interop with custom Starlark rules following
-            # https://bazel.build/extending/rules#runfiles_features_to_avoid
-            runfiles.append(ctx.runfiles(transitive_files = data_dep[DefaultInfo].files))
-            runfiles.append(data_dep[DefaultInfo].default_runfiles)
-
+    runfiles = prepare_default_runfiles(ctx.attr.data, ctx.runfiles)
     output_files = []
     if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
         runfiles.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
