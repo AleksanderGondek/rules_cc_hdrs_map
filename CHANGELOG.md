@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.8.1 - 2025-07-15
+#### Bug Fixes
+- **(cog)** bumping of project version in MODULE.bazel files - (e59e356) - Aleksander Gondek
+
+- - -
+
 ## v0.8.0 - 2025-07-15
 #### Features
 - **(compile)** treat hdrs from srcs as implementation hdrs - (0e68b00) - Aleksander Gondek

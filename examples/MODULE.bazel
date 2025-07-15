@@ -1,9 +1,9 @@
 module(
     name = "rules_cc_hdrs_map_examples",
-    version = "0.3.1",
+    version = "0.8.1",
 )
 
-bazel_dep(name = "rules_cc_hdrs_map", version = "0.3.1")
+bazel_dep(name = "rules_cc_hdrs_map", version = "0.8.1")
 bazel_dep(name = "rules_cc", version = "0.1.2")
 bazel_dep(name = "platforms", version = "1.0.0")
 
