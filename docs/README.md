@@ -27,8 +27,6 @@ cc_bin(
     name = "foo",
     srcs = [
         "foo.cpp",
-    ],
-    hdrs = [
         "foo.hpp",
     ],
     hdrs_map = {
