@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.0 - 2025-07-15
+#### Features
+- **(deps)** update rules_cc to 0.1.3 - (276e857) - Aleksander Gondek
+
+- - -
+
 ## v0.8.1 - 2025-07-15
 #### Bug Fixes
 - **(cog)** bumping of project version in MODULE.bazel files - (e59e356) - Aleksander Gondek
