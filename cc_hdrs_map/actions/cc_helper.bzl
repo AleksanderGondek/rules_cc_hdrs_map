@@ -2,6 +2,61 @@
 
 load("@rules_cc//cc/common:cc_helper.bzl", rules_cc_helper = "cc_helper")
 
+# TODO: Perhaps a PR to `rules_cc` to expose extensions method?
+# https://github.com/bazelbuild/bazel/blob/6d811c80720584eac50372b866d063aebd37e2e5/src/main/starlark/builtins_bzl/common/cc/cc_helper_internal.bzl#L94
+CC_HEADER_EXTENSIONS = [
+    ".h",
+    ".hh",
+    ".hpp",
+    ".ipp",
+    ".hxx",
+    ".h++",
+    ".inc",
+    ".inl",
+    ".tlh",
+    ".tli",
+    ".H",
+    ".tcc",
+]
+CC_SOURCE_EXTENSIONS = [
+    "c",
+    ".cc",
+    ".cpp",
+    ".cxx",
+    ".c++",
+    ".C",
+    ".cu",
+    ".cl",
+]
+
+def _extract_headers(files):
+    hdrs = []
+    if not files:
+        return hdrs
+
+    for file in files:
+        extension = "." + file.extension
+        if not extension in CC_HEADER_EXTENSIONS:
+            continue
+
+        hdrs.append(file)
+
+    return hdrs
+
+def _extract_sources(files):
+    srcs = []
+    if not files:
+        return srcs
+
+    for file in files:
+        extension = "." + file.extension
+        if not extension in CC_SOURCE_EXTENSIONS:
+            continue
+
+        srcs.append(file)
+
+    return srcs
+
 # Author soap box:
 # I do not understand the obsession with making everything private,
 # especially that Starlark is based on Python.
@@ -264,6 +319,8 @@ def _get_linking_opts(sctx, opts, additional_make_variable_substitutions = {}, a
     return results
 
 cc_helper = struct(
+    extract_headers = _extract_headers,
+    extract_sources = _extract_sources,
     get_compilation_defines = _get_compilation_defines,
     get_compilation_opts = _get_compilation_opts,
     get_linking_opts = _get_linking_opts,

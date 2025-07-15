@@ -1,5 +1,7 @@
 """ Contains common configuration-related entities used by cc_hdrs_map rules. """
 
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSIONS", "CC_SOURCE_EXTENSIONS")
+
 _COMMON_RULES_ATTRS = {
     "data": struct(
         attr = attr.label_list(
@@ -30,14 +32,8 @@ _COMMON_RULES_ATTRS = {
     "srcs": struct(
         attr = attr.label_list(
             mandatory = True,
-            allow_files = [
-                ".c",
-                ".cc",
-                ".cpp",
-                ".cxx",
-                ".c++",
-                ".C",
-            ],
+            # Perhaps in future we can disallow headers here
+            allow_files = CC_SOURCE_EXTENSIONS + CC_HEADER_EXTENSIONS,
             doc = "The list of source files.",
         ),
         as_action_param = struct(
@@ -49,15 +45,7 @@ _COMMON_RULES_ATTRS = {
     ),
     "hdrs": struct(
         attr = attr.label_list(
-            allow_files = [
-                ".h",
-                ".hh",
-                ".hpp",
-                ".hxx",
-                ".inc",
-                ".inl",
-                ".H",
-            ],
+            allow_files = CC_HEADER_EXTENSIONS,
             doc = """ 
         List of headers that may be included by dependent rules transitively.
         Notice: the cutoff happens during compilation.
@@ -73,15 +61,7 @@ _COMMON_RULES_ATTRS = {
     ),
     "implementation_hdrs": struct(
         attr = attr.label_list(
-            allow_files = [
-                ".h",
-                ".hh",
-                ".hpp",
-                ".hxx",
-                ".inc",
-                ".inl",
-                ".H",
-            ],
+            allow_files = CC_HEADER_EXTENSIONS,
             doc = """
         List of headers that CANNOT be included by dependent rules.
         Notice: the cutoff happens during compilation.

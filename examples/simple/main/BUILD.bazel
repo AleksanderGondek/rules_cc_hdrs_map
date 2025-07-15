@@ -4,10 +4,25 @@ load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_bin")
 
 cc_bin(
     name = "main",
-    srcs = ["main.cpp"],
+    srcs = [
+        "main.cpp",
+        "main.hpp",
+    ],
+    copts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
     hdrs_map = {
         "**/messenger.hpp": ["jolly/{filename}"],
+        "**/main.hpp": ["lucky/lucky.hpp"],
     },
+    linkopts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wl,--unresolved-symbols=report-all",
+    ],
     deps = [
         "//simple/messenger:libMessenger",
     ],
