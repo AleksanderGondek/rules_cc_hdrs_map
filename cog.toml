@@ -10,9 +10,9 @@ skip_ci = "[skip ci]"
 skip_untracked = false
 
 pre_bump_hooks = [
-  '''sed -i "3s/    version = \"[0-9]\.[0-9]\.[0.9]\",/    version = \"{{version}}\",/" MODULE.bazel''',
-  '''sed -i "3s/    version = \"[0-9]\.[0-9]\.[0.9]\",/    version = \"{{version}}\",/" examples/MODULE.bazel''',
-  '''sed -i "6s/, version = \"[0-9]\.[0-9]\.[0.9]\")/, version = \"{{version}}\")/" examples/MODULE.bazel''',
+  '''sed -i -E "3s/    version = \"[0-9]+\.[0-9]+\.[0-9]+\",/    version = \"{{version}}\",/" MODULE.bazel''',
+  '''sed -i -E "3s/    version = \"[0-9]+\.[0-9]+\.[0-9]+\",/    version = \"{{version}}\",/" examples/MODULE.bazel''',
+  '''sed -i -E "6s/version = \"[0-9]+\.[0-9]+\.[0-9]+\"/version = \"{{version}}\"/" examples/MODULE.bazel''',
   "./pre-commit.hook.sh",
   "bazelisk test //... && bazelisk shutdown",
   "cd examples && bazelisk build //... && bazelisk shutdown",
