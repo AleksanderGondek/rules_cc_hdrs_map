@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.8.0 - 2025-07-15
+#### Features
+- **(compile)** treat hdrs from srcs as implementation hdrs - (0e68b00) - Aleksander Gondek
+#### Refactoring
+- default runfiles handling - (fc1e5cc) - Aleksander Gondek
+#### Tests
+- **(examples)** extended the simple targets - (c3e9e13) - Aleksander Gondek
+
+- - -
+
 ## v0.7.0 - 2025-07-14
 #### Features
 - **(compile)** improve compile action implementation - (ab06851) - Aleksander Gondek
