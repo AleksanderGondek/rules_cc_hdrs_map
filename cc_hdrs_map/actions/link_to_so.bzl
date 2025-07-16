@@ -31,6 +31,7 @@ def _merge_cc_shared_library_infos(deps):
 def _link_to_so_impl(
         sctx,
         compilation_outputs,
+        extra_ctx_members = None,
         configure_features_func = [],
         features = [],
         disabled_features = [],
@@ -95,7 +96,7 @@ def _link_to_so_impl(
         linking_contexts = [cc_common.create_linking_context(
             linker_inputs = depset(direct = linking_inputs, order = "topological"),
         )],
-        user_link_flags = cc_helper.get_linking_opts(sctx, user_link_flags, additional_inputs),
+        user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
         stamp = 0,
         # I am leaving this in because I am petty
         # Error in check_private_api: file '@@rules_cc_hdrs_map+//cc_hdrs_map/actions:link_to_so.bzl' cannot use private API

@@ -78,6 +78,7 @@ def prepare_for_compilation(
 
 def _compile_impl(
         sctx,
+        extra_ctx_members = None,
         configure_features_func = None,
         features = [],
         disabled_features = [],
@@ -216,12 +217,12 @@ def _compile_impl(
         quote_includes = quote_includes,
         system_includes = system_includes,
         # Defines
-        defines = cc_helper.get_compilation_defines(sctx, defines, deps, amvs, []),
-        local_defines = cc_helper.get_compilation_defines(sctx, local_defines, deps, amvs, additional_inputs) + cc_helper.get_local_defines_for_runfiles_lookup(sctx, deps),
+        defines = cc_helper.get_compilation_defines(sctx, extra_ctx_members, defines, deps, amvs, []),
+        local_defines = cc_helper.get_compilation_defines(sctx, extra_ctx_members, local_defines, deps, amvs, additional_inputs) + cc_helper.get_local_defines_for_runfiles_lookup(sctx, deps),
         # Cflags
-        user_compile_flags = cc_helper.get_compilation_opts(sctx, user_compile_flags, feature_configuration, amvs, additional_inputs),
-        conly_flags = cc_helper.get_compilation_opts(sctx, conly_flags, feature_configuration, amvs, additional_inputs),
-        cxx_flags = cc_helper.get_compilation_opts(sctx, cxx_flags, feature_configuration, amvs, additional_inputs),
+        user_compile_flags = cc_helper.get_compilation_opts(sctx, extra_ctx_members, user_compile_flags, feature_configuration, amvs, additional_inputs),
+        conly_flags = cc_helper.get_compilation_opts(sctx, extra_ctx_members, conly_flags, feature_configuration, amvs, additional_inputs),
+        cxx_flags = cc_helper.get_compilation_opts(sctx, extra_ctx_members, cxx_flags, feature_configuration, amvs, additional_inputs),
         disallow_pic_outputs = disallow_pic_outputs,
         disallow_nopic_outputs = disallow_nopic_outputs,
         # Apple framework
