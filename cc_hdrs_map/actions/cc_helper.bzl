@@ -19,7 +19,7 @@ CC_HEADER_EXTENSIONS = [
     ".tcc",
 ]
 CC_SOURCE_EXTENSIONS = [
-    "c",
+    ".c",
     ".cc",
     ".cpp",
     ".cxx",
