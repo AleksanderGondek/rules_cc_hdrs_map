@@ -68,16 +68,16 @@ def _extract_sources(files):
 # Source: https://github.com/bazelbuild/rules_cc/blob/3dce172deec2a4563c28eae02a8bb18555abafb2/cc/common/cc_helper.bzl#L140
 # Source: https://github.com/bazelbuild/bazel/blob/49e43bbd4a3a3aa5f0f00158dff15914b69b6e85/src/main/starlark/builtins_bzl/common/cc/cc_library.bzl#L53
 
-def _lookup_var(ctx, additional_vars, var):
-    expanded_make_var_ctx = ctx.var.get(var)
+def _lookup_var(sctx, extra_ctx_members, additional_vars, var):
+    expanded_make_var_ctx = extra_ctx_members.var.get(var)
     expanded_make_var_additional = additional_vars.get(var)
     if expanded_make_var_additional != None:
         return expanded_make_var_additional
     if expanded_make_var_ctx != None:
         return expanded_make_var_ctx
-    fail("{}: {} not defined".format(ctx.label, "$(" + var + ")"))
+    fail("{}: {} not defined".format(sctx.label, "$(" + var + ")"))
 
-def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets = []):
+def _expand_nested_variable(sctx, extra_ctx_members, additional_vars, exp, execpath = True, targets = []):
     # If make variable is predefined path variable(like $(location ...))
     # we will expand it first.
     if exp.find(" ") != -1:
@@ -85,8 +85,8 @@ def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets 
             if exp.startswith("location"):
                 exp = exp.replace("location", "rootpath", 1)
         data_targets = []
-        if ctx.attr.data != None:
-            data_targets = ctx.attr.data
+        if extra_ctx_members.data_attr != None:
+            data_targets = extra_ctx_members.data_attr
 
         # Make sure we do not duplicate targets.
         unified_targets_set = {}
@@ -94,7 +94,7 @@ def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets 
             unified_targets_set[data_target] = True
         for target in targets:
             unified_targets_set[target] = True
-        return ctx.expand_location("$({})".format(exp), targets = unified_targets_set.keys())
+        return extra_ctx_members.expand_location("$({})".format(exp), targets = unified_targets_set.keys())
 
     # Recursively expand nested make variables, but since there is no recursion
     # in Starlark we will do it via for loop.
@@ -105,7 +105,7 @@ def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets 
     # 10 seems to be a reasonable number, since it is highly unexpected
     # to have nested make variables which are expanding more than 10 times.
     for _ in range(10):
-        exp = _lookup_var(ctx, additional_vars, exp)
+        exp = _lookup_var(sctx, extra_ctx_members, additional_vars, exp)
         if len(exp) >= 3 and exp[0] == "$" and exp[1] == "(" and exp[len(exp) - 1] == ")":
             # Try to expand once more.
             exp = exp[2:len(exp) - 1]
@@ -117,7 +117,7 @@ def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets 
         fail("potentially unbounded recursion during expansion of {}".format(exp))
     return exp
 
-def _expand(ctx, expression, targets, additional_make_variable_substitutions, execpath = True):
+def _expand(sctx, extra_ctx_members, expression, targets, additional_make_variable_substitutions, execpath = True):
     idx = 0
     last_make_var_end = 0
     result = []
@@ -159,7 +159,7 @@ def _expand(ctx, expression, targets, additional_make_variable_substitutions, ex
                 #   last_make_var_end  make_var_start make_var_end
                 result.append(expression[last_make_var_end:make_var_start - 1])
                 make_var = expression[make_var_start + 1:make_var_end]
-                exp = _expand_nested_variable(ctx, additional_make_variable_substitutions, make_var, execpath, targets)
+                exp = _expand_nested_variable(sctx, extra_ctx_members, additional_make_variable_substitutions, make_var, execpath, targets)
                 result.append(exp)
 
                 # Update indexes.
@@ -175,30 +175,30 @@ def _expand(ctx, expression, targets, additional_make_variable_substitutions, ex
 # Tries to expand a single make variable from token.
 # If token has additional characters other than ones
 # corresponding to make variable returns None.
-def _expand_single_make_variable(ctx, token, additional_make_variable_substitutions):
+def _expand_single_make_variable(sctx, extra_ctx_members, token, additional_make_variable_substitutions):
     if len(token) < 3:
         return None
     if token[0] != "$" or token[1] != "(" or token[len(token) - 1] != ")":
         return None
     unexpanded_var = token[2:len(token) - 1]
-    expanded_var = _expand_nested_variable(ctx, additional_make_variable_substitutions, unexpanded_var)
+    expanded_var = _expand_nested_variable(sctx, extra_ctx_members, additional_make_variable_substitutions, unexpanded_var)
     return expanded_var
 
-def _expand_make_variables_for_copts(ctx, tokenization, unexpanded_tokens, additional_make_variable_substitutions, additional_inputs = []):
+def _expand_make_variables_for_copts(sctx, extra_ctx_members, tokenization, unexpanded_tokens, additional_make_variable_substitutions, additional_inputs = []):
     tokens = []
     targets = []
     for additional_compiler_input in additional_inputs:
         targets.append(additional_compiler_input)
     for token in unexpanded_tokens:
         if tokenization:
-            expanded_token = _expand(ctx, token, targets, additional_make_variable_substitutions)
+            expanded_token = _expand(sctx, extra_ctx_members, token, targets, additional_make_variable_substitutions)
             rules_cc_helper.tokenize(tokens, expanded_token)
         else:
-            exp = _expand_single_make_variable(ctx, token, additional_make_variable_substitutions)
+            exp = _expand_single_make_variable(sctx, extra_ctx_members, token, additional_make_variable_substitutions)
             if exp != None:
                 rules_cc_helper.tokenize(tokens, exp)
             else:
-                tokens.append(_expand(ctx, token, targets, additional_make_variable_substitutions))
+                tokens.append(_expand(sctx, extra_ctx_members, token, targets, additional_make_variable_substitutions))
     return tokens
 
 def _tool_path(cc_toolchain, tool):
@@ -283,13 +283,13 @@ def _get_local_defines_for_runfiles_lookup(ctx, all_deps):
 
 # == PATCHWORK ENDS ===
 
-def _get_compilation_defines(sctx, defines = [], deps = [], additional_make_variable_substitutions = {}, additional_targets = []):
+def _get_compilation_defines(sctx, extra_ctx_members, defines = [], deps = [], additional_make_variable_substitutions = {}, additional_targets = []):
     targets = [dep for dep in deps]
     targets.extend(additional_targets)
 
     results = []
     for define in defines:
-        expanded_define = _expand(sctx, define, targets, additional_make_variable_substitutions)
+        expanded_define = _expand(sctx, extra_ctx_members, define, targets, additional_make_variable_substitutions)
 
         # Author's soap box: love the design of tokenize not returning a list..
         tokens = []
@@ -304,16 +304,16 @@ def _get_compilation_defines(sctx, defines = [], deps = [], additional_make_vari
 
     return results
 
-def _get_compilation_opts(sctx, opts, feature_configuration, additional_make_variable_substitutions = {}, additional_inputs = []):
+def _get_compilation_opts(sctx, extra_ctx_members, opts, feature_configuration, additional_make_variable_substitutions = {}, additional_inputs = []):
     tokenization = not (cc_common.is_enabled(feature_configuration = feature_configuration, feature_name = "no_copts_tokenization"))
-    return _expand_make_variables_for_copts(sctx, tokenization, opts, additional_make_variable_substitutions, additional_inputs)
+    return _expand_make_variables_for_copts(sctx, extra_ctx_members, tokenization, opts, additional_make_variable_substitutions, additional_inputs)
 
-def _get_linking_opts(sctx, opts, additional_make_variable_substitutions = {}, additional_inputs = []):
+def _get_linking_opts(sctx, extra_ctx_members, opts, additional_make_variable_substitutions = {}, additional_inputs = []):
     # TODO: Is this expansion sufficienct?
     results = []
     for opt in opts:
         results.append(
-            _expand(sctx, opt, additional_inputs, additional_make_variable_substitutions),
+            _expand(sctx, extra_ctx_members, opt, additional_inputs, additional_make_variable_substitutions),
         )
 
     return results

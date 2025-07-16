@@ -7,6 +7,11 @@ load(":link_to_so.bzl", _link_to_so = "link_to_so")
 
 def _attrs_into_action_kwargs(ctx, rule_attrs, action_name):
     compile_kwargs = {
+        "extra_ctx_members": struct(
+            data_attr = ctx.attr.data,
+            expand_location = ctx.expand_location,
+            var = ctx.var,
+        ),
         "configure_features_func": lambda cc_toolchain, features = [], disabled_features = []: cc_common.configure_features(
             ctx = ctx,
             cc_toolchain = cc_toolchain,

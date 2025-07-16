@@ -10,6 +10,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 def _link_to_binary_impl(
         sctx,
         compilation_outputs,
+        extra_ctx_members = None,
         configure_features_func = [],
         features = [],
         disabled_features = [],
@@ -89,7 +90,7 @@ def _link_to_binary_impl(
         link_deps_statically = True,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
-        user_link_flags = cc_helper.get_linking_opts(sctx, user_link_flags, additional_inputs),
+        user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
         stamp = stamp,
         # Adding transitive sols makes the compilation
         # work with --unresolved-symbols='report-all'

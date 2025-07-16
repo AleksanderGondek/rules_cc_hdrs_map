@@ -26,6 +26,9 @@ cc_bin(
         "-Werror",
         "-Wl,--unresolved-symbols=report-all",
     ],
+    # This executes the path responsible for
+    # make variables substitution
+    local_defines = ["$(COMPILATION_MODE)"],
     deps = [
         "//simple/messenger:libMessenger",
     ],

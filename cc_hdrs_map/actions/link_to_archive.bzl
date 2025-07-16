@@ -10,6 +10,7 @@ load(
 def _link_to_archive_impl(
         sctx,
         compilation_outputs,
+        extra_ctx_members = None,
         configure_features_func = [],
         features = [],
         disabled_features = [],
