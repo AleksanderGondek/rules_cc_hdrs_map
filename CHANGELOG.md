@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.1 - 2025-07-16
+#### Bug Fixes
+- **(cc_helper)** make variables substitutions - (44af14f) - Aleksander Gondek
+- **(cc_helper)** '.c' source file extension represented - (e82a140) - Aleksander Gondek
+- **(link_to_so)** failing on 'link_once_static_libs' being None - (e6577ca) - Aleksander Gondek
+- **(runfiles)** default propagation - (4d07cbb) - Aleksander Gondek
+
+- - -
+
 ## v0.9.0 - 2025-07-15
 #### Features
 - **(deps)** update rules_cc to 0.1.3 - (276e857) - Aleksander Gondek
