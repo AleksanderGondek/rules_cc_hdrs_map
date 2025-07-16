@@ -15,7 +15,7 @@ def _cc_so_impl(ctx):
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
 
-    runfiles = prepare_default_runfiles(ctx.attr.data, ctx.runfiles)
+    runfiles = []
     output_files = []
     if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
         runfiles.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
@@ -25,12 +25,13 @@ def _cc_so_impl(ctx):
         runfiles.append(linking_outputs.library_to_link.dynamic_library)
         output_files.append(linking_outputs.library_to_link.dynamic_library)
 
+    # print(ctx.label.name)
+    # print(prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = runfiles))
+
     return [
         DefaultInfo(
             files = depset(output_files),
-            runfiles = ctx.runfiles(
-                files = runfiles,
-            ),
+            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = runfiles),
         ),
         CcSharedLibraryInfo(
             dynamic_deps = shared_cc.dynamic_deps,

@@ -1,15 +1,29 @@
 """ Contains common logic shared between rules implementation(s). """
 
-def prepare_default_runfiles(attr_data, ctx_runfiles_fun):
-    """ The default list of runfiles, gathered from the data attribute. """
+def _retrieve_runfiles(target):
+    # sequence of runfile objects
     runfiles = []
-    for data_dep in attr_data:
-        if data_dep[DefaultInfo].data_runfiles.files:
-            runfiles.append(data_dep[DefaultInfo].data_runfiles)
-        else:
-            # This branch ensures interop with custom Starlark rules following
-            # https://bazel.build/extending/rules#runfiles_features_to_avoid
-            runfiles.append(ctx_runfiles_fun(transitive_files = data_dep[DefaultInfo].files))
-            runfiles.append(data_dep[DefaultInfo].default_runfiles)
+
+    # Handle 'feature to avoid' (data_files, default_runfiles)
+    # https://bazel.build/extending/rules#runfiles_features_to_avoid
+    for runfiles_source in ["runfiles", "data_files", "default_runfiles"]:
+        source = getattr(target[DefaultInfo], runfiles_source, None)
+        if not source:
+            continue
+
+        # TODO: Perhaps trim down the empty depsets?
+        runfiles.append(source)
 
     return runfiles
+
+def prepare_default_runfiles(ctx_runfiles_fun, attr_data, attr_deps, files = []):
+    """ The default list of runfiles, gathered from the data attribute. """
+
+    # sequence of runfile objects
+    runfiles = []
+    for attr in [attr_data, attr_deps]:
+        for target in attr:
+            runfiles.extend(_retrieve_runfiles(target))
+
+    all_runfiles = ctx_runfiles_fun(files = files)
+    return all_runfiles.merge_all(runfiles)
