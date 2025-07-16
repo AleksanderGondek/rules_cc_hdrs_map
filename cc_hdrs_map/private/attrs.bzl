@@ -5,6 +5,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSI
 _COMMON_RULES_ATTRS = {
     "data": struct(
         attr = attr.label_list(
+            allow_files = True,
             default = [],
             doc = """
                 The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.

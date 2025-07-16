@@ -13,6 +13,9 @@ cc_bin(
         "-Wextra",
         "-Werror",
     ],
+    # This executes the path responsbile for
+    # feeding files into runfiles.
+    data = [":nothing.txt"],
     hdrs_map = {
         "**/messenger.hpp": ["jolly/{filename}"],
         "**/main.hpp": ["lucky/lucky.hpp"],
