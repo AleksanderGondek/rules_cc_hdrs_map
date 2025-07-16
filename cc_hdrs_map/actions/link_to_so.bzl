@@ -120,7 +120,7 @@ def _link_to_so_impl(
         dynamic_deps = _merge_cc_shared_library_infos(deps),
         exports = exports,
         linker_input = linker_input,
-        link_once_static_libs = None,
+        link_once_static_libs = [],
     ), linking_outputs
 
 link_to_so = subrule(
