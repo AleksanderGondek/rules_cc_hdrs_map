@@ -9,3 +9,12 @@ bzl_library(
     srcs = ["hdrs_map.bzl"],
     deps = ["//cc_hdrs_map/actions:copy_file"],
 )
+
+bzl_library(
+    name = "hdrs_map_info",
+    srcs = ["hdrs_map_info.bzl"],
+    deps = [
+        ":hdrs_map",
+        "//cc_hdrs_map/actions:copy_file",
+    ],
+)

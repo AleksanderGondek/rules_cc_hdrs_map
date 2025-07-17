@@ -6,7 +6,8 @@ load(
     "use_cc_toolchain",
 )
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "HdrsMapInfo", "materialize_hdrs_mapping", "merge_hdrs_maps_info_from_deps")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "materialize_hdrs_mapping", "merge_hdrs_maps_info_from_deps")
 
 def prepare_for_compilation(
         sctx,
@@ -29,10 +30,14 @@ def prepare_for_compilation(
         input_deps: dependencies specified for the action
         input_includes: include statements specified for the action
     """
-    hdrs_map = input_hdrs_map if input_hdrs_map else {}
     hdrs = [h for h in input_hdrs]
     implementation_hdrs = [h for h in input_implementation_hdrs]
     deps = [d for d in input_deps]
+
+    hdrs_map = input_hdrs_map if input_hdrs_map else new_hdrs_map()
+
+    # Pattern of '{filename}' resolves to any direct header file of the rule instance
+    hdrs_map.pin_down_non_globs(hdrs = hdrs + implementation_hdrs)
 
     # Merge with deps
     deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdrs_maps_info_from_deps(
@@ -84,7 +89,7 @@ def _compile_impl(
         disabled_features = [],
         # Sources
         srcs = [],
-        hdrs_map = {},
+        hdrs_map = None,
         hdrs = [],
         implementation_hdrs = [],
         deps = [],
@@ -118,7 +123,7 @@ def _compile_impl(
         features: list of features specified for the compilation
         disabled_features = list of disabled features specified for the compilation
         srcs: the list of source files to be compiled.
-        hdrs_map: the list of HdrsMapInfo providers that should be used during compilation,
+        hdrs_map: instance of hdrs_map struct, describing intended mapping for the header files.
         hdrs: list of headers needed for compilation of srcs and may be
             included by dependent rules transitively
         implementation_hdrs: list of headers needed for compilation of srcs and NOT to be

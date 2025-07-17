@@ -268,7 +268,7 @@ Represents grouping of CC header files, alongsdie with their intended include pa
 | :------------- | :------------- |
 | <a id="HdrsMapInfo-hdrs"></a>hdrs |  Headers which should be exposed after the compilation is done.    |
 | <a id="HdrsMapInfo-implementation_hdrs"></a>implementation_hdrs |  Headers that should not be propagated after the compilation.    |
-| <a id="HdrsMapInfo-hdrs_map"></a>hdrs_map |  (string_list_dict) which represents mapping between pattern and its intended include paths (i.e. "**/foo.hpp": ["bar/{filename}"])    |
+| <a id="HdrsMapInfo-hdrs_map"></a>hdrs_map |  (hdrs_map struct) object describing desired header file mappings    |
 | <a id="HdrsMapInfo-deps"></a>deps |  CcInfo-aware dependencies that need to be propagated, for this provider to compile and link    |
 
 
@@ -354,5 +354,27 @@ actions.link_to_so_kwargs(<a href="#actions.link_to_so_kwargs-ctx">ctx</a>, <a h
 | :------------- | :------------- | :------------- |
 | <a id="actions.link_to_so_kwargs-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
 | <a id="actions.link_to_so_kwargs-rule_attrs"></a>rule_attrs |  <p align="center"> - </p>   |  none |
+
+
+<a id="new_hdrs_map"></a>
+
+## new_hdrs_map
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "new_hdrs_map")
+
+new_hdrs_map(<a href="#new_hdrs_map-from_dict">from_dict</a>, <a href="#new_hdrs_map-_glob">_glob</a>, <a href="#new_hdrs_map-_non_glob">_non_glob</a>)
+</pre>
+
+Create new instance of HdrsMap struct.
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="new_hdrs_map-from_dict"></a>from_dict |  <p align="center"> - </p>   |  `{}` |
+| <a id="new_hdrs_map-_glob"></a>_glob |  <p align="center"> - </p>   |  `None` |
+| <a id="new_hdrs_map-_non_glob"></a>_non_glob |  <p align="center"> - </p>   |  `None` |
 
 
