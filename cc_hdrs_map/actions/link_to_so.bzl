@@ -70,16 +70,18 @@ def _link_to_so_impl(
     # TODO: dedup with cc_bin
     linking_inputs = []
     transitive_sols = []
+    transitive_dynamic_deps = []
 
     for dep in deps:
         if not CcSharedLibraryInfo in dep:
             continue
         dynamic_dep = dep[CcSharedLibraryInfo]
         linking_inputs.append(dynamic_dep.linker_input)
+        transitive_dynamic_deps.append(dynamic_dep.dynamic_deps)
 
-        for transitive_dynamic_dep in dynamic_dep.dynamic_deps.to_list():
-            for transitive_dynamic_lib in transitive_dynamic_dep.linker_input.libraries:
-                transitive_sols.append(transitive_dynamic_lib.dynamic_library)
+    for transitive_dynamic_dep in depset(transitive = transitive_dynamic_deps).to_list():
+        for transitive_dynamic_lib in transitive_dynamic_dep.linker_input.libraries:
+            transitive_sols.append(transitive_dynamic_lib.dynamic_library)
 
     linking_outputs = cc_common.link(
         actions = sctx.actions,

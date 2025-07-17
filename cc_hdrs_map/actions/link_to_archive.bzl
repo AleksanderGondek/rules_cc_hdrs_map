@@ -71,13 +71,14 @@ def _link_to_archive_impl(
     )
 
     # Dependency libraries to link.
-    # TODO: Not clear how to remove to_list here, see
-    # https://github.com/bazelbuild/bazel/issues/8118#issuecomment-487175926
     dep_objects = []
+    linker_inputs = []
     for context in linking_contexts:
-        for linker_input in context.linker_inputs.to_list():
-            for lib in linker_input.libraries:
-                dep_objects += lib.objects
+        linker_inputs.append(context.linker_inputs)
+
+    for linker_input in depset(transitive = linker_inputs).to_list():
+        for lib in linker_input.libraries:
+            dep_objects += lib.objects
 
     # Run linker
     args = sctx.actions.args()

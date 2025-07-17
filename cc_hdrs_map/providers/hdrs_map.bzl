@@ -197,7 +197,7 @@ def materialize_hdrs_mapping(
     materialized_hdrs_files = []
 
     for pattern, mappings in hdrs_map.items():
-        for header_file in hdrs:
+        for header_file in hdrs.to_list():
             if ".vhm" in header_file.path:
                 # This is important! Improve the check
                 continue
@@ -283,6 +283,8 @@ def merge_hdrs_maps_info_from_deps(
         (hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps): tuple
         containing list of public headers, private headers, merged hdrs_map and other dependencies.
     """
+
+    # Sequence of Depset
     hdrs = []
     implementation_hdrs = []
     hdrs_map = hdrs_map if hdrs_map else {}
@@ -294,12 +296,12 @@ def merge_hdrs_maps_info_from_deps(
             continue
 
         if dependency[HdrsMapInfo].hdrs:
-            hdrs.extend(
-                dependency[HdrsMapInfo].hdrs.to_list(),
+            hdrs.append(
+                dependency[HdrsMapInfo].hdrs,
             )
         if dependency[HdrsMapInfo].implementation_hdrs:
-            implementation_hdrs.extend(
-                dependency[HdrsMapInfo].implementation_hdrs.to_list(),
+            implementation_hdrs.append(
+                dependency[HdrsMapInfo].implementation_hdrs,
             )
         if dependency[HdrsMapInfo].hdrs_map:
             hdrs_map = merge_hdrs_map(
@@ -307,8 +309,11 @@ def merge_hdrs_maps_info_from_deps(
                 dependency[HdrsMapInfo].hdrs_map,
             )
         if dependency[HdrsMapInfo].deps:
-            hdr_maps_deps.extend(
-                dependency[HdrsMapInfo].deps.to_list(),
+            hdr_maps_deps.append(
+                dependency[HdrsMapInfo].deps,
             )
 
+    hdrs = depset(transitive = hdrs)
+    implementation_hdrs = depset(transitive = implementation_hdrs)
+    hdr_maps_deps = depset(transitive = hdr_maps_deps)
     return hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps
