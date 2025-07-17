@@ -75,9 +75,11 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_archive.bzl", _cc_archive = "cc
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_bin.bzl", _cc_bin = "cc_bin")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_hdrs.bzl", _cc_hdrs = "cc_hdrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_so.bzl", _cc_so = "cc_so")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", _HdrsMapInfo = "HdrsMapInfo")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", _new_hdrs_map = "new_hdrs_map")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", _HdrsMapInfo = "HdrsMapInfo")
 
 HdrsMapInfo = _HdrsMapInfo
+new_hdrs_map = _new_hdrs_map
 
 actions = _actions
 

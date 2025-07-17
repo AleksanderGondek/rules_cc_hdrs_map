@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "jolly/messenger.hpp"
-#include "lucky/lucky.hpp"
+#include "lucky/main.hpp"
 
 int main() {
   printRandomDeckCard();

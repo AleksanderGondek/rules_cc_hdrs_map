@@ -1,6 +1,7 @@
 """ Contains common configuration-related entities used by cc_hdrs_map rules. """
 
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSIONS", "CC_SOURCE_EXTENSIONS")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
 
 _COMMON_RULES_ATTRS = {
     "data": struct(
@@ -93,7 +94,7 @@ _COMMON_RULES_ATTRS = {
         """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: ("hdrs_map", getattr(ctx_attr, "hdrs_map", {})),
+            compile = lambda ctx_attr: ("hdrs_map", new_hdrs_map(from_dict = getattr(ctx_attr, "hdrs_map", {}))),
             link_to_archive = lambda ctx_attr: None,
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
