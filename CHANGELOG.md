@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.2 - 2025-07-17
+#### Bug Fixes
+- **(depset)** reduce and improve iteration approach - (5a33411) - Aleksander Gondek
+
+- - -
+
 ## v0.9.1 - 2025-07-16
 #### Bug Fixes
 - **(cc_helper)** make variables substitutions - (44af14f) - Aleksander Gondek
