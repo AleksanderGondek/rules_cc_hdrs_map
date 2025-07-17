@@ -39,9 +39,9 @@ def prepare_for_compilation(
         deps,
         hdrs_map,
     )
-    hdrs.extend(deps_pub_hdrs)
-    implementation_hdrs.extend(deps_prv_hdrs)
-    deps.extend(deps_deps)
+    hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
+    implementation_hdrs = depset(direct = implementation_hdrs, transitive = [deps_prv_hdrs])
+    deps = depset(direct = deps, transitive = [deps_deps])
 
     # Materialize mappings
     hdrs_extra_include_path, hdrs_extra_files = materialize_hdrs_mapping(
@@ -51,7 +51,7 @@ def prepare_for_compilation(
         hdrs,
     )
     if hdrs_extra_files:
-        hdrs.extend(hdrs_extra_files)
+        hdrs = depset(direct = hdrs_extra_files, transitive = [hdrs])
 
     implementation_hdrs_extra_include_path, implementation_hdrs_extra_files = materialize_hdrs_mapping(
         sctx.label,
@@ -60,7 +60,7 @@ def prepare_for_compilation(
         implementation_hdrs,
     )
     if implementation_hdrs_extra_files:
-        implementation_hdrs.extend(implementation_hdrs_extra_files)
+        implementation_hdrs = depset(direct = implementation_hdrs_extra_files, transitive = [implementation_hdrs])
 
     includes = input_includes if input_includes else []
     if hdrs_extra_include_path:
@@ -174,7 +174,7 @@ def _compile_impl(
     hdrs = hdrs_map_ctx.hdrs
     implementation_hdrs = hdrs_map_ctx.implementation_hdrs
     includes = hdrs_map_ctx.includes
-    deps = hdrs_map_ctx.deps
+    deps = hdrs_map_ctx.deps.to_list()
 
     compilation_contexts = [
         dep[CcInfo].compilation_context
@@ -206,8 +206,8 @@ def _compile_impl(
         # TODO: Guard against duplicates
         srcs = cc_helper.extract_sources(srcs),
         # TODO: Guard against duplicates, read headers from srcs
-        public_hdrs = hdrs,
-        private_hdrs = implementation_hdrs,
+        public_hdrs = hdrs.to_list(),
+        private_hdrs = implementation_hdrs.to_list(),
         additional_inputs = [f for t in additional_inputs for f in t.files],
         # Includes magic
         include_prefix = include_prefix,

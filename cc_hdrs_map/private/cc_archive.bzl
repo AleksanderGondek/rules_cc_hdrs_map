@@ -27,13 +27,10 @@ def _cc_archive_impl(ctx):
             linking_context = linking_results.linking_context,
         ),
         HdrsMapInfo(
-            hdrs = depset(hdrs_map_ctx.hdrs),
-            implementation_hdrs = depset(hdrs_map_ctx.implementation_hdrs),
+            hdrs = hdrs_map_ctx.hdrs,
+            implementation_hdrs = depset([]),
             hdrs_map = hdrs_map_ctx.hdrs_map,
-            deps = depset([
-                d
-                for d in hdrs_map_ctx.deps
-            ]),
+            deps = hdrs_map_ctx.deps,
         ),
     ]
 

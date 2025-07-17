@@ -16,28 +16,25 @@ def _cc_hdrs_impl(ctx):
         ctx.attr.hdrs_map if ctx.attr.hdrs_map else {},
     )
 
-    hdrs.extend(deps_pub_hdrs)
-    implementation_hdrs.extend(deps_prv_hdrs)
-    deps.extend(deps_deps)
+    hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
+    implementation_hdrs = depset(direct = implementation_hdrs, transitive = [deps_prv_hdrs])
+    deps = depset(direct = deps, transitive = [deps_deps])
 
     return [
         DefaultInfo(
             files = depset(
                 [],
                 transitive = [
-                    depset(hdrs),
-                    depset(implementation_hdrs),
+                    hdrs,
+                    implementation_hdrs,
                 ],
             ),
         ),
         HdrsMapInfo(
-            hdrs = depset(hdrs),
-            implementation_hdrs = depset(implementation_hdrs),
+            hdrs = hdrs,
+            implementation_hdrs = implementation_hdrs,
             hdrs_map = hdrs_map,
-            deps = depset([
-                d
-                for d in deps
-            ]),
+            deps = deps,
         ),
     ]
 

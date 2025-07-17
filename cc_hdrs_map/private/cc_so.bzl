@@ -25,9 +25,6 @@ def _cc_so_impl(ctx):
         runfiles.append(linking_outputs.library_to_link.dynamic_library)
         output_files.append(linking_outputs.library_to_link.dynamic_library)
 
-    # print(ctx.label.name)
-    # print(prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = runfiles))
-
     return [
         DefaultInfo(
             files = depset(output_files),
@@ -40,14 +37,11 @@ def _cc_so_impl(ctx):
             linker_input = shared_cc.linker_input,
         ),
         HdrsMapInfo(
-            hdrs = depset(hdrs_map_ctx.hdrs),
+            hdrs = hdrs_map_ctx.hdrs,
             # Implementation hdrs do not leave the scope of this lib
             implementation_hdrs = depset([]),
             hdrs_map = hdrs_map_ctx.hdrs_map,
-            deps = depset([
-                d
-                for d in hdrs_map_ctx.deps
-            ]),
+            deps = hdrs_map_ctx.deps,
         ),
     ]
 
