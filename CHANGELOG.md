@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.11.0 - 2025-07-18
+#### Features
+- **(actions)** expose prepare_for_compilarion as utility of ruleset - (9112876) - Aleksander Gondek
+
+- - -
+
 ## v0.10.0 - 2025-07-17
 #### Features
 - **(hdrs_map)** optimize the peformance - (747fbb1) - Aleksander Gondek
