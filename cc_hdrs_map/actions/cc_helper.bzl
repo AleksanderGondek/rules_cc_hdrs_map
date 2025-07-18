@@ -1,6 +1,8 @@
 """ This module serves chiefly as a vehicle for exposing 'privaete' cc_helper methods to current rule set. """
 
 load("@rules_cc//cc/common:cc_helper.bzl", rules_cc_helper = "cc_helper")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "materialize_hdrs_mapping", "merge_hdrs_maps_info_from_deps")
 
 # TODO: Perhaps a PR to `rules_cc` to expose extensions method?
 # https://github.com/bazelbuild/bazel/blob/6d811c80720584eac50372b866d063aebd37e2e5/src/main/starlark/builtins_bzl/common/cc/cc_helper_internal.bzl#L94
@@ -28,34 +30,6 @@ CC_SOURCE_EXTENSIONS = [
     ".cu",
     ".cl",
 ]
-
-def _extract_headers(files):
-    hdrs = []
-    if not files:
-        return hdrs
-
-    for file in files:
-        extension = "." + file.extension
-        if not extension in CC_HEADER_EXTENSIONS:
-            continue
-
-        hdrs.append(file)
-
-    return hdrs
-
-def _extract_sources(files):
-    srcs = []
-    if not files:
-        return srcs
-
-    for file in files:
-        extension = "." + file.extension
-        if not extension in CC_SOURCE_EXTENSIONS:
-            continue
-
-        srcs.append(file)
-
-    return srcs
 
 # Author soap box:
 # I do not understand the obsession with making everything private,
@@ -283,6 +257,34 @@ def _get_local_defines_for_runfiles_lookup(ctx, all_deps):
 
 # == PATCHWORK ENDS ===
 
+def _extract_headers(files):
+    hdrs = []
+    if not files:
+        return hdrs
+
+    for file in files:
+        extension = "." + file.extension
+        if not extension in CC_HEADER_EXTENSIONS:
+            continue
+
+        hdrs.append(file)
+
+    return hdrs
+
+def _extract_sources(files):
+    srcs = []
+    if not files:
+        return srcs
+
+    for file in files:
+        extension = "." + file.extension
+        if not extension in CC_SOURCE_EXTENSIONS:
+            continue
+
+        srcs.append(file)
+
+    return srcs
+
 def _get_compilation_defines(sctx, extra_ctx_members, defines = [], deps = [], additional_make_variable_substitutions = {}, additional_targets = []):
     targets = [dep for dep in deps]
     targets.extend(additional_targets)
@@ -318,6 +320,78 @@ def _get_linking_opts(sctx, extra_ctx_members, opts, additional_make_variable_su
 
     return results
 
+def _prepare_for_compilation(
+        sctx,
+        input_hdrs_map,
+        input_hdrs,
+        input_implementation_hdrs,
+        input_deps,
+        input_includes):
+    """Materialize information from hdrs map.
+
+    This function creates a epheremal directory, that contains all of the
+    patterns specified within hdrs_map providers, thus making them all
+    available under singular, temporary include statment.
+
+    Args:
+        sctx: subrule context
+        input_hdrs_map: list of HdrsMapInfo which should be used for materialization of compilation context
+        input_hdrs: direct headers provided to the action
+        input_implementation_hdrs: direct headers provided to the action
+        input_deps: dependencies specified for the action
+        input_includes: include statements specified for the action
+    """
+    hdrs = [h for h in input_hdrs]
+    implementation_hdrs = [h for h in input_implementation_hdrs]
+    deps = [d for d in input_deps]
+
+    hdrs_map = input_hdrs_map if input_hdrs_map else new_hdrs_map()
+
+    # Pattern of '{filename}' resolves to any direct header file of the rule instance
+    hdrs_map.pin_down_non_globs(hdrs = hdrs + implementation_hdrs)
+
+    # Merge with deps
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdrs_maps_info_from_deps(
+        deps,
+        hdrs_map,
+    )
+    hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
+    implementation_hdrs = depset(direct = implementation_hdrs, transitive = [deps_prv_hdrs])
+    deps = depset(direct = deps, transitive = [deps_deps])
+
+    # Materialize mappings
+    hdrs_extra_include_path, hdrs_extra_files = materialize_hdrs_mapping(
+        sctx.label,
+        sctx.actions,
+        hdrs_map,
+        hdrs,
+    )
+    if hdrs_extra_files:
+        hdrs = depset(direct = hdrs_extra_files, transitive = [hdrs])
+
+    implementation_hdrs_extra_include_path, implementation_hdrs_extra_files = materialize_hdrs_mapping(
+        sctx.label,
+        sctx.actions,
+        hdrs_map,
+        implementation_hdrs,
+    )
+    if implementation_hdrs_extra_files:
+        implementation_hdrs = depset(direct = implementation_hdrs_extra_files, transitive = [implementation_hdrs])
+
+    includes = input_includes if input_includes else []
+    if hdrs_extra_include_path:
+        includes.append(hdrs_extra_include_path)
+    if implementation_hdrs_extra_include_path:
+        includes.append(implementation_hdrs_extra_include_path)
+
+    return struct(
+        hdrs_map = hdrs_map,
+        hdrs = hdrs,
+        implementation_hdrs = implementation_hdrs,
+        includes = includes,
+        deps = deps,
+    )
+
 cc_helper = struct(
     extract_headers = _extract_headers,
     extract_sources = _extract_sources,
@@ -327,4 +401,5 @@ cc_helper = struct(
     get_local_defines_for_runfiles_lookup = _get_local_defines_for_runfiles_lookup,
     get_cc_flags_make_variable = _get_cc_flags_make_variable,
     get_toolchain_global_make_variables = _get_toolchain_global_make_variables,
+    prepare_for_compilation = _prepare_for_compilation,
 )

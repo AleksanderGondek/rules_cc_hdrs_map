@@ -1,5 +1,6 @@
 """ This module defines the CC compilation phase actions which are exposed publicalyl as subrules. """
 
+load(":cc_helper.bzl", _cc_helper = "cc_helper")
 load(":compile.bzl", _compile = "compile")
 load(":link_to_archive.bzl", _link_to_archive = "link_to_archive")
 load(":link_to_binary.bzl", _link_to_binary = "link_to_binary")
@@ -49,4 +50,5 @@ actions = struct(
     link_to_binary_kwargs = lambda ctx, rule_attrs: _attrs_into_action_kwargs(ctx, rule_attrs, "link_to_bin"),
     link_to_so = _link_to_so,
     link_to_so_kwargs = lambda ctx, rule_attrs: _attrs_into_action_kwargs(ctx, rule_attrs, "link_to_so"),
+    prepare_for_compilation = _cc_helper.prepare_for_compilation,
 )
