@@ -356,6 +356,37 @@ actions.link_to_so_kwargs(<a href="#actions.link_to_so_kwargs-ctx">ctx</a>, <a h
 | <a id="actions.link_to_so_kwargs-rule_attrs"></a>rule_attrs |  <p align="center"> - </p>   |  none |
 
 
+<a id="actions.prepare_for_compilation"></a>
+
+## actions.prepare_for_compilation
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "actions")
+
+actions.prepare_for_compilation(<a href="#actions.prepare_for_compilation-sctx">sctx</a>, <a href="#actions.prepare_for_compilation-input_hdrs_map">input_hdrs_map</a>, <a href="#actions.prepare_for_compilation-input_hdrs">input_hdrs</a>, <a href="#actions.prepare_for_compilation-input_implementation_hdrs">input_implementation_hdrs</a>,
+                                <a href="#actions.prepare_for_compilation-input_deps">input_deps</a>, <a href="#actions.prepare_for_compilation-input_includes">input_includes</a>)
+</pre>
+
+Materialize information from hdrs map.
+
+This function creates a epheremal directory, that contains all of the
+patterns specified within hdrs_map providers, thus making them all
+available under singular, temporary include statment.
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="actions.prepare_for_compilation-sctx"></a>sctx |  subrule context   |  none |
+| <a id="actions.prepare_for_compilation-input_hdrs_map"></a>input_hdrs_map |  list of HdrsMapInfo which should be used for materialization of compilation context   |  none |
+| <a id="actions.prepare_for_compilation-input_hdrs"></a>input_hdrs |  direct headers provided to the action   |  none |
+| <a id="actions.prepare_for_compilation-input_implementation_hdrs"></a>input_implementation_hdrs |  direct headers provided to the action   |  none |
+| <a id="actions.prepare_for_compilation-input_deps"></a>input_deps |  dependencies specified for the action   |  none |
+| <a id="actions.prepare_for_compilation-input_includes"></a>input_includes |  include statements specified for the action   |  none |
+
+
 <a id="new_hdrs_map"></a>
 
 ## new_hdrs_map

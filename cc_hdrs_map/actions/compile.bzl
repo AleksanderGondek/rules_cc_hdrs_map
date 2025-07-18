@@ -6,80 +6,6 @@ load(
     "use_cc_toolchain",
 )
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "materialize_hdrs_mapping", "merge_hdrs_maps_info_from_deps")
-
-def prepare_for_compilation(
-        sctx,
-        input_hdrs_map,
-        input_hdrs,
-        input_implementation_hdrs,
-        input_deps,
-        input_includes):
-    """Materialize information from hdrs map.
-
-    This function creates a epheremal directory, that contains all of the
-    patterns specified within hdrs_map providers, thus making them all
-    available under singular, temporary include statment.
-
-    Args:
-        sctx: subrule context
-        input_hdrs_map: list of HdrsMapInfo which should be used for materialization of compilation context
-        input_hdrs: direct headers provided to the action
-        input_implementation_hdrs: direct headers provided to the action
-        input_deps: dependencies specified for the action
-        input_includes: include statements specified for the action
-    """
-    hdrs = [h for h in input_hdrs]
-    implementation_hdrs = [h for h in input_implementation_hdrs]
-    deps = [d for d in input_deps]
-
-    hdrs_map = input_hdrs_map if input_hdrs_map else new_hdrs_map()
-
-    # Pattern of '{filename}' resolves to any direct header file of the rule instance
-    hdrs_map.pin_down_non_globs(hdrs = hdrs + implementation_hdrs)
-
-    # Merge with deps
-    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdrs_maps_info_from_deps(
-        deps,
-        hdrs_map,
-    )
-    hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
-    implementation_hdrs = depset(direct = implementation_hdrs, transitive = [deps_prv_hdrs])
-    deps = depset(direct = deps, transitive = [deps_deps])
-
-    # Materialize mappings
-    hdrs_extra_include_path, hdrs_extra_files = materialize_hdrs_mapping(
-        sctx.label,
-        sctx.actions,
-        hdrs_map,
-        hdrs,
-    )
-    if hdrs_extra_files:
-        hdrs = depset(direct = hdrs_extra_files, transitive = [hdrs])
-
-    implementation_hdrs_extra_include_path, implementation_hdrs_extra_files = materialize_hdrs_mapping(
-        sctx.label,
-        sctx.actions,
-        hdrs_map,
-        implementation_hdrs,
-    )
-    if implementation_hdrs_extra_files:
-        implementation_hdrs = depset(direct = implementation_hdrs_extra_files, transitive = [implementation_hdrs])
-
-    includes = input_includes if input_includes else []
-    if hdrs_extra_include_path:
-        includes.append(hdrs_extra_include_path)
-    if implementation_hdrs_extra_include_path:
-        includes.append(implementation_hdrs_extra_include_path)
-
-    return struct(
-        hdrs_map = hdrs_map,
-        hdrs = hdrs,
-        implementation_hdrs = implementation_hdrs,
-        includes = includes,
-        deps = deps,
-    )
 
 def _compile_impl(
         sctx,
@@ -166,7 +92,7 @@ def _compile_impl(
 
     cc_toolchain = find_cc_toolchain(sctx)
 
-    hdrs_map_ctx = prepare_for_compilation(
+    hdrs_map_ctx = cc_helper.prepare_for_compilation(
         sctx,
         input_hdrs_map = hdrs_map,
         input_hdrs = hdrs,
