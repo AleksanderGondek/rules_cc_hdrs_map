@@ -38,7 +38,7 @@ def _link_to_archive_impl(
     archive_lib_name = archive_lib_name if archive_lib_name else sctx.label.name
 
     # Opinionated part: prevent any liblibName or libName.a.a or libName.a.test.a
-    archive_lib_name = archive_lib_name.removeprefix("lib").replace(".a", "")
+    archive_lib_name = archive_lib_name.removeprefix("lib").replace(".a.", ".").removesuffix(".a")
 
     features_configuration = configure_features_func(
         cc_toolchain,
