@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.12.0 - 2025-07-20
+#### Features
+- **(rules)** support for raw fiels in data attr - (60b89eb) - Aleksander Gondek
+
+- - -
+
 ## v0.11.0 - 2025-07-18
 #### Features
 - **(actions)** expose prepare_for_compilarion as utility of ruleset - (9112876) - Aleksander Gondek
