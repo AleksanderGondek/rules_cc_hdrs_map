@@ -15,7 +15,8 @@ def _link_to_archive_impl(
         features = [],
         disabled_features = [],
         deps = [],
-        user_link_flags = []):
+        user_link_flags = [],
+        archive_lib_name = None):
     """Link into an archive file.
 
     This subrule runs the linker to create an .archive file.
@@ -27,11 +28,18 @@ def _link_to_archive_impl(
         disabled_features = list of disabled features specified for the linking
         deps: list of dependencies provided for the linking
         user_link_flags = additional list of linking options
+        archive_lib_name = name of the archive file that should be created
     """
     if not configure_features_func:
         fail("link_to_archive subrule requires for the 'configure_features_func' kwarg to be set!")
 
     cc_toolchain = find_cc_toolchain(sctx)
+
+    archive_lib_name = archive_lib_name if archive_lib_name else sctx.label.name
+
+    # Opinionated part: prevent any liblibName or libName.a.a or libName.a.test.a
+    archive_lib_name = archive_lib_name.removeprefix("lib").replace(".a", "")
+
     features_configuration = configure_features_func(
         cc_toolchain,
         features = features,
@@ -44,7 +52,7 @@ def _link_to_archive_impl(
     ]
 
     static_library = sctx.actions.declare_file(
-        "lib{name}.a".format(name = sctx.label.name.removeprefix("lib")),
+        "lib{name}.a".format(name = archive_lib_name),
     )
 
     link_tool = cc_common.get_tool_for_action(
