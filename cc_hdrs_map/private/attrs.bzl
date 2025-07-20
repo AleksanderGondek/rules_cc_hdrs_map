@@ -443,7 +443,7 @@ def get_cc_so_attrs():
                 doc = """
                 Specify the name of the created SOL file (that is decoupled from the rule instance name).
                 Note, that the 'cc_so' is opinionated and will remove any leading 'lib' prefix and any '.so' in the name
-                (mening 'libTest.so.x64.so' will become 'Test.x64' and will produce 'libTest.x64.so')
+                (meaning 'libTest.so.x64.so' will become 'Test.x64' and will produce 'libTest.x64.so')
                 """,
             ),
             as_action_param = struct(
@@ -461,7 +461,24 @@ def get_cc_so_attrs():
 
 def get_cc_archive_attrs():
     """ To be described. """
-    cc_archive_attrs = {}
+    cc_archive_attrs = {
+        "archive_lib_name": struct(
+            attr = attr.string(
+                default = "",
+                doc = """
+                Specify the name of the created .a file (that is decoupled from the rule instance name).
+                Note, that the 'cc_archive' is opinionated and will remove any leading 'lib' prefix and any '.a' in the name
+                (meaning 'libTest.a.x64.a' will become 'Test.x64' and will produce 'libTest.x64.a')
+                """,
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: ("archive_lib_name", getattr(ctx_attr, "archive_lib_name", "")),
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
+    }
     cc_archive_attrs.update(_COMMON_RULES_ATTRS)
     cc_archive_attrs.update(_CC_COMPILABLE_ATTRS)
     cc_archive_attrs.update(_CC_LIB_ATTRS)
