@@ -175,7 +175,7 @@ available during binary execution.
 <pre>
 load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_hdrs")
 
-cc_hdrs(<a href="#cc_hdrs-name">name</a>, <a href="#cc_hdrs-deps">deps</a>, <a href="#cc_hdrs-hdrs">hdrs</a>, <a href="#cc_hdrs-hdrs_map">hdrs_map</a>, <a href="#cc_hdrs-implementation_hdrs">implementation_hdrs</a>)
+cc_hdrs(<a href="#cc_hdrs-name">name</a>, <a href="#cc_hdrs-deps">deps</a>, <a href="#cc_hdrs-data">data</a>, <a href="#cc_hdrs-hdrs">hdrs</a>, <a href="#cc_hdrs-hdrs_map">hdrs_map</a>, <a href="#cc_hdrs-implementation_hdrs">implementation_hdrs</a>)
 </pre>
 
 Define header files properties.
@@ -192,6 +192,7 @@ be used with their intended include paths.
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="cc_hdrs-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
 | <a id="cc_hdrs-deps"></a>deps |  The list of dependencies of current target   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_hdrs-data"></a>data |  The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_hdrs-hdrs"></a>hdrs |  List of headers that may be included by dependent rules transitively. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
 | <a id="cc_hdrs-hdrs_map"></a>hdrs_map |  Dictionary describing paths under which header files should be avaiable as.<br><br>Keys are simple glob pathnames, used to match agains all header files avaiable in the rule. Values are list of paths to which matching header files should be mapped.<br><br>'{filename}' is special token used to signify to matching file name.<br><br>For example: '"**/*o.hpp": ["a/{filename}"]' - will ensure all hpp files with names ending with '0' will be also avaible as if they were placed in a subdirectory.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> List of strings</a> | optional |  `{}`  |
 | <a id="cc_hdrs-implementation_hdrs"></a>implementation_hdrs |  List of headers that CANNOT be included by dependent rules. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |

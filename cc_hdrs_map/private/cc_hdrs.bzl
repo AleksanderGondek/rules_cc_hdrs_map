@@ -2,6 +2,7 @@
 
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_hdrs_attrs")
+load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "merge_hdrs_maps_info_from_deps")
 
@@ -35,6 +36,7 @@ def _cc_hdrs_impl(ctx):
                     implementation_hdrs,
                 ],
             ),
+            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = ctx.files.data),
         ),
         HdrsMapInfo(
             hdrs = hdrs,
