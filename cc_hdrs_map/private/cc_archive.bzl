@@ -20,7 +20,7 @@ def _cc_archive_impl(ctx):
             files = depset(
                 linking_results.cc_linking_outputs.static_libraries,
             ),
-            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps),
+            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = linking_results.cc_linking_outputs.static_libraries),
         ),
         CcInfo(
             compilation_context = compilation_ctx,

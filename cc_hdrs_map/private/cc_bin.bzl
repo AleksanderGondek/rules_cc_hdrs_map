@@ -18,7 +18,7 @@ def _cc_bin_impl(ctx):
         DefaultInfo(
             executable = linking_outputs.executable,
             files = depset([linking_outputs.executable]),
-            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps),
+            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = ctx.files.data),
         ),
     ]
 

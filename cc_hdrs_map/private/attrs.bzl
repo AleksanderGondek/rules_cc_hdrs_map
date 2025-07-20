@@ -417,7 +417,6 @@ def get_cc_hdrs_attrs():
     """ To be described. """
     cc_hdrs_attrs = {}
     cc_hdrs_attrs.update(_COMMON_RULES_ATTRS)
-    cc_hdrs_attrs.pop("data")
     cc_hdrs_attrs.pop("srcs")
     return cc_hdrs_attrs
 
