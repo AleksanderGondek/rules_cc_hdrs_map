@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.13.0 - 2025-07-20
+#### Features
+- **(cc_archive)** custom name of the output archive - (446ce39) - Aleksander Gondek
+
+- - -
+
 ## v0.12.0 - 2025-07-20
 #### Features
 - **(rules)** support for raw fiels in data attr - (60b89eb) - Aleksander Gondek
