@@ -100,6 +100,30 @@ _COMMON_RULES_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
+    "module_interfaces": struct(
+        attr = attr.label_list(
+            doc = "(Not yet implemented)",
+            default = [],
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
+    "win_def_file": struct(
+        attr = attr.label(
+            doc = "(Will not implement) Support for Windows is not in scope of current development.",
+            default = None,
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
 }
 
 _CC_COMPILABLE_ATTRS = {
@@ -211,6 +235,20 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: ("deps", getattr(ctx_attr, "dynamic_deps", [])),
         ),
     ),
+    "implementation_deps": struct(
+        attr = attr.label_list(
+            default = [],
+            doc = """
+            (Not yet implemented) cc_common attribute for passing on implementation_deps is currently private. 
+            """,
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
     "includes": struct(
         attr = attr.string_list(
             default = [],
@@ -260,10 +298,34 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: ("user_link_flags", getattr(ctx_attr, "linkopts", [])),
         ),
     ),
+    "linkshared": struct(
+        attr = attr.bool(
+            default = False,
+            doc = "(Will not implemented) As there is clear distinction between targets that are SOLs and archives, the parameter is not applicable. ",
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
+    "linkstamp": struct(
+        attr = attr.string_list(
+            default = [],
+            doc = "(Not yet implemented)",
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
     "linkstatic": struct(
         attr = attr.bool(
             default = True,
-            doc = "(Unsupported) As there is clear distinction between targets that are SOLs and archives, the parameter is not applicable. ",
+            doc = "(Will not implement) As there is clear distinction between targets that are SOLs and archives, the parameter is not applicable. ",
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
@@ -290,11 +352,7 @@ _CC_COMPILABLE_ATTRS = {
     "malloc": struct(
         attr = attr.label(
             default = "@bazel_tools//tools/cpp:malloc",
-            doc = """
-            Override the default dependency on malloc.
-
-            By default, C++ binaries are linked against //tools/cpp:malloc, which is an empty library so the binary ends up using libc malloc. This label must refer to a cc_library. If compilation is for a non-C++ rule, this option has no effect. The value of this attribute is ignored if linkshared=True is specified. 
-            """,
+            doc = """(Not yet implemented)""",
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
@@ -303,28 +361,11 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: Implement support for module interfaces
     # TODO: Implement this
     "nocopts": struct(
         attr = attr.string(
             default = "",
-            doc = """
-            Remove matching options from the C++ compilation command. Subject to "Make" variable substitution. The value of this attribute is interpreted as a regular expression. Any preexisting COPTS that match this regular expression (including values explicitly specified in the rule's copts attribute) will be removed from COPTS for purposes of compiling this rule. This attribute should not be needed or used outside of third_party. The values are not preprocessed in any way other than the "Make" variable substitution. 
-            """,
-        ),
-        as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
-        ),
-    ),
-    # TODO: Implement this
-    "reexport_deps": struct(
-        attr = attr.label_list(
-            default = [],
-            doc = """
-            """,
+            doc = """(Not yet implemented)""",
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
@@ -383,6 +424,18 @@ _CC_LIB_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
+    "textual_hdrs": struct(
+        attr = attr.label_list(
+            default = [],
+            doc = """(Not yet implemented)""",
+        ),
+        as_action_param = struct(
+            compile = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: None,
+            link_to_bin = lambda ctx_attr: None,
+            link_to_so = lambda ctx_attr: None,
+        ),
+    ),
 }
 
 def get_cc_bin_attrs():
@@ -410,9 +463,25 @@ def get_cc_bin_attrs():
                 link_to_so = lambda ctx_attr: None,
             ),
         ),
+        # TODO: Implement this
+        "reexport_deps": struct(
+            attr = attr.label_list(
+                default = [],
+                doc = """(Not yet implemented)""",
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
     }
     cc_bin_attrs.update(_COMMON_RULES_ATTRS)
     cc_bin_attrs.update(_CC_COMPILABLE_ATTRS)
+    cc_bin_attrs.pop("implementation_deps")
+    cc_bin_attrs.pop("implementation_hdrs")
+    cc_bin_attrs.pop("linkstamp")
     return cc_bin_attrs
 
 def get_cc_hdrs_attrs():
@@ -428,9 +497,31 @@ def get_cc_so_attrs():
         "alwayslink": struct(
             attr = attr.bool(
                 default = True,
-                doc = """
-                (Unsupported) Not yet implemented.
-                """,
+                doc = """(Not yet implemented)""",
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
+        "exports_filter": struct(
+            attr = attr.string_list(
+                default = [],
+                doc = """(Not yet implemented)""",
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
+        "roots": struct(
+            attr = attr.label_list(
+                default = [],
+                doc = """(Not yet implemented)""",
             ),
             as_action_param = struct(
                 compile = lambda ctx_attr: None,
@@ -480,8 +571,23 @@ def get_cc_archive_attrs():
                 link_to_so = lambda ctx_attr: None,
             ),
         ),
+        # TODO: Implement this
+        "reexport_deps": struct(
+            attr = attr.label_list(
+                default = [],
+                doc = """(Not yet implemented)""",
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
     }
     cc_archive_attrs.update(_COMMON_RULES_ATTRS)
     cc_archive_attrs.update(_CC_COMPILABLE_ATTRS)
     cc_archive_attrs.update(_CC_LIB_ATTRS)
+    cc_archive_attrs.pop("link_extra_lib")
+    cc_archive_attrs.pop("malloc")
     return cc_archive_attrs
