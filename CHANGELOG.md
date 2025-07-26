@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.13.2 - 2025-07-26
+#### Bug Fixes
+- **(attrs)** allow raw files in additional inputs - (858bc7b) - Aleksander Gondek
+
+- - -
+
 ## v0.13.1 - 2025-07-20
 #### Bug Fixes
 - **(cc_archive|cc_so)** too eager name cleaning - (769f01f) - Aleksander Gondek
