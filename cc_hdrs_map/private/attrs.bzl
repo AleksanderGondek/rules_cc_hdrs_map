@@ -105,6 +105,7 @@ _COMMON_RULES_ATTRS = {
 _CC_COMPILABLE_ATTRS = {
     "additional_compiler_inputs": struct(
         attr = attr.label_list(
+            allow_files = True,
             default = [],
             doc = """
             Any additional files you might want to pass to the compiler command line, such as sanitizer ignorelists, for example.
@@ -120,6 +121,7 @@ _CC_COMPILABLE_ATTRS = {
     ),
     "additional_linker_inputs": struct(
         attr = attr.label_list(
+            allow_files = True,
             default = [],
             doc = """
             Any additional files that you may want to pass to the linker, for example, linker scripts.
