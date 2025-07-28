@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.14.0 - 2025-07-28
+#### Features
+- **(attrs)** notify user if using not implemented attrs - (432d336) - Aleksander Gondek
+
+- - -
+
 ## v0.13.4 - 2025-07-28
 #### Bug Fixes
 - **(additional_inputs)** properly gather items - (e562841) - Aleksander Gondek
