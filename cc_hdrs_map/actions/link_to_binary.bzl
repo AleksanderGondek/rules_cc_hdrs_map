@@ -96,7 +96,7 @@ def _link_to_binary_impl(
         stamp = stamp,
         # Adding transitive sols makes the compilation
         # work with --unresolved-symbols='report-all'
-        additional_inputs = [f for t in additional_inputs for f in t.files] + transitive_sols,
+        additional_inputs = depset(transitive_sols, transitive = [i.files for i in additional_inputs]),
         variables_extension = variables_extension,
     )
 
