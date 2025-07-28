@@ -8,13 +8,14 @@ cc_bin(
         "main.cpp",
         "main.hpp",
     ],
+    # This executes the path responsbile for
+    # feeding files into runfiles.
+    additional_compiler_inputs = [":nothing.txt"],
     copts = [
         "-Wall",
         "-Wextra",
         "-Werror",
     ],
-    # This executes the path responsbile for
-    # feeding files into runfiles.
     data = [":nothing.txt"],
     hdrs_map = {
         "**/messenger.hpp": ["jolly/{filename}"],

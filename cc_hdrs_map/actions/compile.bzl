@@ -139,7 +139,7 @@ def _compile_impl(
         # TODO: Guard against duplicates, read headers from srcs
         public_hdrs = hdrs.to_list(),
         private_hdrs = implementation_hdrs.to_list(),
-        additional_inputs = [f for t in additional_inputs for f in t.files],
+        additional_inputs = depset([], transitive = [i.files for i in additional_inputs]).to_list(),
         # Includes magic
         include_prefix = include_prefix,
         strip_include_prefix = strip_include_prefix,
