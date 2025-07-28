@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.13.4 - 2025-07-28
+#### Bug Fixes
+- **(additional_inputs)** properly gather items - (e562841) - Aleksander Gondek
+
+- - -
+
 ## v0.13.3 - 2025-07-26
 #### Bug Fixes
 - **(attrs)** adjust attributes of rules - (7032eec) - Aleksander Gondek
