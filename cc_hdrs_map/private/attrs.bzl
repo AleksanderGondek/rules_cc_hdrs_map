@@ -3,6 +3,16 @@
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSIONS", "CC_SOURCE_EXTENSIONS")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
 
+def _not_yet_implemented(ctx_attr, attr_name):
+    if bool(getattr(ctx_attr, attr_name, None)):
+        print("[WARN] The attribute of '{}' is not yet implemented for rules_cc_hdrs_map.".format(attr_name))
+    return None
+
+def _will_not_implement(ctx_attr, attr_name):
+    if bool(getattr(ctx_attr, attr_name, None)):
+        fail("[ERROR] The attribute of '{}' will not be implemented for rules_cc_hdrs_map.".format(attr_name))
+    return None
+
 _COMMON_RULES_ATTRS = {
     "data": struct(
         attr = attr.label_list(
@@ -12,6 +22,7 @@ _COMMON_RULES_ATTRS = {
                 The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.
                 """,
         ),
+        # This parameter is handled by common logic, no need to pass it onto the dedicated actions (subrules)
         as_action_param = struct(
             compile = lambda ctx_attr: None,
             link_to_archive = lambda ctx_attr: None,
@@ -102,26 +113,39 @@ _COMMON_RULES_ATTRS = {
     ),
     "module_interfaces": struct(
         attr = attr.label_list(
-            doc = "(Not yet implemented)",
+            doc = """
+        The list of files that are regarded as C++20 Modules Interface.
+
+        C++ Standard has no restriction about module interface file extension
+        * Clang use cppm
+        * GCC can use any source file extension
+        * MSVC use ixx
+
+        The use is guarded by the flag --experimental_cpp_modules.
+        """,
             default = [],
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "module_interfaces"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "module_interfaces"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "module_interfaces"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "module_interfaces"),
         ),
     ),
     "win_def_file": struct(
         attr = attr.label(
-            doc = "(Will not implement) Support for Windows is not in scope of current development.",
+            doc = """
+        The Windows DEF file to be passed to linker.
+
+        This attribute should only be used when Windows is the target platform. It can be used to export symbols during linking a shared library.
+        """,
             default = None,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _will_not_implement(ctx_attr, "win_def_file"),
+            link_to_archive = lambda ctx_attr: _will_not_implement(ctx_attr, "win_def_file"),
+            link_to_bin = lambda ctx_attr: _will_not_implement(ctx_attr, "win_def_file"),
+            link_to_so = lambda ctx_attr: _will_not_implement(ctx_attr, "win_def_file"),
         ),
     ),
 }
@@ -155,7 +179,7 @@ _CC_COMPILABLE_ATTRS = {
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
-            # TODO: I think it should be added
+            # TODO(agondek): additional_inputs for link_to_archive
             link_to_archive = lambda ctx_attr: None,
             link_to_bin = lambda ctx_attr: ("additional_inputs", getattr(ctx_attr, "additional_linker_inputs", [])),
             link_to_so = lambda ctx_attr: ("additional_inputs", getattr(ctx_attr, "additional_linker_inputs", [])),
@@ -239,14 +263,14 @@ _CC_COMPILABLE_ATTRS = {
         attr = attr.label_list(
             default = [],
             doc = """
-            (Not yet implemented) cc_common attribute for passing on implementation_deps is currently private. 
+            The list of other libraries that the library target depends on. Unlike with deps, the headers and include paths of these libraries (and all their transitive deps) are only used for compilation of this library, and not libraries that depend on it. Libraries specified with implementation_deps are still linked in binary targets that depend on this library.
             """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "implementation_deps"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "implementation_deps"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "implementation_deps"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "implementation_deps"),
         ),
     ),
     "includes": struct(
@@ -268,19 +292,17 @@ _CC_COMPILABLE_ATTRS = {
     ),
     "link_extra_lib": struct(
         attr = attr.label(
-            default = "@bazel_tools//tools/cpp:link_extra_lib",
             doc = """
             Control linking of extra libraries.
 
             By default, C++ binaries are linked against //tools/cpp:link_extra_lib, which by default depends on the label flag //tools/cpp:link_extra_libs. Without setting the flag, this library is empty by default. Setting the label flag allows linking optional dependencies, such as overrides for weak symbols, interceptors for shared library functions, or special runtime libraries (for malloc replacements, prefer malloc or --custom_malloc). Setting this attribute to None disables this behaviour. 
             """,
         ),
-        # TODO: Implement this
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "link_extra_libs"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "link_extra_libs"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "link_extra_libs"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "link_extra_libs"),
         ),
     ),
     "linkopts": struct(
@@ -301,37 +323,44 @@ _CC_COMPILABLE_ATTRS = {
     "linkshared": struct(
         attr = attr.bool(
             default = False,
-            doc = "(Will not implemented) As there is clear distinction between targets that are SOLs and archives, the parameter is not applicable. ",
+            doc = """
+            Create a shared library. To enable this attribute, include linkshared=True in your rule. By default this option is off. 
+            """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _will_not_implement(ctx_attr, "linkshared"),
+            link_to_archive = lambda ctx_attr: _will_not_implement(ctx_attr, "linkshared"),
+            link_to_bin = lambda ctx_attr: _will_not_implement(ctx_attr, "linkshared"),
+            link_to_so = lambda ctx_attr: _will_not_implement(ctx_attr, "linkshared"),
         ),
     ),
     "linkstamp": struct(
-        attr = attr.string_list(
-            default = [],
-            doc = "(Not yet implemented)",
+        attr = attr.label(
+            default = None,
+            doc = """
+            Simultaneously compiles and links the specified C++ source file into the final binary. This trickery is required to introduce timestamp information into binaries; if we compiled the source file to an object file in the usual way, the timestamp would be incorrect. A linkstamp compilation may not include any particular set of compiler flags and so should not depend on any particular header, compiler option, or other build variable. This option should only be needed in the base package.
+            """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "linkstamp"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "linkstamp"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "linkstamp"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "linkstamp"),
         ),
     ),
     "linkstatic": struct(
         attr = attr.bool(
-            default = True,
-            doc = "(Will not implement) As there is clear distinction between targets that are SOLs and archives, the parameter is not applicable. ",
+            default = False,
+            doc = """
+            If enabled and this is a binary or test, this option tells the build tool to link in .a's instead of .so's for user libraries whenever possible. System libraries such as libc (but not the C/C++ runtime libraries, see below) are still linked dynamically, as are libraries for which there is no static library. So the resulting executable will still be dynamically linked, hence only mostly static.
+            The linkstatic attribute has a different meaning if used on a cc_library() rule. For a C++ library, linkstatic=True indicates that only static linking is allowed, so no .so will be produced. linkstatic=False does not prevent static libraries from being created. The attribute is meant to control the creation of dynamic libraries. 
+            """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _will_not_implement(ctx_attr, "linkstatic"),
+            link_to_archive = lambda ctx_attr: _will_not_implement(ctx_attr, "linkstatic"),
+            link_to_bin = lambda ctx_attr: _will_not_implement(ctx_attr, "linkstatic"),
+            link_to_so = lambda ctx_attr: _will_not_implement(ctx_attr, "linkstatic"),
         ),
     ),
     "local_defines": struct(
@@ -348,30 +377,33 @@ _CC_COMPILABLE_ATTRS = {
             link_to_so = lambda ctx_attr: None,
         ),
     ),
-    # TODO: Implement this
     "malloc": struct(
         attr = attr.label(
-            default = "@bazel_tools//tools/cpp:malloc",
-            doc = """(Not yet implemented)""",
+            doc = """
+            Override the default dependency on malloc.
+
+            By default, C++ binaries are linked against //tools/cpp:malloc, which is an empty library so the binary ends up using libc malloc. This label must refer to a cc_library. If compilation is for a non-C++ rule, this option has no effect. The value of this attribute is ignored if linkshared=True is specified. 
+            """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "malloc"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "malloc"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "malloc"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "mallco"),
         ),
     ),
-    # TODO: Implement this
     "nocopts": struct(
         attr = attr.string(
             default = "",
-            doc = """(Not yet implemented)""",
+            doc = """
+            Remove matching options from the C++ compilation command. Subject to "Make" variable substitution. The value of this attribute is interpreted as a regular expression. Any preexisting COPTS that match this regular expression (including values explicitly specified in the rule's copts attribute) will be removed from COPTS for purposes of compiling this rule. This attribute should not be needed or used outside of third_party. The values are not preprocessed in any way other than the "Make" variable substitution. 
+            """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "nocopts"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "nocopts"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "nocopts"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "nocopts"),
         ),
     ),
     "_cc_toolchain": struct(
@@ -427,13 +459,17 @@ _CC_LIB_ATTRS = {
     "textual_hdrs": struct(
         attr = attr.label_list(
             default = [],
-            doc = """(Not yet implemented)""",
+            doc = """
+            The list of header files published by this library to be textually included by sources in dependent rules.
+
+            This is the location for declaring header files that cannot be compiled on their own; that is, they always need to be textually included by other source files to build valid code.
+            """,
         ),
         as_action_param = struct(
-            compile = lambda ctx_attr: None,
-            link_to_archive = lambda ctx_attr: None,
-            link_to_bin = lambda ctx_attr: None,
-            link_to_so = lambda ctx_attr: None,
+            compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "textual_hdrs"),
+            link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "textual_hdrs"),
+            link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "textual_hdrs"),
+            link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "textual_hdrs"),
         ),
     ),
 }
@@ -463,17 +499,16 @@ def get_cc_bin_attrs():
                 link_to_so = lambda ctx_attr: None,
             ),
         ),
-        # TODO: Implement this
         "reexport_deps": struct(
             attr = attr.label_list(
                 default = [],
-                doc = """(Not yet implemented)""",
+                doc = "",
             ),
             as_action_param = struct(
-                compile = lambda ctx_attr: None,
-                link_to_archive = lambda ctx_attr: None,
-                link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: None,
+                compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
+                link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
+                link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
+                link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
             ),
         ),
     }
@@ -496,26 +531,40 @@ def get_cc_so_attrs():
     cc_so_attrs = {
         "alwayslink": struct(
             attr = attr.bool(
-                default = True,
-                doc = """(Not yet implemented)""",
+                default = False,
+                doc = """
+                If 1, any binary that depends (directly or indirectly) on this C++ precompiled library will link in all the object files archived in the static library, even if some contain no symbols referenced by the binary. This is useful if your code isn't explicitly called by code in the binary, e.g., if your code registers to receive some callback provided by some service. 
+                """,
             ),
             as_action_param = struct(
-                compile = lambda ctx_attr: None,
-                link_to_archive = lambda ctx_attr: None,
-                link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: None,
+                compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "always_link"),
+                link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "always_link"),
+                link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "always_link"),
+                link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "always_link"),
             ),
         ),
         "exports_filter": struct(
             attr = attr.string_list(
                 default = [],
-                doc = """(Not yet implemented)""",
+                doc = """
+                This attribute contains a list of targets that are claimed to be exported by the current shared library.
+
+                Any target deps is already understood to be exported by the shared library. This attribute should be used to list any targets that are exported by the shared library but are transitive dependencies of deps.
+
+                Note that this attribute is not actually adding a dependency edge to those targets, the dependency edge should instead be created by deps.The entries in this attribute are just strings. Keep in mind that when placing a target in this attribute, this is considered a claim that the shared library exports the symbols from that target. The cc_shared_library logic doesn't actually handle telling the linker which symbols should be exported.
+
+                The following syntax is allowed:
+
+                //foo:__pkg__ to account for any target in foo/BUILD
+
+                //foo:__subpackages__ to account for any target in foo/BUILD or any other package below foo/ like foo/bar/BUILD
+                """,
             ),
             as_action_param = struct(
-                compile = lambda ctx_attr: None,
-                link_to_archive = lambda ctx_attr: None,
-                link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: None,
+                compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "exports_filter"),
+                link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "exports_filter"),
+                link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "exports_filter"),
+                link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "exports_filter"),
             ),
         ),
         "roots": struct(
@@ -524,10 +573,10 @@ def get_cc_so_attrs():
                 doc = """(Not yet implemented)""",
             ),
             as_action_param = struct(
-                compile = lambda ctx_attr: None,
-                link_to_archive = lambda ctx_attr: None,
-                link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: None,
+                compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "roots"),
+                link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "roots"),
+                link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "roots"),
+                link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "roots"),
             ),
         ),
         "shared_lib_name": struct(
@@ -571,17 +620,16 @@ def get_cc_archive_attrs():
                 link_to_so = lambda ctx_attr: None,
             ),
         ),
-        # TODO: Implement this
         "reexport_deps": struct(
             attr = attr.label_list(
                 default = [],
-                doc = """(Not yet implemented)""",
+                doc = "",
             ),
             as_action_param = struct(
-                compile = lambda ctx_attr: None,
-                link_to_archive = lambda ctx_attr: None,
-                link_to_bin = lambda ctx_attr: None,
-                link_to_so = lambda ctx_attr: None,
+                compile = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
+                link_to_archive = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
+                link_to_bin = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
+                link_to_so = lambda ctx_attr: _not_yet_implemented(ctx_attr, "reexport_deps"),
             ),
         ),
     }
