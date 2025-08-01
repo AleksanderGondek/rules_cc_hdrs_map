@@ -6,6 +6,7 @@ load(
     "find_cc_toolchain",
     "use_cc_toolchain",
 )
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 
 def _link_to_archive_impl(
         sctx,
@@ -15,8 +16,10 @@ def _link_to_archive_impl(
         features = [],
         disabled_features = [],
         deps = [],
+        archive_lib_name = None,
         user_link_flags = [],
-        archive_lib_name = None):
+        additional_inputs = [],
+        variables_extension = {}):
     """Link into an archive file.
 
     This subrule runs the linker to create an .archive file.
@@ -29,6 +32,8 @@ def _link_to_archive_impl(
         deps: list of dependencies provided for the linking
         user_link_flags = additional list of linking options
         archive_lib_name = name of the archive file that should be created
+        additional_inputs: for additional inputs to the linking action, e.g.: linking scripts
+        variables_extension: additional variables to pass to the toolchain configuration when creating link command line
     """
     if not configure_features_func:
         fail("link_to_archive subrule requires for the 'configure_features_func' kwarg to be set!")
@@ -40,106 +45,33 @@ def _link_to_archive_impl(
     # Opinionated part: prevent any liblibName or libName.a.a or libName.a.test.a
     archive_lib_name = archive_lib_name.removeprefix("lib").replace(".a.", ".").removesuffix(".a")
 
-    features_configuration = configure_features_func(
-        cc_toolchain,
-        features = features,
-        disabled_features = disabled_features,
-    )
-    linking_contexts = [
-        dep[CcInfo].linking_context
-        for dep in deps
-        if CcInfo in dep
-    ]
-
-    static_library = sctx.actions.declare_file(
-        "lib{name}.a".format(name = archive_lib_name),
-    )
-
-    link_tool = cc_common.get_tool_for_action(
-        feature_configuration = features_configuration,
-        action_name = CPP_LINK_STATIC_LIBRARY_ACTION_NAME,
-    )
-    link_variables = cc_common.create_link_variables(
-        feature_configuration = features_configuration,
+    linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
+        actions = sctx.actions,
+        name = archive_lib_name,
+        feature_configuration = configure_features_func(
+            cc_toolchain,
+            features = features,
+            disabled_features = disabled_features,
+        ),
         cc_toolchain = cc_toolchain,
-        output_file = static_library.path,
-        is_using_linker = False,
-        is_linking_dynamic_library = False,
-        user_link_flags = user_link_flags,
-    )
-    link_env = cc_common.get_environment_variables(
-        feature_configuration = features_configuration,
-        action_name = CPP_LINK_STATIC_LIBRARY_ACTION_NAME,
-        variables = link_variables,
-    )
-    link_flags = cc_common.get_memory_inefficient_command_line(
-        feature_configuration = features_configuration,
-        action_name = CPP_LINK_STATIC_LIBRARY_ACTION_NAME,
-        variables = link_variables,
-    )
-
-    # Dependency libraries to link.
-    dep_objects = []
-    linker_inputs = []
-    for context in linking_contexts:
-        linker_inputs.append(context.linker_inputs)
-
-    for linker_input in depset(transitive = linker_inputs).to_list():
-        for lib in linker_input.libraries:
-            dep_objects += lib.objects
-
-    # Run linker
-    args = sctx.actions.args()
-    args.add_all(link_flags)
-    args.add_all(compilation_outputs.pic_objects)
-    args.add_all(dep_objects)
-
-    sctx.actions.run(
-        outputs = [static_library],
-        inputs = depset(
-            direct = compilation_outputs.pic_objects + dep_objects,
-            transitive = [cc_toolchain.all_files],
-        ),
-        executable = link_tool,
-        arguments = [args],
-        mnemonic = "CCHdrsMapStaticLink",
-        progress_message = "Linking {}".format(static_library.short_path),
-        # TODO: improve
-        # This is a quirk of my toolchain / platfoorm
-        # otherwise realpath, dirname cannot be found
-        env = link_env | {"PATH": link_env.get("PATH", "") + ":/bin:/usr/bin"},
+        disallow_static_libraries = False,
+        disallow_dynamic_library = True,
+        compilation_outputs = compilation_outputs,
+        linking_contexts = [
+            dep[CcInfo].linking_context
+            for dep in deps
+            if CcInfo in dep
+        ],
+        user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
+        alwayslink = False,
+        # TODO: Is there a better way?
+        additional_inputs = depset([], transitive = [i.files for i in additional_inputs]).to_list(),
+        variables_extension = variables_extension,
     )
 
-    # Build the linking info provider
-    linker_input = cc_common.create_linker_input(
-        owner = sctx.label,
-        libraries = depset(direct = [
-            cc_common.create_library_to_link(
-                actions = sctx.actions,
-                feature_configuration = features_configuration,
-                cc_toolchain = cc_toolchain,
-                static_library = static_library,
-            ),
-        ]),
-        user_link_flags = user_link_flags,
-    )
-    linking_context = cc_common.create_linking_context(
-        linker_inputs = depset(direct = [linker_input]),
-    )
-
-    # Merge linking info for downstream rules
-    linking_contexts.append(linking_context)
-    cc_infos = [CcInfo(linking_context = linking_context) for linking_context in linking_contexts]
-    merged_cc_info = cc_common.merge_cc_infos(
-        cc_infos = cc_infos,
-    )
-
-    # Workaround to emulate CcLinkingInfo (the return value of cc_common.link)
     return struct(
-        linking_context = merged_cc_info.linking_context,
-        cc_linking_outputs = struct(
-            static_libraries = [static_library],
-        ),
+        linking_context = linking_context,
+        cc_linking_outputs = linking_outputs,
     )
 
 link_to_archive = subrule(

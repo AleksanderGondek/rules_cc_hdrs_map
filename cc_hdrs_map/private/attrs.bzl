@@ -179,8 +179,7 @@ _CC_COMPILABLE_ATTRS = {
         ),
         as_action_param = struct(
             compile = lambda ctx_attr: None,
-            # TODO(agondek): additional_inputs for link_to_archive
-            link_to_archive = lambda ctx_attr: None,
+            link_to_archive = lambda ctx_attr: ("additional_inputs", getattr(ctx_attr, "additional_linker_inputs", [])),
             link_to_bin = lambda ctx_attr: ("additional_inputs", getattr(ctx_attr, "additional_linker_inputs", [])),
             link_to_so = lambda ctx_attr: ("additional_inputs", getattr(ctx_attr, "additional_linker_inputs", [])),
         ),

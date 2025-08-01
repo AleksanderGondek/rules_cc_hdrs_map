@@ -15,12 +15,21 @@ def _cc_archive_impl(ctx):
         **actions.link_to_archive_kwargs(ctx, CC_ARCHIVE_ATTRS)
     )
 
+    archive = getattr(
+        linking_results.cc_linking_outputs.library_to_link,
+        "pic_static_library",
+        None,
+    )
+    archive = archive if archive else getattr(
+        linking_results.cc_linking_outputs.library_to_link,
+        "static_library",
+        None,
+    )
+
     return [
         DefaultInfo(
-            files = depset(
-                linking_results.cc_linking_outputs.static_libraries,
-            ),
-            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = linking_results.cc_linking_outputs.static_libraries),
+            files = depset([archive]),
+            runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = [archive]),
         ),
         CcInfo(
             compilation_context = compilation_ctx,
