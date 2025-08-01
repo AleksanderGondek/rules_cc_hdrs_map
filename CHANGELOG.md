@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.15.0 - 2025-08-01
+#### Features
+- **(cc_archive)** switch to cc_common implementation - (c0817f4) - Aleksander Gondek
+
+- - -
+
 ## v0.14.0 - 2025-07-28
 #### Features
 - **(attrs)** notify user if using not implemented attrs - (432d336) - Aleksander Gondek
