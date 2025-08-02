@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.17.0 - 2025-08-02
+#### Features
+- **(nix-shell)** starpls capability to use bazel - (cd288cd) - Aleksander Gondek
+
+- - -
+
 ## v0.16.0 - 2025-08-02
 #### Features
 - **(nixpkgs)** update definitions to latest as of 2025-08-02 - (82b59e5) - Aleksander Gondek
