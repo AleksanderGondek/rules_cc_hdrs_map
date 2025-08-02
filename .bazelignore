@@ -1,4 +1,5 @@
 .bazel
 .bazel-user-root
+.bazelisk-bin
 # Weird that it does not break on the WORKSPACE on its own
 examples
