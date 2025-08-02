@@ -35,7 +35,12 @@
       runScript = nixpkgs.writeScript "rules_cc_hdrs_map-shell-init.sh" ''
         shellHooksPath=$(mktemp --suffix=rules_cc_hdrs_map-shell.bazelrc)
         cat <<EOF > $shellHooksPath
-          alias bazel=${nixpkgs.bazelisk}/bin/bazelisk
+          # Just using an 'alias=...'
+          # will not work for binaries like starpls, that execute items
+          # directly from path.
+          mkdir -p .bazelisk-bin
+          ln -f -s ${nixpkgs.bazelisk}/bin/bazelisk .bazelisk-bin/bazel
+          export PATH="$(realpath .bazelisk-bin)/:$PATH"
         EOF
 
         exec bash --rcfile $shellHooksPath
@@ -54,7 +59,9 @@
     name = "rules_cc_hdrs_map-non_fhs_shell";
     packages = devShellPackages nixpkgs;
     shellHook = ''
-      alias bazel=${nixpkgs.bazelisk}/bin/bazelisk
+      mkdir -p .bazelisk-bin
+      ln -f -s ${nixpkgs.bazelisk}/bin/bazelisk .bazelisk-bin/bazel
+      export PATH="$(realpath .bazelisk-bin)/:$PATH"
     '';
   };
 in {
