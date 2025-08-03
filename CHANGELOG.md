@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.18.0 - 2025-08-03
+#### Features
+- **(providers_helper.bzl)** publicize common providers operations - (514f240) - Aleksander Gondek
+
+- - -
+
 ## v0.17.0 - 2025-08-02
 #### Features
 - **(nix-shell)** starpls capability to use bazel - (cd288cd) - Aleksander Gondek
