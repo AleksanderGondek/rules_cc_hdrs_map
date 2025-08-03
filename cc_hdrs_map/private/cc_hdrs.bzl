@@ -4,7 +4,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_hdrs_attrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "merge_hdrs_maps_info_from_deps")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "quotient_map_hdrs_map_infos")
 
 CC_HDRS_ATTRS = get_cc_hdrs_attrs()
 
@@ -18,9 +18,9 @@ def _cc_hdrs_impl(ctx):
     # Pattern of '{filename}' resolves to any direct header file of the rule instance
     hdrs_map.pin_down_non_globs(hdrs = hdrs + implementation_hdrs)
 
-    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdrs_maps_info_from_deps(
-        deps,
-        hdrs_map,
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = quotient_map_hdrs_map_infos(
+        targets = deps,
+        hdrs_map = hdrs_map,
     )
 
     hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])

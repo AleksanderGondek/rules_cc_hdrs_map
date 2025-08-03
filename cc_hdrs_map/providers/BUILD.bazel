@@ -15,6 +15,23 @@ bzl_library(
     srcs = ["hdrs_map_info.bzl"],
     deps = [
         ":hdrs_map",
-        "//cc_hdrs_map/actions:copy_file",
+    ],
+)
+
+bzl_library(
+    name = "cc_shared_library_info",
+    srcs = ["cc_shared_library_info.bzl"],
+    deps = [
+        "@rules_cc//cc/common",
+    ],
+)
+
+bzl_library(
+    name = "helper",
+    srcs = ["helper.bzl"],
+    deps = [
+        ":cc_shared_library_info",
+        ":hdrs_map",
+        ":hdrs_map_info",
     ],
 )

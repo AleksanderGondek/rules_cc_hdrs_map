@@ -1,8 +1,8 @@
 """ This module serves chiefly as a vehicle for exposing 'privaete' cc_helper methods to current rule set. """
 
 load("@rules_cc//cc/common:cc_helper.bzl", rules_cc_helper = "cc_helper")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
-load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "materialize_hdrs_mapping", "merge_hdrs_maps_info_from_deps")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "materialize_hdrs_mapping", "new_hdrs_map")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "quotient_map_hdrs_map_infos")
 
 # TODO: Perhaps a PR to `rules_cc` to expose extensions method?
 # https://github.com/bazelbuild/bazel/blob/6d811c80720584eac50372b866d063aebd37e2e5/src/main/starlark/builtins_bzl/common/cc/cc_helper_internal.bzl#L94
@@ -320,6 +320,7 @@ def _get_linking_opts(sctx, extra_ctx_members, opts, additional_make_variable_su
 
     return results
 
+# TODO(agondek): Important! This should recurse into dependencies in search for HdrsMapInfo deps..
 def _prepare_for_compilation(
         sctx,
         input_hdrs_map,
@@ -351,9 +352,9 @@ def _prepare_for_compilation(
     hdrs_map.pin_down_non_globs(hdrs = hdrs + implementation_hdrs)
 
     # Merge with deps
-    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = merge_hdrs_maps_info_from_deps(
-        deps,
-        hdrs_map,
+    deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = quotient_map_hdrs_map_infos(
+        targets = deps,
+        hdrs_map = hdrs_map,
     )
     hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
     implementation_hdrs = depset(direct = implementation_hdrs, transitive = [deps_prv_hdrs])

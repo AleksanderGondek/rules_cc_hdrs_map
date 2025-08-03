@@ -71,7 +71,7 @@ def _link_to_archive_impl(
 
     return struct(
         linking_context = linking_context,
-        cc_linking_outputs = linking_outputs,
+        linking_outputs = linking_outputs,
     )
 
 link_to_archive = subrule(
