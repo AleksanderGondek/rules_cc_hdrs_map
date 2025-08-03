@@ -16,12 +16,12 @@ def _cc_archive_impl(ctx):
     )
 
     archive = getattr(
-        linking_results.cc_linking_outputs.library_to_link,
+        linking_results.linking_outputs.library_to_link,
         "pic_static_library",
         None,
     )
     archive = archive if archive else getattr(
-        linking_results.cc_linking_outputs.library_to_link,
+        linking_results.linking_outputs.library_to_link,
         "static_library",
         None,
     )

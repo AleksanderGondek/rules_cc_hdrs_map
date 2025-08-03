@@ -8,25 +8,7 @@ load(
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_cc//cc/common:cc_shared_library_info.bzl", "CcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
-
-# Sharing is caring
-# https://github.com/bazelbuild/bazel/blob/49e43bbd4a3a3aa5f0f00158dff15914b69b6e85/src/main/starlark/builtins_bzl/common/cc/cc_shared_library.bzl#L222
-def _merge_cc_shared_library_infos(deps):
-    dynamic_deps = []
-    transitive_dynamic_deps = []
-    for dep in deps:
-        if not CcSharedLibraryInfo in dep:
-            continue
-
-        dynamic_dep_entry = struct(
-            exports = dep[CcSharedLibraryInfo].exports,
-            linker_input = dep[CcSharedLibraryInfo].linker_input,
-            link_once_static_libs = dep[CcSharedLibraryInfo].link_once_static_libs,
-        )
-        dynamic_deps.append(dynamic_dep_entry)
-        transitive_dynamic_deps.append(dep[CcSharedLibraryInfo].dynamic_deps)
-
-    return depset(direct = dynamic_deps, transitive = transitive_dynamic_deps, order = "topological")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cc_shared_library_info.bzl", "merge_cc_shared_library_infos")
 
 def _link_to_so_impl(
         sctx,
@@ -66,13 +48,15 @@ def _link_to_so_impl(
     # Opinionated part: prevent any liblibName or libName.so.so or libName.so.test.so
     sol_name = sol_name.removeprefix("lib").replace(".so.", ".").removesuffix(".so")
 
-    # TODO: Linker inputs from CcInfo ?
     # TODO: dedup with cc_bin
+    linking_contexts = []
     linking_inputs = []
     transitive_sols = []
     transitive_dynamic_deps = []
 
     for dep in deps:
+        if CcInfo in dep:
+            linking_contexts.append(dep[CcInfo].linking_context)
         if not CcSharedLibraryInfo in dep:
             continue
         dynamic_dep = dep[CcSharedLibraryInfo]
@@ -97,7 +81,7 @@ def _link_to_so_impl(
         compilation_outputs = compilation_outputs,
         linking_contexts = [cc_common.create_linking_context(
             linker_inputs = depset(direct = linking_inputs, order = "topological"),
-        )],
+        )] + linking_contexts,
         user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
         stamp = 0,
         # I am leaving this in because I am petty
@@ -107,24 +91,15 @@ def _link_to_so_impl(
         variables_extension = variables_extension,
     )
 
-    linker_input = cc_common.create_linker_input(
-        owner = sctx.label,
-        libraries = depset([linking_outputs.library_to_link]),
-    )
-
-    # TODO: This is extremely naive
-    exports = {str(sctx.label): True}
-    for dep in deps:
-        if not CcInfo in dep:
-            continue
-        exports[str(dep.label)] = True
-
-    return struct(
-        dynamic_deps = _merge_cc_shared_library_infos(deps),
-        exports = exports,
-        linker_input = linker_input,
+    return (merge_cc_shared_library_infos(
+        targets = deps,
+        exports = {str(sctx.label): True},
+        linker_input = cc_common.create_linker_input(
+            owner = sctx.label,
+            libraries = depset([linking_outputs.library_to_link]),
+        ),
         link_once_static_libs = [],
-    ), linking_outputs
+    ), linking_outputs)
 
 link_to_so = subrule(
     implementation = _link_to_so_impl,

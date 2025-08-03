@@ -25,4 +25,4 @@ exec 1>/dev/null
 alejandra -q check .
 cog -q check
 statix check .
-buildifier --mode check $(find . \( -type f -name '*.bazel' -o -type f -name '*.bzl' \) ! -path '*.bazel-user-root/*' ! -path '*.bazel/*')
+buildifier --mode check $(find . \( -type f -name '*.bazel' -o -type f -name '*.bzl' \) ! -path '*.git/*' ! -path '*.bazel-user-root/*' ! -path '*.bazel/*')

@@ -51,7 +51,7 @@ def _link_to_binary_impl(
 
     cc_toolchain = find_cc_toolchain(sctx)
 
-    # TODO: Extract SOLs from CcInfo? Doesit even makes sense?
+    # TODO: dedup with cc_so
     linking_contexts = []
     linking_inputs = []
     transitive_dynamic_deps = []

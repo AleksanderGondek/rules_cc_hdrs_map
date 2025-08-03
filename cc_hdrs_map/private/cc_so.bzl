@@ -10,7 +10,7 @@ CC_SO_ATTRS = get_cc_so_attrs()
 
 def _cc_so_impl(ctx):
     _, compilation_outputs, hdrs_map_ctx = actions.compile(**actions.compile_kwargs(ctx, CC_SO_ATTRS))
-    shared_cc, linking_outputs = actions.link_to_so(
+    cc_shared_library_info, linking_outputs = actions.link_to_so(
         compilation_outputs,
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
@@ -30,12 +30,7 @@ def _cc_so_impl(ctx):
             files = depset(output_files),
             runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = runfiles),
         ),
-        CcSharedLibraryInfo(
-            dynamic_deps = shared_cc.dynamic_deps,
-            exports = shared_cc.exports,
-            link_once_static_libs = shared_cc.link_once_static_libs,
-            linker_input = shared_cc.linker_input,
-        ),
+        cc_shared_library_info,
         HdrsMapInfo(
             hdrs = hdrs_map_ctx.hdrs,
             # Implementation hdrs do not leave the scope of this lib

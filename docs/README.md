@@ -289,7 +289,7 @@ Represents grouping of CC header files, alongsdie with their intended include pa
 | <a id="HdrsMapInfo-hdrs"></a>hdrs |  Headers which should be exposed after the compilation is done.    |
 | <a id="HdrsMapInfo-implementation_hdrs"></a>implementation_hdrs |  Headers that should not be propagated after the compilation.    |
 | <a id="HdrsMapInfo-hdrs_map"></a>hdrs_map |  (hdrs_map struct) object describing desired header file mappings    |
-| <a id="HdrsMapInfo-deps"></a>deps |  CcInfo-aware dependencies that need to be propagated, for this provider to compile and link    |
+| <a id="HdrsMapInfo-deps"></a>deps |  CcInfo/CcSharedLibraryInfo-aware dependencies that need to be propagated, for this provider to compile and link    |
 
 
 <a id="actions.compile_kwargs"></a>
@@ -407,14 +407,105 @@ available under singular, temporary include statment.
 | <a id="actions.prepare_for_compilation-input_includes"></a>input_includes |  include statements specified for the action   |  none |
 
 
-<a id="new_hdrs_map"></a>
+<a id="providers_helper.materialize_hdrs_mapping"></a>
 
-## new_hdrs_map
+## providers_helper.materialize_hdrs_mapping
 
 <pre>
-load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "new_hdrs_map")
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
 
-new_hdrs_map(<a href="#new_hdrs_map-from_dict">from_dict</a>, <a href="#new_hdrs_map-_glob">_glob</a>, <a href="#new_hdrs_map-_non_glob">_non_glob</a>)
+providers_helper.materialize_hdrs_mapping(<a href="#providers_helper.materialize_hdrs_mapping-invoker_label">invoker_label</a>, <a href="#providers_helper.materialize_hdrs_mapping-actions">actions</a>, <a href="#providers_helper.materialize_hdrs_mapping-hdrs_map">hdrs_map</a>, <a href="#providers_helper.materialize_hdrs_mapping-hdrs">hdrs</a>)
+</pre>
+
+Materialize the expected file hierarchy.
+
+Creates the header file hierarchy accordingly to specifications
+in passed-in hdrs_map under 'vhm' directory.
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="providers_helper.materialize_hdrs_mapping-invoker_label"></a>invoker_label |  label of rule invoking the method   |  none |
+| <a id="providers_helper.materialize_hdrs_mapping-actions"></a>actions |  bazel ctx.actions   |  none |
+| <a id="providers_helper.materialize_hdrs_mapping-hdrs_map"></a>hdrs_map |  HdrsMapInfo representing the headers mapping   |  none |
+| <a id="providers_helper.materialize_hdrs_mapping-hdrs"></a>hdrs |  list of all header files that should be matched against the map   |  none |
+
+**RETURNS**
+
+(materialized_include_path, materialized_hdrs_files): tuple of include_path to
+  the created header files dir and list of paths to all header files created.
+
+
+<a id="providers_helper.merge_cc_shared_library_infos"></a>
+
+## providers_helper.merge_cc_shared_library_infos
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
+
+providers_helper.merge_cc_shared_library_infos(<a href="#providers_helper.merge_cc_shared_library_infos-targets">targets</a>, <a href="#providers_helper.merge_cc_shared_library_infos-dynamic_deps">dynamic_deps</a>, <a href="#providers_helper.merge_cc_shared_library_infos-exports">exports</a>, <a href="#providers_helper.merge_cc_shared_library_infos-linker_input">linker_input</a>,
+                                               <a href="#providers_helper.merge_cc_shared_library_infos-link_once_static_libs">link_once_static_libs</a>)
+</pre>
+
+Merge CcSharedLibraryInfos from targets into singualr provider.
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="providers_helper.merge_cc_shared_library_infos-targets"></a>targets |  list of Bazel targets that should be merged. They must contain either CcInfo or CcSharedLibraryInfo provider.   |  `[]` |
+| <a id="providers_helper.merge_cc_shared_library_infos-dynamic_deps"></a>dynamic_deps |  sequence of Depsets representing additional dynamic deps.   |  `None` |
+| <a id="providers_helper.merge_cc_shared_library_infos-exports"></a>exports |  cc_libraries that are linked statically and exported".   |  `None` |
+| <a id="providers_helper.merge_cc_shared_library_infos-linker_input"></a>linker_input |  the resultign linker inptu artifact for the shared library.   |  `None` |
+| <a id="providers_helper.merge_cc_shared_library_infos-link_once_static_libs"></a>link_once_static_libs |  all libraries linked statically into this library that should only be linked once.   |  `None` |
+
+**RETURNS**
+
+CcSharedLibraryInfo provider.
+
+
+<a id="providers_helper.merge_hdrs_map_infos"></a>
+
+## providers_helper.merge_hdrs_map_infos
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
+
+providers_helper.merge_hdrs_map_infos(<a href="#providers_helper.merge_hdrs_map_infos-targets">targets</a>, <a href="#providers_helper.merge_hdrs_map_infos-hdrs">hdrs</a>, <a href="#providers_helper.merge_hdrs_map_infos-implementation_hdrs">implementation_hdrs</a>, <a href="#providers_helper.merge_hdrs_map_infos-hdrs_map">hdrs_map</a>, <a href="#providers_helper.merge_hdrs_map_infos-hdrs_map_deps">hdrs_map_deps</a>,
+                                      <a href="#providers_helper.merge_hdrs_map_infos-pin_down_non_globs">pin_down_non_globs</a>)
+</pre>
+
+Merge all HdrsMapInfo providers from targets into singular one.
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="providers_helper.merge_hdrs_map_infos-targets"></a>targets |  <p align="center"> - </p>   |  `[]` |
+| <a id="providers_helper.merge_hdrs_map_infos-hdrs"></a>hdrs |  additional header files to include,   |  `None` |
+| <a id="providers_helper.merge_hdrs_map_infos-implementation_hdrs"></a>implementation_hdrs |  additional implementation headers to include,   |  `None` |
+| <a id="providers_helper.merge_hdrs_map_infos-hdrs_map"></a>hdrs_map |  initial hdrs_map to use as a foundation for merge,   |  `None` |
+| <a id="providers_helper.merge_hdrs_map_infos-hdrs_map_deps"></a>hdrs_map_deps |  additional dependencies to include,   |  `None` |
+| <a id="providers_helper.merge_hdrs_map_infos-pin_down_non_globs"></a>pin_down_non_globs |  wheather the final hdrs_map should have its non_glob dependencies pinned.   |  `True` |
+
+**RETURNS**
+
+HdrsMapInfo provider that represents merge of all HdrsMapInfos from targets.
+
+
+<a id="providers_helper.new_hdrs_map"></a>
+
+## providers_helper.new_hdrs_map
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
+
+providers_helper.new_hdrs_map(<a href="#providers_helper.new_hdrs_map-from_dict">from_dict</a>, <a href="#providers_helper.new_hdrs_map-_glob">_glob</a>, <a href="#providers_helper.new_hdrs_map-_non_glob">_non_glob</a>)
 </pre>
 
 Create new instance of HdrsMap struct.
@@ -424,8 +515,71 @@ Create new instance of HdrsMap struct.
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="new_hdrs_map-from_dict"></a>from_dict |  <p align="center"> - </p>   |  `{}` |
-| <a id="new_hdrs_map-_glob"></a>_glob |  <p align="center"> - </p>   |  `None` |
-| <a id="new_hdrs_map-_non_glob"></a>_non_glob |  <p align="center"> - </p>   |  `None` |
+| <a id="providers_helper.new_hdrs_map-from_dict"></a>from_dict |  <p align="center"> - </p>   |  `{}` |
+| <a id="providers_helper.new_hdrs_map-_glob"></a>_glob |  <p align="center"> - </p>   |  `None` |
+| <a id="providers_helper.new_hdrs_map-_non_glob"></a>_non_glob |  <p align="center"> - </p>   |  `None` |
+
+
+<a id="providers_helper.quotient_map_cc_shared_library_infos"></a>
+
+## providers_helper.quotient_map_cc_shared_library_infos
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
+
+providers_helper.quotient_map_cc_shared_library_infos(<a href="#providers_helper.quotient_map_cc_shared_library_infos-targets">targets</a>, <a href="#providers_helper.quotient_map_cc_shared_library_infos-dynamic_deps">dynamic_deps</a>, <a href="#providers_helper.quotient_map_cc_shared_library_infos-exports">exports</a>, <a href="#providers_helper.quotient_map_cc_shared_library_infos-linker_input">linker_input</a>,
+                                                      <a href="#providers_helper.quotient_map_cc_shared_library_infos-link_once_static_libs">link_once_static_libs</a>)
+</pre>
+
+Transform list of Bazel targets into CcSharedLibrayInfo attribue groups.
+
+For given list of Bazel targets, attributes relating to CcSharedLibraryInfo
+(dynamic_deps, exports, linker_inputs, link_once_static_libs) will be extracted
+from said targets and the output will contain groups of that values.
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="providers_helper.quotient_map_cc_shared_library_infos-targets"></a>targets |  list of Bazel targets that should be mapped. They must contain either CcInfo or CcSharedLibraryInfo provider.   |  `[]` |
+| <a id="providers_helper.quotient_map_cc_shared_library_infos-dynamic_deps"></a>dynamic_deps |  sequence of Depsets representing additional dynamic deps.   |  `None` |
+| <a id="providers_helper.quotient_map_cc_shared_library_infos-exports"></a>exports |  cc_libraries that are linked statically and exported".   |  `None` |
+| <a id="providers_helper.quotient_map_cc_shared_library_infos-linker_input"></a>linker_input |  the resultign linker inptu artifact for the shared library.   |  `None` |
+| <a id="providers_helper.quotient_map_cc_shared_library_infos-link_once_static_libs"></a>link_once_static_libs |  all libraries linked statically into this library that should only be linked once.   |  `None` |
+
+**RETURNS**
+
+(dynamic_deps, exports, linker_inptuts, link_once_static_lib)
+
+
+<a id="providers_helper.quotient_map_hdrs_map_infos"></a>
+
+## providers_helper.quotient_map_hdrs_map_infos
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
+
+providers_helper.quotient_map_hdrs_map_infos(<a href="#providers_helper.quotient_map_hdrs_map_infos-targets">targets</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs">hdrs</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-implementation_hdrs">implementation_hdrs</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs_map">hdrs_map</a>,
+                                             <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs_map_deps">hdrs_map_deps</a>)
+</pre>
+
+Take all HdrsMapInfo key-values and group them by keys.
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-targets"></a>targets |  <p align="center"> - </p>   |  `[]` |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs"></a>hdrs |  additional header files to include,   |  `None` |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-implementation_hdrs"></a>implementation_hdrs |  additional implementation headers to include,   |  `None` |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs_map"></a>hdrs_map |  initial hdrs_map to use as a foundation for merge,   |  `None` |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs_map_deps"></a>hdrs_map_deps |  additional dependencies to include,   |  `None` |
+
+**RETURNS**
+
+(hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps): tuple
 
 
