@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.19.0 - 2025-08-04
+#### Features
+- **(hdrs_map_info)** gather HdrsMapInfo transitively - (10af2ce) - Aleksander Gondek
+
+- - -
+
 ## v0.18.1 - 2025-08-04
 #### Bug Fixes
 - **(hdrs_map_info)** merge_hdrs_map_infos not working - (4d85291) - Aleksander Gondek
