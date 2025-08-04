@@ -93,11 +93,16 @@ def merge_hdrs_map_infos(
     )
 
     if pin_down_non_globs:
-        hdrs_map.pin_down_non_globs()
+        hdrs_map.pin_down_non_globs(
+            hdrs = depset([], transitive = [
+                hdrs,
+                implementation_hdrs,
+            ]).to_list(),
+        )
 
     return HdrsMapInfo(
         hdrs = hdrs,
         implementation_hdrs = implementation_hdrs,
         hdrs_map = hdrs_map,
-        hdr_maps_deps = hdr_maps_deps,
+        deps = hdr_maps_deps,
     )
