@@ -562,7 +562,7 @@ from said targets and the output will contain groups of that values.
 load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "providers_helper")
 
 providers_helper.quotient_map_hdrs_map_infos(<a href="#providers_helper.quotient_map_hdrs_map_infos-targets">targets</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs">hdrs</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-implementation_hdrs">implementation_hdrs</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs_map">hdrs_map</a>,
-                                             <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs_map_deps">hdrs_map_deps</a>)
+                                             <a href="#providers_helper.quotient_map_hdrs_map_infos-hdrs_map_deps">hdrs_map_deps</a>, <a href="#providers_helper.quotient_map_hdrs_map_infos-traverse_deps">traverse_deps</a>)
 </pre>
 
 Take all HdrsMapInfo key-values and group them by keys.
@@ -576,7 +576,8 @@ Take all HdrsMapInfo key-values and group them by keys.
 | <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs"></a>hdrs |  additional header files to include,   |  `None` |
 | <a id="providers_helper.quotient_map_hdrs_map_infos-implementation_hdrs"></a>implementation_hdrs |  additional implementation headers to include,   |  `None` |
 | <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs_map"></a>hdrs_map |  initial hdrs_map to use as a foundation for merge,   |  `None` |
-| <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs_map_deps"></a>hdrs_map_deps |  additional dependencies to include,   |  `None` |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-hdrs_map_deps"></a>hdrs_map_deps |  additional dependencies to include   |  `None` |
+| <a id="providers_helper.quotient_map_hdrs_map_infos-traverse_deps"></a>traverse_deps |  wheather to gather HdrsMapInfos transitvely   |  `True` |
 
 **RETURNS**
 
