@@ -15,29 +15,18 @@ HdrsMapInfo = provider(
     },
 )
 
-def quotient_map_hdrs_map_infos(
+def _quotient_map_hdrs_map_infos(
         targets = [],
         hdrs = None,
         implementation_hdrs = None,
         hdrs_map = None,
-        hdrs_map_deps = None):
-    """ Take all HdrsMapInfo key-values and group them by keys.
-
-    Args:
-        hdrs: additional header files to include,
-        implementation_hdrs: additional implementation headers to include,
-        hdrs_map: initial hdrs_map to use as a foundation for merge,
-        hdrs_map_deps: additional dependencies to include,
-
-    Returns:
-        (hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps): tuple
-    """
-
+        hdrs_map_deps = None,
+        gather_deps = True):
     # Sequences of Depsets
     hdrs = hdrs if hdrs else []
     implementation_hdrs = implementation_hdrs if implementation_hdrs else []
     hdrs_map = hdrs_map if hdrs_map else new_hdrs_map()
-    hdr_map_deps = hdrs_map_deps if hdrs_map_deps else []
+    hdrs_map_deps = hdrs_map_deps if hdrs_map_deps else []
 
     for target in targets:
         if HdrsMapInfo not in target:
@@ -54,15 +43,56 @@ def quotient_map_hdrs_map_infos(
             )
         if target[HdrsMapInfo].hdrs_map:
             hdrs_map = hdrs_map.merge(target[HdrsMapInfo].hdrs_map)
-        if target[HdrsMapInfo].deps:
-            hdr_map_deps.append(
+        if gather_deps and target[HdrsMapInfo].deps:
+            hdrs_map_deps.append(
                 target[HdrsMapInfo].deps,
             )
 
+    return hdrs, implementation_hdrs, hdrs_map, hdrs_map_deps
+
+def quotient_map_hdrs_map_infos(
+        targets = [],
+        hdrs = None,
+        implementation_hdrs = None,
+        hdrs_map = None,
+        hdrs_map_deps = None,
+        traverse_deps = True):
+    """ Take all HdrsMapInfo key-values and group them by keys.
+
+    Args:
+        hdrs: additional header files to include,
+        implementation_hdrs: additional implementation headers to include,
+        hdrs_map: initial hdrs_map to use as a foundation for merge,
+        hdrs_map_deps: additional dependencies to include
+        traverse_deps: wheather to gather HdrsMapInfos transitvely
+
+    Returns:
+        (hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps): tuple
+    """
+    hdrs, implementation_hdrs, hdrs_map, hdrs_map_deps = _quotient_map_hdrs_map_infos(
+        targets = targets,
+        hdrs = hdrs if hdrs else [],
+        implementation_hdrs = implementation_hdrs if implementation_hdrs else [],
+        hdrs_map = hdrs_map if hdrs_map else new_hdrs_map(),
+        hdrs_map_deps = hdrs_map_deps if hdrs_map_deps else [],
+    )
+
+    if traverse_deps:
+        # Ensure proper functionality when HdrsMapInfo depends on HdrsMapInfo that depends...
+        hdrs, implementation_hdrs, hdrs_map, hdrs_map_deps = _quotient_map_hdrs_map_infos(
+            targets = depset(transitive = hdrs_map_deps).to_list(),
+            hdrs = hdrs,
+            implementation_hdrs = implementation_hdrs,
+            hdrs_map = hdrs_map,
+            hdrs_map_deps = hdrs_map_deps,
+            # Do no yank-in CcInfos, CCSharedLibraryInfos from 2nd and up order
+            gather_deps = False,
+        )
+
     hdrs = depset(transitive = hdrs)
     implementation_hdrs = depset(transitive = implementation_hdrs)
-    hdr_maps_deps = depset(transitive = hdr_map_deps)
-    return hdrs, implementation_hdrs, hdrs_map, hdr_maps_deps
+    hdrs_map_deps = depset(transitive = hdrs_map_deps)
+    return hdrs, implementation_hdrs, hdrs_map, hdrs_map_deps
 
 def merge_hdrs_map_infos(
         targets = [],
@@ -90,6 +120,7 @@ def merge_hdrs_map_infos(
         implementation_hdrs = implementation_hdrs,
         hdrs_map = hdrs_map,
         hdrs_map_deps = hdrs_map_deps,
+        traverse_deps = True,
     )
 
     if pin_down_non_globs:

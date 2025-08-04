@@ -320,7 +320,6 @@ def _get_linking_opts(sctx, extra_ctx_members, opts, additional_make_variable_su
 
     return results
 
-# TODO(agondek): Important! This should recurse into dependencies in search for HdrsMapInfo deps..
 def _prepare_for_compilation(
         sctx,
         input_hdrs_map,
@@ -351,10 +350,15 @@ def _prepare_for_compilation(
     # Pattern of '{filename}' resolves to any direct header file of the rule instance
     hdrs_map.pin_down_non_globs(hdrs = hdrs + implementation_hdrs)
 
-    # Merge with deps
+    # Traverse dependencies and extract:
+    # HdrsMapInfo (trainsitive), CcInfo (first order) and CcSharedLibraryInfo (first order)
     deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = quotient_map_hdrs_map_infos(
         targets = deps,
+        hdrs = None,
+        implementation_hdrs = None,
         hdrs_map = hdrs_map,
+        hdrs_map_deps = None,
+        traverse_deps = True,
     )
     hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
     implementation_hdrs = depset(direct = implementation_hdrs, transitive = [deps_prv_hdrs])

@@ -20,7 +20,12 @@ def _cc_hdrs_impl(ctx):
 
     deps_pub_hdrs, deps_prv_hdrs, hdrs_map, deps_deps = quotient_map_hdrs_map_infos(
         targets = deps,
+        hdrs = None,
+        implementation_hdrs = None,
         hdrs_map = hdrs_map,
+        hdrs_map_deps = None,
+        # DO NOT pay the transitive traversal cost upfront
+        traverse_deps = False,
     )
 
     hdrs = depset(direct = hdrs, transitive = [deps_pub_hdrs])
