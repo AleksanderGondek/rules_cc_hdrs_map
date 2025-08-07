@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.20.0 - 2025-08-07
+#### Features
+- **(cc_sources)** add extra extensions allowed - (0966786) - Aleksander Gondek
+
+- - -
+
 ## v0.19.0 - 2025-08-04
 #### Features
 - **(hdrs_map_info)** gather HdrsMapInfo transitively - (10af2ce) - Aleksander Gondek
