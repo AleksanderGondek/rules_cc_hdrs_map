@@ -29,6 +29,14 @@ CC_SOURCE_EXTENSIONS = [
     ".C",
     ".cu",
     ".cl",
+    # Non-standard additions:
+    # assembly
+    ".s",
+    ".S",
+    ".asm",
+    # pre-processed files
+    ".i",
+    ".ii",
 ]
 
 # Author soap box:
