@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.20.1 - 2025-08-08
+#### Bug Fixes
+- **(make-variables_expansion)** will no longer trigger Bazel error - (d1371d0) - Aleksander Gondek
+
+- - -
+
 ## v0.20.0 - 2025-08-07
 #### Features
 - **(cc_sources)** add extra extensions allowed - (0966786) - Aleksander Gondek
