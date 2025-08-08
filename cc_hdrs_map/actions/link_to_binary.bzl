@@ -10,8 +10,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 def _link_to_binary_impl(
         sctx,
         compilation_outputs,
-        extra_ctx_members = None,
-        configure_features_func = [],
+        cc_feature_configuration_func = [],
         features = [],
         disabled_features = [],
         deps = [],
@@ -32,7 +31,7 @@ def _link_to_binary_impl(
 
     Args:
         sctx: subrule context
-        configure_features_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
+        cc_feature_configuration_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
         features: list of features specified for the linking
         disabled_features = list of disabled features specified for the linking
         deps: list of dependencies provided for the linking
@@ -46,8 +45,8 @@ def _link_to_binary_impl(
         additional_inputs: for additional inputs to the linking action, e.g.: linking scripts
         variables_extension: additional variables to pass to the toolchain configuration when create link command line
     """
-    if not configure_features_func:
-        fail("link_to_binary subrule requires for the 'configure_features_func' kwarg to be set!")
+    if not cc_feature_configuration_func:
+        fail("link_to_binary subrule requires for the 'cc_feature_configuration_func' kwarg to be set!")
 
     cc_toolchain = find_cc_toolchain(sctx)
 
@@ -82,7 +81,7 @@ def _link_to_binary_impl(
     return cc_common.link(
         actions = sctx.actions,
         name = sctx.label.name,
-        feature_configuration = configure_features_func(
+        feature_configuration = cc_feature_configuration_func(
             cc_toolchain,
             features = features,
             disabled_features = disabled_features,
@@ -92,7 +91,7 @@ def _link_to_binary_impl(
         link_deps_statically = True,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
-        user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
+        user_link_flags = user_link_flags,
         stamp = stamp,
         # Adding transitive sols makes the compilation
         # work with --unresolved-symbols='report-all'

@@ -11,8 +11,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 def _link_to_archive_impl(
         sctx,
         compilation_outputs,
-        extra_ctx_members = None,
-        configure_features_func = [],
+        cc_feature_configuration_func = [],
         features = [],
         disabled_features = [],
         deps = [],
@@ -26,7 +25,7 @@ def _link_to_archive_impl(
 
     Args:
         sctx: subrule context
-        configure_features_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
+        cc_feature_configuration_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
         features: list of features specified for the linking
         disabled_features = list of disabled features specified for the linking
         deps: list of dependencies provided for the linking
@@ -35,8 +34,8 @@ def _link_to_archive_impl(
         additional_inputs: for additional inputs to the linking action, e.g.: linking scripts
         variables_extension: additional variables to pass to the toolchain configuration when creating link command line
     """
-    if not configure_features_func:
-        fail("link_to_archive subrule requires for the 'configure_features_func' kwarg to be set!")
+    if not cc_feature_configuration_func:
+        fail("link_to_archive subrule requires for the 'cc_feature_configuration_func' kwarg to be set!")
 
     cc_toolchain = find_cc_toolchain(sctx)
 
@@ -48,7 +47,7 @@ def _link_to_archive_impl(
     linking_context, linking_outputs = cc_common.create_linking_context_from_compilation_outputs(
         actions = sctx.actions,
         name = archive_lib_name,
-        feature_configuration = configure_features_func(
+        feature_configuration = cc_feature_configuration_func(
             cc_toolchain,
             features = features,
             disabled_features = disabled_features,
@@ -62,7 +61,7 @@ def _link_to_archive_impl(
             for dep in deps
             if CcInfo in dep
         ],
-        user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
+        user_link_flags = user_link_flags,
         alwayslink = False,
         # TODO: Is there a better way?
         additional_inputs = depset([], transitive = [i.files for i in additional_inputs]).to_list(),
