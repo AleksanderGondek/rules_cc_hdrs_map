@@ -13,8 +13,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cc_shared_library_info.bzl", "me
 def _link_to_so_impl(
         sctx,
         compilation_outputs,
-        extra_ctx_members = None,
-        configure_features_func = [],
+        cc_feature_configuration_func = [],
         features = [],
         disabled_features = [],
         deps = [],
@@ -29,7 +28,7 @@ def _link_to_so_impl(
 
     Args:
         sctx: subrule context
-        configure_features_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
+        cc_configuration_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
         features: list of features specified for the linking
         disabled_features: list of disabled features specified for the linking
         deps: list of dependencies provided for the linking
@@ -38,8 +37,8 @@ def _link_to_so_impl(
         additional_inputs: for additional inputs to the linking action, e.g.: linking scripts
         variables_extension: additional variables to pass to the toolchain configuration when creating link command line
     """
-    if not configure_features_func:
-        fail("link_to_so subrule requires for the 'configure_features_func' kwarg to be set!")
+    if not cc_feature_configuration_func:
+        fail("link_to_so subrule requires for the 'cc_feature_configuration_func' kwarg to be set!")
 
     cc_toolchain = find_cc_toolchain(sctx)
 
@@ -70,7 +69,7 @@ def _link_to_so_impl(
     linking_outputs = cc_common.link(
         actions = sctx.actions,
         name = sol_name,
-        feature_configuration = configure_features_func(
+        feature_configuration = cc_feature_configuration_func(
             cc_toolchain,
             features = features + ["force_no_whole_archive"],
             disabled_features = disabled_features,
@@ -82,7 +81,7 @@ def _link_to_so_impl(
         linking_contexts = [cc_common.create_linking_context(
             linker_inputs = depset(direct = linking_inputs, order = "topological"),
         )] + linking_contexts,
-        user_link_flags = cc_helper.get_linking_opts(sctx, extra_ctx_members, user_link_flags, additional_inputs),
+        user_link_flags = user_link_flags,
         stamp = 0,
         # I am leaving this in because I am petty
         # Error in check_private_api: file '@@rules_cc_hdrs_map+//cc_hdrs_map/actions:link_to_so.bzl' cannot use private API

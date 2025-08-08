@@ -1,6 +1,6 @@
 """ Contains common configuration-related entities used by cc_hdrs_map rules. """
 
-load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSIONS", "CC_SOURCE_EXTENSIONS")
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSIONS", "CC_SOURCE_EXTENSIONS", "cc_helper")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
 
 def _not_yet_implemented(ctx_attr, attr_name):
@@ -197,6 +197,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
+        expand_make_variables = lambda ctx, cc_info, action_kwargs: ("conly_flags", cc_helper.expand_make_variables_in_copts(ctx, cc_info, action_kwargs, action_kwargs.get("conly_flags"))),
     ),
     "copts": struct(
         attr = attr.string_list(
@@ -214,6 +215,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
+        expand_make_variables = lambda ctx, cc_info, action_kwargs: ("user_compile_flags", cc_helper.expand_make_variables_in_copts(ctx, cc_info, action_kwargs, action_kwargs.get("user_compile_flags"))),
     ),
     "cxxopts": struct(
         attr = attr.string_list(
@@ -228,6 +230,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
+        expand_make_variables = lambda ctx, cc_info, action_kwargs: ("cxx_flags", cc_helper.expand_make_variables_in_copts(ctx, cc_info, action_kwargs, action_kwargs.get("cxx_flags"))),
     ),
     "defines": struct(
         attr = attr.string_list(
@@ -242,6 +245,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
+        expand_make_variables = lambda ctx, cc_info, action_kwargs: ("defines", cc_helper.expand_make_variables_in_defines(ctx, cc_info, action_kwargs, action_kwargs.get("defines"))),
     ),
     "dynamic_deps": struct(
         attr = attr.label_list(
@@ -318,6 +322,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_bin = lambda ctx_attr: ("user_link_flags", getattr(ctx_attr, "linkopts", [])),
             link_to_so = lambda ctx_attr: ("user_link_flags", getattr(ctx_attr, "linkopts", [])),
         ),
+        expand_make_variables = lambda ctx, cc_info, action_kwargs: ("user_link_flags", cc_helper.expand_make_variables_in_linkopts(ctx, cc_info, action_kwargs, action_kwargs.get("user_link_flags"))),
     ),
     "linkshared": struct(
         attr = attr.bool(
@@ -375,6 +380,7 @@ _CC_COMPILABLE_ATTRS = {
             link_to_bin = lambda ctx_attr: None,
             link_to_so = lambda ctx_attr: None,
         ),
+        expand_make_variables = lambda ctx, cc_info, action_kwargs: ("local_defines", cc_helper.expand_make_variables_in_defines(ctx, cc_info, action_kwargs, action_kwargs.get("local_defines"), local = True)),
     ),
     "malloc": struct(
         attr = attr.label(

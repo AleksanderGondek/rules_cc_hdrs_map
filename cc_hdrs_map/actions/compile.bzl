@@ -9,8 +9,7 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 
 def _compile_impl(
         sctx,
-        extra_ctx_members = None,
-        configure_features_func = None,
+        cc_feature_configuration_func = None,
         features = [],
         disabled_features = [],
         # Sources
@@ -45,7 +44,7 @@ def _compile_impl(
 
     Args:
         sctx: subrule context
-        configure_features_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
+        cc_feature_configuration_func: function that will provide [FeatureConfiguration](https://bazel.build/rules/lib/builtins/FeatureConfiguration.html)
         features: list of features specified for the compilation
         disabled_features = list of disabled features specified for the compilation
         srcs: the list of source files to be compiled.
@@ -87,8 +86,8 @@ def _compile_impl(
         disallow_pic_outputs: whether PIC outputs should be created
         disallow_nopic_outputs: whether NOPIC outputs should be created
     """
-    if not configure_features_func:
-        fail("compile subrule requires for the 'configure_features_func' kwarg to be set!")
+    if not cc_feature_configuration_func:
+        fail("compile subrule requires for the 'cc_feature_configuration_func' kwarg to be set!")
 
     cc_toolchain = find_cc_toolchain(sctx)
 
@@ -113,20 +112,16 @@ def _compile_impl(
         if CcInfo in dep
     ]
 
-    feature_configuration = configure_features_func(
+    cc_feature_configuration = cc_feature_configuration_func(
         cc_toolchain,
         features = features,
         disabled_features = disabled_features,
     )
 
-    # Additional make variable substitutions
-    amvs = cc_helper.get_toolchain_global_make_variables(cc_toolchain)
-    amvs.update(cc_helper.get_cc_flags_make_variable(cc_toolchain, feature_configuration))
-
     compilation_ctx, compilation_outputs = cc_common.compile(
         name = sctx.label.name,
         actions = sctx.actions,
-        feature_configuration = feature_configuration,
+        feature_configuration = cc_feature_configuration,
         cc_toolchain = cc_toolchain,
         compilation_contexts = compilation_contexts,
         # Error in check_private_api: file '@@rules_cc_hdrs_map+//cc_hdrs_map/actions:compile.bzl' cannot use private API :<
@@ -148,12 +143,12 @@ def _compile_impl(
         quote_includes = quote_includes,
         system_includes = system_includes,
         # Defines
-        defines = cc_helper.get_compilation_defines(sctx, extra_ctx_members, defines, deps, amvs, []),
-        local_defines = cc_helper.get_compilation_defines(sctx, extra_ctx_members, local_defines, deps, amvs, additional_inputs) + cc_helper.get_local_defines_for_runfiles_lookup(sctx, deps),
+        defines = defines,
+        local_defines = local_defines,
         # Cflags
-        user_compile_flags = cc_helper.get_compilation_opts(sctx, extra_ctx_members, user_compile_flags, feature_configuration, amvs, additional_inputs),
-        conly_flags = cc_helper.get_compilation_opts(sctx, extra_ctx_members, conly_flags, feature_configuration, amvs, additional_inputs),
-        cxx_flags = cc_helper.get_compilation_opts(sctx, extra_ctx_members, cxx_flags, feature_configuration, amvs, additional_inputs),
+        user_compile_flags = user_compile_flags,
+        conly_flags = conly_flags,
+        cxx_flags = cxx_flags,
         disallow_pic_outputs = disallow_pic_outputs,
         disallow_nopic_outputs = disallow_nopic_outputs,
         # Apple framework
