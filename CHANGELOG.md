@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.21.0 - 2025-09-18
+#### Features
+- **(nixpkgs)** update definitions to latest as of 2025-09-18 - (0a493ac) - Aleksander Gondek
+
+- - -
+
 ## v0.20.1 - 2025-08-08
 #### Bug Fixes
 - **(make-variables_expansion)** will no longer trigger Bazel error - (d1371d0) - Aleksander Gondek
