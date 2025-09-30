@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.21.1 - 2025-09-30
+#### Bug Fixes
+- **(common.bzl)** Complete runfiles collection - (21d204f) - Artur Stachecki
+
+- - -
+
 ## v0.21.0 - 2025-09-18
 #### Features
 - **(nixpkgs)** update definitions to latest as of 2025-09-18 - (0a493ac) - Aleksander Gondek
