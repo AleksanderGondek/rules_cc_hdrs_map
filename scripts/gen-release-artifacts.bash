@@ -1,4 +1,7 @@
-#! /usr/bin/env bash
+#! /usr/bin/env nix-shell
+#! nix-shell --quiet ../non-nixos-shell.nix
+#! nix-shell -i bash
+
 set -euo pipefail
 set -x
 
@@ -15,10 +18,12 @@ require_util() {
 
 require_util cat "print out contents of files"
 require_util cog "get release version and notes"
+require_util cut "split sha256sum outputs"
 require_util git "interact with the svc"
 require_util gzip "gzip files"
 require_util popd "ensure the commands are run in appropriate working dir"
 require_util pushd "ensure the commands are run in appropriate working dir"
+require_util sha256sum "calculate the hash of the created archive"
 require_util tar "tar files"
 
 # Author's soap box:
@@ -26,16 +31,21 @@ require_util tar "tar files"
 # used by default by mktemp ($TMPDIR) is purged!
 # However the dedicated $RUNNER_TEMP is not!
 # Why TMPDIR is not set to RUNNER_TEMP?
-# Quite unexected
+# Quite unexpected
 OUT_DIR=$(mktemp -d -p ${RUNNER_TEMP:-"/tmp"})
 pushd $(git rev-parse --show-toplevel) >/dev/null
 
-# obtain the current version
+# Obtain and save the current version of the ruleset
 echo "v$(cog get-version 2>/dev/null)" >${OUT_DIR}/version
-# generate release note
-cog changelog --at "$(cat ${OUT_DIR}/version)" >${OUT_DIR}/release-notes.md 2>/dev/null
+VERSION="$(cat ${OUT_DIR}/version)"
 
-# create tar.gz archive
+# Generate release notes for the current version of the ruleset
+RELEASE_NOTES="${OUT_DIR}/release_notes.md"
+cog changelog --at "${VERSION}" >${RELEASE_NOTES} 2>/dev/null
+
+# === Creation of the *.tar.gz file ===
+ARCHIVE_NAME="rules_cc_hdrs_map-${VERSION}.tar.gz"
+
 ## logic lifted from:
 ## https://www.gnu.org/software/tar/manual/html_node/Reproducibility.html
 
@@ -67,10 +77,43 @@ TARFLAGS="
 "
 GZIPFLAGS="--no-name --best"
 LC_ALL=C tar $TARFLAGS -c --to-stdout $(git ls-files) |
-  gzip $GZIPFLAGS > "${OUT_DIR}/rules_cc_hdrs_map-$(cat ${OUT_DIR}/version).tar.gz"
+  gzip $GZIPFLAGS > "${OUT_DIR}/${ARCHIVE_NAME}"
+
+ARCHIVE_SHA=$(sha256sum "${OUT_DIR}/${ARCHIVE_NAME}" | cut -f 1 -d' ')
 
 ## end of logic from GNU org
+# === End of creation of the *.tar.gz file ===
+
+# Extend the release_notes.md with usage example
+cat <<EOF >> ${RELEASE_NOTES}
+## Usage example
+
+### Bzlmod
+
+Paste this snippet into your \`MODULE.bazel\` file:
+
+\`\`\`starlark
+bazel_dep(name = "rules_cc_hdrs_map", version = "${VERSION}")
+\`\`\`
+
+### WORKSPACE (deprecated)
+
+Paste this snippet into your \`WORKSPACE.bazel\` file:
+
+\`\`\`starlark
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "rules_cc_hdrs_map",
+    sha256 = "${ARCHIVE_SHA}",
+    url = "https://github.com/AleksanderGondek/rules_cc_hdrs_map/releases/download/${VERSION}/${ARCHIVE_NAME}",
+)
+
+load("@rules_cc_hdrs_map//cc_hdrs_map:workspace_deps.bzl", "cc_hdrs_map_workspace_deps")
+cc_hdrs_map_workspace_deps()
+\`\`\`
+EOF
 
 popd >/dev/null
+
 # 'return the output dir with results'
 echo ${OUT_DIR}

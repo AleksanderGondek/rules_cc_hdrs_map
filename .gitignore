@@ -1,4 +1,5 @@
 .bazel
 .bazel-*
 .bazelisk-bin
+dist
 result
