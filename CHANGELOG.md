@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.24.0 - 2025-10-08
+#### Features
+- **(cd)** enable automatic publish to BCR - (13033db) - Aleksander Gondek
+
+- - -
+
 ## v0.23.0 - 2025-10-08
 #### Features
 - **(ci)** switch publish logic to bazel-contrib one - (7d38454) - Aleksander Gondek
