@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.22.1 - 2025-10-08
+#### Bug Fixes
+- **(attrs)** remove deduplication from list attrs - (ea3767a) - Aleksander Gondek
+
+- - -
+
 ## v0.22.0 - 2025-10-06
 #### Features
 - **(nixpkgs)** update definitions to latest as of 2025-10-06 - (9da17b8) - Aleksander Gondek
