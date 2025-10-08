@@ -54,8 +54,6 @@ def _attrs_into_action_kwargs(ctx, rule_attrs, action_name):
         if type(kwarg_meta[1]) == "list":
             compile_kwarg = action_kwargs.setdefault(kwarg_meta[0], [])
             for kwarg in kwarg_meta[1]:
-                if kwarg in compile_kwarg:
-                    continue
                 compile_kwarg.append(kwarg)
 
             # TODO: Handling of a dictionaries merge
