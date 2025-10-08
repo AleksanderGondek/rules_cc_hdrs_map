@@ -83,8 +83,8 @@ jobs:
             ./dist/release_notes.md
           retention-days: 1
 
-  publish:
-    name: "publish"
+  publish_github:
+    name: "publish_github"
     needs: "prepare"
     uses: bazel-contrib/.github/.github/workflows/release_ruleset.yaml@v7.2.3
     with:
@@ -94,3 +94,18 @@ jobs:
       release_files: |2
         ./dist/*
       tag_name: ${{ needs.prepare.outputs.version }}
+
+  publish_bcr:
+    name: "publish_bcr"
+    needs: ["prepare", "publish_github"]
+    uses: bazel-contrib/publish-to-bcr/.github/workflows/publish.yaml@v1.0.0
+    with:
+      attest: true
+      draft: false
+      tag_name: ${{ needs.prepare.outputs.version }}
+      registry_fork: AleksanderGondek/bazel-central-registry
+      author_name: "Aleksander Gondek"
+      author_email: "github@other-songs.eu"
+    secrets:
+      # Necessary to push to the BCR fork, and to open a pull request against a registry
+      publish_token: ${{ secrets.BCR_PUBLISH_TOKEN }}
