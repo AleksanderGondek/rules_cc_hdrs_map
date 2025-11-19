@@ -57,3 +57,14 @@ bzl_library(
         "//cc_hdrs_map/providers:hdrs_map",
     ],
 )
+
+bzl_library(
+    name = "cc_so_import",
+    srcs = ["cc_so_import.bzl"],
+    deps = [
+        "//cc_hdrs_map/actions:defs",
+        "//cc_hdrs_map/private:attrs",
+        "//cc_hdrs_map/private:common",
+        "//cc_hdrs_map/providers:hdrs_map",
+    ],
+)

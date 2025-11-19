@@ -606,6 +606,51 @@ def get_cc_so_attrs():
     cc_so_attrs.update(_CC_LIB_ATTRS)
     return cc_so_attrs
 
+def get_cc_so_import_attrs():
+    """ To be described. """
+    cc_so_import_attrs = {
+        "shared_library": struct(
+            attr = attr.label(
+                # We are not limiting it down to .so because it can also be .so.1.2.3 etc.
+                allow_single_file = True,
+                mandatory = True,
+                doc = """
+                A single precompiled shared library. This ruleset will ensure it will be available to depending cc_hdrs_map targets.
+                """,
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
+    }
+    cc_so_import_attrs.update(_COMMON_RULES_ATTRS)
+    cc_so_import_attrs.pop("srcs")
+    cc_so_import_attrs.pop("implementation_hdrs")
+    cc_so_import_attrs.pop("module_interfaces")
+    cc_so_import_attrs.pop("win_def_file")
+
+    cc_so_import_attrs.update(_CC_COMPILABLE_ATTRS)
+    cc_so_import_attrs.pop("additional_compiler_inputs")
+    cc_so_import_attrs.pop("conlyopts")
+    cc_so_import_attrs.pop("copts")
+    cc_so_import_attrs.pop("cxxopts")
+    cc_so_import_attrs.pop("defines")
+    cc_so_import_attrs.pop("includes")
+    cc_so_import_attrs.pop("link_extra_lib")
+    cc_so_import_attrs.pop("linkshared")
+    cc_so_import_attrs.pop("linkstamp")
+    cc_so_import_attrs.pop("linkstatic")
+    cc_so_import_attrs.pop("local_defines")
+    cc_so_import_attrs.pop("malloc")
+    cc_so_import_attrs.pop("nocopts")
+
+    cc_so_import_attrs.update(_CC_LIB_ATTRS)
+    cc_so_import_attrs.pop("textual_hdrs")
+    return cc_so_import_attrs
+
 def get_cc_archive_attrs():
     """ To be described. """
     cc_archive_attrs = {
