@@ -1,0 +1,29 @@
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_bin", "cc_so")
+
+cc_so(
+    name = "use_uuid",
+    srcs = ["use_uuid.c"],
+    hdrs = ["use_uuid.h"],
+    linkopts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wl,--unresolved-symbols=report-all",
+    ],
+    deps = ["//libuuid"],
+)
+
+cc_bin(
+    name = "main",
+    srcs = ["main.c"],
+    hdrs_map = {
+        "**/use_uuid.h": ["orange/use_uuid.h"],
+    },
+    linkopts = [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-Wl,--unresolved-symbols=report-all",
+    ],
+    deps = [":use_uuid"],
+)

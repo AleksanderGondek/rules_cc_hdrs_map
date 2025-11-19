@@ -270,6 +270,41 @@ The intended difference between this rule and the rules_cc's cc_shared_library i
 | <a id="cc_so-win_def_file"></a>win_def_file |  The Windows DEF file to be passed to linker.<br><br>This attribute should only be used when Windows is the target platform. It can be used to export symbols during linking a shared library.   | <a href="https://bazel.build/concepts/labels">Label</a> | optional |  `None`  |
 
 
+<a id="cc_so_import"></a>
+
+## cc_so_import
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so_import")
+
+cc_so_import(<a href="#cc_so_import-name">name</a>, <a href="#cc_so_import-deps">deps</a>, <a href="#cc_so_import-data">data</a>, <a href="#cc_so_import-hdrs">hdrs</a>, <a href="#cc_so_import-additional_linker_inputs">additional_linker_inputs</a>, <a href="#cc_so_import-dynamic_deps">dynamic_deps</a>, <a href="#cc_so_import-hdrs_map">hdrs_map</a>,
+             <a href="#cc_so_import-implementation_deps">implementation_deps</a>, <a href="#cc_so_import-include_prefix">include_prefix</a>, <a href="#cc_so_import-linkopts">linkopts</a>, <a href="#cc_so_import-shared_library">shared_library</a>, <a href="#cc_so_import-strip_include_prefix">strip_include_prefix</a>)
+</pre>
+
+Import precompiled C/C++ shared object library.
+
+The intended difference between this rule and the rules_cc's cc_import is to directly
+provide CcSharedLibrary info to force linking and early deps cutoff.
+
+**ATTRIBUTES**
+
+
+| Name  | Description | Type | Mandatory | Default |
+| :------------- | :------------- | :------------- | :------------- | :------------- |
+| <a id="cc_so_import-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="cc_so_import-deps"></a>deps |  The list of dependencies of current target   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so_import-data"></a>data |  The list of files needed by this target at runtime. See general comments about data at Typical attributes defined by most build rules.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so_import-hdrs"></a>hdrs |  List of headers that may be included by dependent rules transitively. Notice: the cutoff happens during compilation.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so_import-additional_linker_inputs"></a>additional_linker_inputs |  Any additional files that you may want to pass to the linker, for example, linker scripts. You have to separately pass any linker flags that the linker needs in order to be aware of this file. You can do so via the linkopts attribute.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so_import-dynamic_deps"></a>dynamic_deps |  In contrast to `rules_cc`, the dynamic_deps of `rules_cc_hdrs_map` are simply translated into deps parameter, and the providers (CcInfo vs CcSharedInfo) are used to steer the behavior further.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so_import-hdrs_map"></a>hdrs_map |  Dictionary describing paths under which header files should be avaiable as.<br><br>Keys are simple glob pathnames, used to match agains all header files avaiable in the rule. Values are list of paths to which matching header files should be mapped.<br><br>'{filename}' is special token used to signify to matching file name.<br><br>For example: '"**/*o.hpp": ["a/{filename}"]' - will ensure all hpp files with names ending with '0' will be also avaible as if they were placed in a subdirectory.   | <a href="https://bazel.build/rules/lib/dict">Dictionary: String -> List of strings</a> | optional |  `{}`  |
+| <a id="cc_so_import-implementation_deps"></a>implementation_deps |  The list of other libraries that the library target depends on. Unlike with deps, the headers and include paths of these libraries (and all their transitive deps) are only used for compilation of this library, and not libraries that depend on it. Libraries specified with implementation_deps are still linked in binary targets that depend on this library.   | <a href="https://bazel.build/concepts/labels">List of labels</a> | optional |  `[]`  |
+| <a id="cc_so_import-include_prefix"></a>include_prefix |  The prefix to add to the paths of the headers of this rule. When set, the headers in the hdrs attribute of this rule are accessible at is the value of this attribute prepended to their repository-relative path.<br><br>The prefix in the strip_include_prefix attribute is removed before this prefix is added.   | String | optional |  `""`  |
+| <a id="cc_so_import-linkopts"></a>linkopts |  Add these flags to the C++ linker command. Subject to "Make" variable substitution, Bourne shell tokenization and label expansion. Each string in this attribute is added to LINKOPTS before linking the binary target. Each element of this list that does not start with $ or - is assumed to be the label of a target in deps. The list of files generated by that target is appended to the linker options. An error is reported if the label is invalid, or is not declared in deps.   | List of strings | optional |  `[]`  |
+| <a id="cc_so_import-shared_library"></a>shared_library |  A single precompiled shared library. This ruleset will ensure it will be available to depending cc_hdrs_map targets.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
+| <a id="cc_so_import-strip_include_prefix"></a>strip_include_prefix |  The prefix to strip from the paths of the headers of this rule. When set, the headers in the hdrs attribute of this rule are accessible at their path with this prefix cut off.<br><br>If it's a relative path, it's taken as a package-relative one. If it's an absolute one, it's understood as a repository-relative path.<br><br>The prefix in the include_prefix attribute is added after this prefix is stripped.   | String | optional |  `""`  |
+
+
 <a id="HdrsMapInfo"></a>
 
 ## HdrsMapInfo

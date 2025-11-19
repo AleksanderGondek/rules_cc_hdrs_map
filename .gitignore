@@ -3,3 +3,5 @@
 .bazelisk-bin
 dist
 result
+examples/libuuid/include
+examples/libuuid/lib
