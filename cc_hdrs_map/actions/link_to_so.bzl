@@ -66,6 +66,15 @@ def _link_to_so_impl(
         for transitive_dynamic_lib in transitive_dynamic_dep.linker_input.libraries:
             transitive_sols.append(transitive_dynamic_lib.dynamic_library)
 
+    # Some CC toolchains will not add $ORIGIN-based, relative paths to RPATH
+    # for various resons.
+    # This means that there will be cases, in which the linker will have to
+    # be able to resolve transitive sol's solely based on the information from
+    # Bazel dependency graph.
+    # TODO(#1): Create a good test for this behavior
+    # TODO(#2): Make this behavior configurable
+    library_paths = set([sol.dirname for sol in transitive_sols])
+
     linking_outputs = cc_common.link(
         actions = sctx.actions,
         name = sol_name,
@@ -81,7 +90,10 @@ def _link_to_so_impl(
         linking_contexts = [cc_common.create_linking_context(
             linker_inputs = depset(direct = linking_inputs, order = "topological"),
         )] + linking_contexts,
-        user_link_flags = user_link_flags,
+        user_link_flags = user_link_flags + [
+            "-L{}".format(lp)
+            for lp in library_paths
+        ],
         stamp = 0,
         # I am leaving this in because I am petty
         # Error in check_private_api: file '@@rules_cc_hdrs_map+//cc_hdrs_map/actions:link_to_so.bzl' cannot use private API
