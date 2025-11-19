@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.25.0 - 2025-11-19
+#### Features
+- **(linking)** explicit library-paths for transitive sols - (1fce7e1) - Aleksander Gondek
+
+- - -
+
 ## v0.24.0 - 2025-10-08
 #### Features
 - **(cd)** enable automatic publish to BCR - (13033db) - Aleksander Gondek
