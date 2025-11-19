@@ -69,6 +69,15 @@ def _link_to_binary_impl(
         for transitive_dynamic_lib in transitive_dynamic_dep.linker_input.libraries:
             transitive_sols.append(transitive_dynamic_lib.dynamic_library)
 
+    # Some CC toolchains will not add $ORIGIN-based, relative paths to RPATH
+    # for various resons.
+    # This means that there will be cases, in which the linker will have to
+    # be able to resolve transitive sol's solely based on the information from
+    # Bazel dependency graph.
+    # TODO(#1): Create a good test for this behavior
+    # TODO(#2): Make this behavior configurable
+    library_paths = set([sol.dirname for sol in transitive_sols])
+
     linking_contexts.append(
         cc_common.create_linking_context(
             linker_inputs = depset(
@@ -91,7 +100,10 @@ def _link_to_binary_impl(
         link_deps_statically = True,
         compilation_outputs = compilation_outputs,
         linking_contexts = linking_contexts,
-        user_link_flags = user_link_flags,
+        user_link_flags = user_link_flags + [
+            "-L{}".format(lp)
+            for lp in library_paths
+        ],
         stamp = stamp,
         # Adding transitive sols makes the compilation
         # work with --unresolved-symbols='report-all'
