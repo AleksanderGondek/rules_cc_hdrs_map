@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.26.0 - 2025-11-20
+#### Features
+- **(hdrs_map)** graceful handling of duplicates - (5e2fe92) - Aleksander Gondek
+
+- - -
+
 ## v0.25.0 - 2025-11-19
 #### Features
 - **(linking)** explicit library-paths for transitive sols - (1fce7e1) - Aleksander Gondek
