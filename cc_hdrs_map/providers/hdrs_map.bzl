@@ -229,11 +229,24 @@ def _glob_match(
     # if it isn't, it means it was not matched
     return p == None
 
-def _materialize_hdr_mapping(ctx_actions, parent_dir_name, source_hdr_file, mappings):
+def _materialize_hdr_mapping(ctx_actions, parent_dir_name, source_hdr_file, mappings, existing_paths = None):
+    existing_paths = existing_paths if existing_paths else set()
     mapped_files = []
+
     for mapping in mappings:
         # Ensure {filename} is translated to header_file name
         target = mapping.replace("{filename}", source_hdr_file.basename)
+
+        # TODO: Made this behavior configurable
+        # It might be the case, that aggregation of different header mapping, will result
+        # in two or more files attempting to create given mapping.
+        # For now - we are implementing "first-write-wins" strategy, where
+        # every subsequent attempt results in warnings.
+        if target in existing_paths:
+            print("[WARN][rules_cc_hdrs_map] {} attempts to overwrite mapping of {}. Refusing and continuing.".format(source_hdr_file.path, target))
+            continue
+
+        existing_paths.add(target)
 
         # TODO: Hash the label name and add as prefix?
         mapping_path = "/".join([
@@ -250,7 +263,7 @@ def _materialize_hdr_mapping(ctx_actions, parent_dir_name, source_hdr_file, mapp
         )
         mapped_files.append(mapping_file)
 
-    return mapped_files
+    return mapped_files, existing_paths
 
 def materialize_hdrs_mapping(
         invoker_label,
@@ -276,33 +289,43 @@ def materialize_hdrs_mapping(
     materialized_include_path = None
     materialized_hdrs_files = []
 
+    # Retain paths (relative to HEADERS_MAP_DIR_NAME)
+    # of all header files that were created during mapping phase.
+    # This bookeeping is used for detection of scenario,
+    # that would lead to attempt to create a duplicated file,
+    # and would result in Bazel error.
+    materialized_hdrs_paths_rel = set()
+
+    # TODO: Refactor this nested-loop logic
     for header_file in hdrs.to_list():
         if ".vhm" in header_file.path:
             # This is important! Improve the check
             continue
         if header_file.path in hdrs_map.non_glob:
             # This is happening before globbing to improve perf.
-            materialized_hdrs_files.extend(
-                _materialize_hdr_mapping(
-                    actions,
-                    HEADERS_MAP_DIR_NAME,
-                    header_file,
-                    hdrs_map.non_glob.get(header_file.path),
-                ),
+            created_hdrs, created_hdrs_paths_rel = _materialize_hdr_mapping(
+                actions,
+                HEADERS_MAP_DIR_NAME,
+                header_file,
+                hdrs_map.non_glob.get(header_file.path),
+                materialized_hdrs_paths_rel,
             )
+            materialized_hdrs_files.extend(created_hdrs)
+            materialized_hdrs_paths_rel.update(created_hdrs_paths_rel)
             continue
 
         for pattern, mappings in hdrs_map.glob.items():
             if not _glob_match(pattern, header_file.path):
                 continue
-            materialized_hdrs_files.extend(
-                _materialize_hdr_mapping(
-                    actions,
-                    HEADERS_MAP_DIR_NAME,
-                    header_file,
-                    mappings,
-                ),
+            created_hdrs, created_hdrs_paths_rel = _materialize_hdr_mapping(
+                actions,
+                HEADERS_MAP_DIR_NAME,
+                header_file,
+                mappings,
+                materialized_hdrs_paths_rel,
             )
+            materialized_hdrs_files.extend(created_hdrs)
+            materialized_hdrs_paths_rel.update(created_hdrs_paths_rel)
 
     if materialized_hdrs_files:
         hdr = materialized_hdrs_files[0]
