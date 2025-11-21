@@ -8,6 +8,7 @@ load(
 load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
 load("@rules_cc//cc/common:cc_shared_library_info.bzl", "CcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cascading_cc_shared_library_info.bzl", "CascadingCcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cc_shared_library_info.bzl", "merge_cc_shared_library_infos")
 
 def _link_to_so_impl(
@@ -48,6 +49,7 @@ def _link_to_so_impl(
     sol_name = sol_name.removeprefix("lib").replace(".so.", ".").removesuffix(".so")
 
     # TODO: dedup with cc_bin
+    cascading_deps = []
     linking_contexts = []
     linking_inputs = []
     transitive_sols = []
@@ -56,6 +58,13 @@ def _link_to_so_impl(
     for dep in deps:
         if CcInfo in dep:
             linking_contexts.append(dep[CcInfo].linking_context)
+
+        # TODO: Refactor
+        if CascadingCcSharedLibraryInfo in dep:
+            for cdd in dep[CascadingCcSharedLibraryInfo].cc_shared_library_infos:
+                linking_inputs.append(cdd.linker_input)
+                transitive_dynamic_deps.append(cdd.dynamic_deps)
+                cascading_deps.append(cdd)
         if not CcSharedLibraryInfo in dep:
             continue
         dynamic_dep = dep[CcSharedLibraryInfo]
@@ -110,7 +119,7 @@ def _link_to_so_impl(
             libraries = depset([linking_outputs.library_to_link]),
         ),
         link_once_static_libs = [],
-    ), linking_outputs)
+    ), linking_outputs, cascading_deps)
 
 link_to_so = subrule(
     implementation = _link_to_so_impl,

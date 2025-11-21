@@ -6,6 +6,7 @@ load(
     "use_cc_toolchain",
 )
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cascading_cc_shared_library_info.bzl", "CascadingCcSharedLibraryInfo")
 
 def _link_to_binary_impl(
         sctx,
@@ -60,6 +61,12 @@ def _link_to_binary_impl(
         if CcInfo in dep:
             linking_contexts.append(dep[CcInfo].linking_context)
             continue
+
+        # TODO: Refactor
+        if CascadingCcSharedLibraryInfo in dep:
+            for cdd in dep[CascadingCcSharedLibraryInfo].cc_shared_library_infos:
+                linking_inputs.append(cdd.linker_input)
+                transitive_dynamic_deps.append(cdd.dynamic_deps)
         if CcSharedLibraryInfo in dep:
             dynamic_dep = dep[CcSharedLibraryInfo]
             linking_inputs.append(dynamic_dep.linker_input)

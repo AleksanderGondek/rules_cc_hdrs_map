@@ -4,13 +4,14 @@ load("@rules_cc//cc/common:cc_shared_library_info.bzl", "CcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_so_attrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cascading_cc_shared_library_info.bzl", "CascadingCcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo")
 
 CC_SO_ATTRS = get_cc_so_attrs()
 
 def _cc_so_impl(ctx):
     _, compilation_outputs, hdrs_map_ctx = actions.compile(**actions.compile_kwargs(ctx, CC_SO_ATTRS))
-    cc_shared_library_info, linking_outputs = actions.link_to_so(
+    cc_shared_library_info, linking_outputs, cascading_deps = actions.link_to_so(
         compilation_outputs,
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
@@ -25,7 +26,7 @@ def _cc_so_impl(ctx):
         runfiles.append(linking_outputs.library_to_link.dynamic_library)
         output_files.append(linking_outputs.library_to_link.dynamic_library)
 
-    return [
+    providers = [
         DefaultInfo(
             files = depset(output_files),
             runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = runfiles),
@@ -39,6 +40,11 @@ def _cc_so_impl(ctx):
             deps = hdrs_map_ctx.deps,
         ),
     ]
+
+    if cascading_deps:
+        providers.append(CascadingCcSharedLibraryInfo(cc_shared_library_infos = cascading_deps))
+
+    return providers
 
 cc_so = rule(
     implementation = _cc_so_impl,

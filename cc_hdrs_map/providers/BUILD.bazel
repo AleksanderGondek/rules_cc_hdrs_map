@@ -19,6 +19,14 @@ bzl_library(
 )
 
 bzl_library(
+    name = "cascading_cc_shared_library_info",
+    srcs = ["cascading_cc_shared_library_info.bzl"],
+    deps = [
+        "@rules_cc//cc/common",
+    ],
+)
+
+bzl_library(
     name = "cc_shared_library_info",
     srcs = ["cc_shared_library_info.bzl"],
     deps = [
