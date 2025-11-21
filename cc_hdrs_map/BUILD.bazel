@@ -19,6 +19,7 @@ bzl_library(
         "//cc_hdrs_map/private:cc_hdrs",
         "//cc_hdrs_map/private:cc_so",
         "//cc_hdrs_map/private:cc_so_import",
+        "//cc_hdrs_map/providers:cascading_cc_shared_library_info",
         "//cc_hdrs_map/providers:hdrs_map_info",
         "//cc_hdrs_map/providers:helper",
     ],

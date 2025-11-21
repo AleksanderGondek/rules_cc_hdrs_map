@@ -76,9 +76,11 @@ load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_bin.bzl", _cc_bin = "cc_bin")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_hdrs.bzl", _cc_hdrs = "cc_hdrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_so.bzl", _cc_so = "cc_so")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_so_import.bzl", _cc_so_import = "cc_so_import")
+load("@rules_cc_hdrs_map//cc_hdrs_map/providers:cascading_cc_shared_library_info.bzl", _CascadingCcSharedLibraryInfo = "CascadingCcSharedLibraryInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", _HdrsMapInfo = "HdrsMapInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:helper.bzl", _providers_helper = "providers_helper")
 
+CascadingCcSharedLibraryInfo = _CascadingCcSharedLibraryInfo
 HdrsMapInfo = _HdrsMapInfo
 providers_helper = _providers_helper
 

@@ -625,6 +625,20 @@ def get_cc_so_import_attrs():
                 link_to_so = lambda ctx_attr: None,
             ),
         ),
+        "cascade": struct(
+            attr = attr.bool(
+                default = False,
+                doc = """
+                Please DO NOT USE. This makes the SOL being propagated upwards to every dependee of this target.
+                """,
+            ),
+            as_action_param = struct(
+                compile = lambda ctx_attr: None,
+                link_to_archive = lambda ctx_attr: None,
+                link_to_bin = lambda ctx_attr: None,
+                link_to_so = lambda ctx_attr: None,
+            ),
+        ),
     }
     cc_so_import_attrs.update(_COMMON_RULES_ATTRS)
     cc_so_import_attrs.pop("srcs")
