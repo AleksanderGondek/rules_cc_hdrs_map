@@ -1,5 +1,16 @@
 load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_so_import")
 
+#
+# Pre-built libuuid was taken from:
+# https://hydra.nixos.org/build/72747884
+# https://cache.nixos.org/nar/039ykinvrwg3qxhpk6mcasbi4b0lfhyag9nxv6jagrja5jwwnjn6.nar.xz
+# https://cache.nixos.org/nar/039ykinvrwg3qxhpk6mcasbi4b0lfhyag9nxv6jagrja5jwwnjn6.nar.xz
+#
+# For expediency in solving the problem of tests in BCR
+# (BCR does not start the tests via nix-shell)
+# I have checked that singular binary file in. I am sorry.
+#
+
 cc_so_import(
     name = "libuuid",
     hdrs = ["include/uuid/uuid.h"],
