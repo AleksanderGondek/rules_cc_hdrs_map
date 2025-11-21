@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.27.0 - 2025-11-21
+#### Features
+- **(cc_so_import)** introduce way to import raw SOLs - (9adb4e9) - Aleksander Gondek
+
+- - -
+
 ## v0.26.0 - 2025-11-20
 #### Features
 - **(hdrs_map)** graceful handling of duplicates - (5e2fe92) - Aleksander Gondek
