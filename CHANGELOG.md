@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.28.0 - 2025-11-21
+#### Bug Fixes
+- **(examples)** libuuid is no longer dynamically taken from nix - (011d3ad) - Aleksander Gondek
+#### Features
+- **(cc_so_import)** allow cascade of sol linking - (957df3b) - Aleksander Gondek
+
+- - -
+
 ## v0.27.0 - 2025-11-21
 #### Features
 - **(cc_so_import)** introduce way to import raw SOLs - (9adb4e9) - Aleksander Gondek
