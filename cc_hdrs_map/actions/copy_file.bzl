@@ -10,7 +10,7 @@ def copy_file(ctx_actions, src, dst):
         dst: (File) destination file that should be created. Must be declared beforehand.
     """
     ctx_actions.run_shell(
-        tools = [src],
+        inputs = [src],
         outputs = [dst],
         command = "cp -f \"$1\" \"$2\"",
         arguments = [src.path, dst.path],
