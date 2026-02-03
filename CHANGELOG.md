@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.28.1 - 2026-02-03
+#### Bug Fixes
+- **(copy_file)** erroneous tools declaration - (1fe3149) - Aleksander Gondek
+
+- - -
+
 ## v0.28.0 - 2025-11-21
 #### Bug Fixes
 - **(examples)** libuuid is no longer dynamically taken from nix - (011d3ad) - Aleksander Gondek
