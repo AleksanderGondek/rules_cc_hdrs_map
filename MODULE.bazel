@@ -5,7 +5,7 @@ module(
 
 bazel_dep(
     name = "rules_cc",
-    version = "0.1.3",
+    version = "0.2.16",
 )
 
 bazel_dep(
@@ -15,16 +15,25 @@ bazel_dep(
 )
 bazel_dep(
     name = "aspect_bazel_lib",
-    version = "2.19.4",
+    version = "2.22.5",
     dev_dependency = True,
 )
 bazel_dep(
     name = "bazel_skylib",
-    version = "1.8.1",
+    version = "1.9.0",
     dev_dependency = True,
 )
 
 register_execution_platforms(
     "@rules_cc_hdrs_map//:x86_64_linux_remote",
     dev_dependency = True,
+)
+
+archive_override(
+    module_name = "rules_cc",
+    patch_args = ["-p1"],
+    patches = ["@rules_cc_hdrs_map//patches/github.com-bazelbuild-rules_cc:0001-patch-cc_shared_library_info_bzl-made-public.patch"],
+    sha256 = "458b658277ba51b4730ea7a2020efdf1c6dcadf7d30de72e37f4308277fa8c01",
+    strip_prefix = "rules_cc-0.2.16",
+    url = "https://github.com/bazelbuild/rules_cc/releases/download/0.2.16/rules_cc-0.2.16.tar.gz",
 )
