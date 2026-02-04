@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.29.0 - 2026-02-04
+#### Features
+- (**bazel**) update recommended version to 8.5.1 - (f09a1cc) - Aleksander Gondek
+- (**deps**) update all of ruleset dependencies to latest - (87f5c60) - Aleksander Gondek
+- (**gcc_toolchain**) switch to bzlmod definitions - (9e79861) - Aleksander Gondek
+- (**nixpkgs**) update definitions to latest as of 2026-02-04 - (2e27992) - Aleksander Gondek
+
+- - -
+
 ## v0.28.1 - 2026-02-03
 #### Bug Fixes
 - **(copy_file)** erroneous tools declaration - (1fe3149) - Aleksander Gondek
