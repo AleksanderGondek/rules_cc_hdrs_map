@@ -1,2 +1,2 @@
-# This WORKSPACE file will be used if bzlmod is enabled
+# This WORKSPACE file will be used if both bzlmod and workspace are enabled
 workspace(name = "rules_cc_hdrs_map_examples")
