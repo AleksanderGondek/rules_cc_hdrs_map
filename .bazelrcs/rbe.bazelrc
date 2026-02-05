@@ -1,33 +1,25 @@
-# Forbid local machine as executor
+# .bazelrc to enforce strict RBE build
 
+# Forbid local machine as executor
 ## Force local CPP_TOOLCHAIN resolution to be skipped
 ## Docs: https://github.com/bazelbuild/rules_cc/blob/15c158886752ceddb4d6bac17e7b5a74feab53b5/cc/private/toolchain/cc_configure.bzl#L33
-build --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
-
-## Do not attempt to register local host as a platform
-## (Bazel <7 compatibility)
-## Docs: https://github.com/bazelbuild/bazel/issues/6849
-## Docs: https://github.com/bazelbuild/bazel/blob/7f749e927f61a84ef3a8f361ce601db9d2b81fc4/src/main/java/com/google/devtools/build/lib/bazel/rules/BazelRulesModule.java#L163
-build --incompatible_auto_configure_host_platform=true
-
-## Do not attempt to register local host as a platform
-## (Bazel <7 compatibility)
-## Docs: https://github.com/bazelbuild/bazel/blob/7f749e927f61a84ef3a8f361ce601db9d2b81fc4/src/main/java/com/google/devtools/build/lib/bazel/rules/BazelRulesModule.java#L151
-build --target_platform_fallback=//:DEV_NULL_PLATFORM
+build:rbe --action_env=BAZEL_DO_NOT_DETECT_CPP_TOOLCHAIN=1
 
 ## Force local host to be not usable
 ## Docs: https://github.com/bazelbuild/bazel/blob/7f749e927f61a84ef3a8f361ce601db9d2b81fc4/site/en/extending/platforms.md?plain=1#L112
-build --host_platform=//:DEV_NULL_PLATFORM
+build:rbe --host_platform=//:DEV_NULL_PLATFORM
 
-## RBE specific
-## Default to remove execution strategy
-build --strategy=remote
-build --genrule_strategy=remote
-build --spawn_strategy=remote
+# Switch default strategies to remote
+build:rbe --strategy=remote
+build:rbe --genrule_strategy=remote
+build:rbe --spawn_strategy=remote
 # Due to copy_file being less then ideal - will be improved later
-build --strategy=HdrsMapIncludeMaterialize=sandboxed
-build --jobs=32
+build:rbe --strategy=HdrsMapIncludeMaterialize=sandboxed
+build:rbe --jobs=32
 
 ## Register platforms that should be used by default 
-build --platforms=//:x86_64_linux_remote
-build --extra_execution_platforms=//:x86_64_linux_remote
+build:rbe --platforms=//:x86_64_linux_remote
+build:rbe --extra_execution_platforms=//:x86_64_linux_remote
+
+# TODO(agondek): make it nicer
+build:rbe --remote_executor=grpc://192.168.66.1:30430

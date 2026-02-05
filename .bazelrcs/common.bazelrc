@@ -1,44 +1,114 @@
-# General setup (Bazel v8.2.0)
+# Common .bazelrcs settings
+# Compatible with:
+#  - Bazel v8.5.1
+
+# Ruleset specific
 
 ## Explicitly opt-in to rules_extension_api
-## The project requires it
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--experimental_rule_extension_api
+## This project requires it
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--experimental_rule_extension_api
 common --experimental_rule_extension_api
 
-## Do not use any colorized output
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--color
-common --color=no
-
 ## Ensure bzlmod is enabled, workspaces are disabled
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--enable_workspace
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--enable_workspace
 common --enable_bzlmod
 common --noenable_workspace
 
 ## Do not create lockfile
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--lockfile_mode
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--lockfile_mode
 common --lockfile_mode=off
 
-## Do not allow any network actions in the sandbox
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--sandbox_default_allow_network
-build --nosandbox_default_allow_network
+# Nice to haves
+
+## Always announce what .bazelrcs are used
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--announce_rc
+common --announce_rc=false
+
+## Do not use any colorized output
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--color
+common --color=no
+
+## Do not play with terminal cursor for outputs
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--curses
+common --curses=no
+
+## Allow multiple --modify_execution_info flags to be additive
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_modify_execution_info_additive
+common --incompatible_modify_execution_info_additive=true
+
+## Please store the project root side-by-side not in $HOME etc.
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--output_user_root
+startup --output_user_root=./.bazel-user-root/
+
+## Disable repo contents cache, as refuses to work if its part of the WORKSPACE itself
+## (Hopefully https://github.com/bazelbuild/bazel/issues/26384 will solve it)
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--repo_contents_cache
+common --repo_contents_cache=""
+
+# Neatly group convenience symlink under single dir
+# Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--symlink_prefix
+common --symlink_prefix=.bazel/
+
+# Hardening
+
+## Prevent certain symbols from being autoloaded (so that the rulest is ready for Bazel 9)
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_autoload_externally
+# common --incompatible_autoload_externally=""
+
+## Treat config_setting visibility as any other rule
+## Docs: https://bazel.build/versions/9.0.0/reference/command-line-reference#build-flag--incompatible_config_setting_private_default_visibility
+common --incompatible_config_setting_private_default_visibility=true
+
+## Prevent Bazel from autogenerating __init__.py files
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_default_to_explicit_init_py
+common --incompatible_default_to_explicit_init_py=true
+
+## Prevent any native_repo rules from being used in WORKSPACE
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_disable_native_repo_rules
+common --incompatible_disable_native_repo_rules=true
+
+## Disallow rule attribute cfg = host
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_disable_starlark_host_transitions
+common --incompatible_disable_starlark_host_transitions=true
+
+## Prevent usage of non-utf8 starlark files
+## (non-utf8 files may work or may behave erradicaly)
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_enforce_starlark_utf8
+common --incompatible_enforce_starlark_utf8=error
 
 ## Force sandboxing for all possible tests
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--incompatible_exclusive_test_sandboxed
-test --incompatible_exclusive_test_sandboxed
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_exclusive_test_sandboxed
+common --incompatible_exclusive_test_sandboxed=true
+
+## Enforce reasonable composition of ctx.actions.run_shell with env and use_default_shell_env
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_merge_fixed_and_default_shell_env
+common --incompatible_merge_fixed_and_default_shell_env=true
+
+## Enforce intentional files export
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_no_implicit_file_export
+common --incompatible_no_implicit_file_export=true
+
+## Prevent repo env from affecting repository rules and module extensions
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_repo_env_ignores_action_env
+common --incompatible_repo_env_ignores_action_env=true
 
 ## Do not 'inherit' client $PATH, $LD_LIBRARY_PATH in the build env
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--incompatible_strict_action_env
-build --incompatible_strict_action_env
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_strict_action_env
+common --incompatible_strict_action_env=true
+
+## Depend on rules_cc, not @bazel_tools
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--incompatible_use_cc_configure_from_rules_cc
+common --incompatible_use_cc_configure_from_rules_cc=true
+
+## Ensure Bazel does not try to pick up host-OS specific config lines from bazelrc files
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--enable_platform_specific_config
+common --noenable_platform_specific_config
+
+## Do not allow any network actions in the sandbox
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--sandbox_default_allow_network
+common --nosandbox_default_allow_network
 
 ## Be extremely strict about used shell executable
 ## (By default it is embedded - not great for cross-compatibility)
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--shell_executable
-build --shell_executable=/bin/sh
-
-## Please store the project root side-by-side not in $HOME etc.
-## Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--output_user_root
-startup --output_user_root=./.bazel-user-root/
-
-# Neatly group convenience symlink under single dir
-# Docs: https://bazel.build/versions/8.2.0/reference/command-line-reference#flag--symlink_prefix
-common --symlink_prefix=.bazel/
+## Docs: https://bazel.build/versions/8.5.0/reference/command-line-reference#flag--shell_executable
+common --shell_executable=/bin/sh
