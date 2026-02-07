@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.29.1 - 2026-02-07
+#### Bug Fixes
+- (**module**) archive_override use patch_strip - (9d68b64) - Aleksander Gondek
+- (**workspace_deps.bzl**) update reference to rules_cc - (f058e64) - Aleksander Gondek
+#### Build system
+- (**bazelrc**) incompatible_autoload_externally set to empty - (86ae948) - Aleksander Gondek
+- (**bazelrc**) cleanup and extend bazelrcs - (1077306) - Aleksander Gondek
+- (**docs**) switch to usage of prebuilt protoc - (7e3f517) - Aleksander Gondek
+- drop dev dependencies to skylib and aspect_lib - (efa76fe) - Aleksander Gondek
+
+- - -
+
 ## v0.29.0 - 2026-02-04
 #### Features
 - (**bazel**) update recommended version to 8.5.1 - (f09a1cc) - Aleksander Gondek
