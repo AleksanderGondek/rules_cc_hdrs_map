@@ -31,6 +31,15 @@ bazel_dep(
     dev_dependency = True,
 )
 
+# This dependency is here,
+# to ensure we are using protobuf in version
+# that allows for usage of prebuilt protoc
+bazel_dep(
+    name = "protobuf",
+    version = "33.4",
+    dev_dependency = True,
+)
+
 # Toolchains registration below
 gcc_toolchains = use_extension(
     "@gcc_toolchain//toolchain:module_extensions.bzl",
