@@ -110,6 +110,9 @@ http_archive(
 
 load("@rules_cc_hdrs_map//cc_hdrs_map:workspace_deps.bzl", "cc_hdrs_map_workspace_deps")
 cc_hdrs_map_workspace_deps()
+
+load("@rules_cc//cc:extensions.bzl", "compatibility_proxy_repo")
+compatibility_proxy_repo()
 \`\`\`
 EOF
 

@@ -8,7 +8,7 @@ def cc_hdrs_map_workspace_deps():
     maybe(
         http_archive,
         name = "rules_cc",
-        sha256 = "64cb81641305dcf7b3b3d5a73095ee8fe7444b26f7b72a12227d36e15cfbb6cb",
-        strip_prefix = "rules_cc-0.1.3",
-        url = "https://github.com/bazelbuild/rules_cc/releases/download/0.1.3/rules_cc-0.1.3.tar.gz",
+        sha256 = "458b658277ba51b4730ea7a2020efdf1c6dcadf7d30de72e37f4308277fa8c01",
+        strip_prefix = "rules_cc-0.2.16",
+        url = "https://github.com/bazelbuild/rules_cc/releases/download/0.2.16/rules_cc-0.2.16.tar.gz",
     )
