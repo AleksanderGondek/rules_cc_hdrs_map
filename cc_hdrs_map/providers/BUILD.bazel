@@ -1,6 +1,6 @@
 """ This package contains modules with rule-specific providers. """
 
-load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 
 package(default_visibility = ["//:__subpackages__"])
 

@@ -8,19 +8,21 @@ bazel_dep(
     version = "0.2.16",
 )
 
+# Only development dependencies below
+# rules_cc_hdrs_map depends only on rules_cc!
 bazel_dep(
     name = "platforms",
     version = "1.0.0",
     dev_dependency = True,
 )
 bazel_dep(
-    name = "aspect_bazel_lib",
-    version = "2.22.5",
+    name = "bazel_lib",
+    version = "3.2.0",
     dev_dependency = True,
 )
 bazel_dep(
-    name = "bazel_skylib",
-    version = "1.9.0",
+    name = "stardoc",
+    version = "0.8.1",
     dev_dependency = True,
 )
 bazel_dep(
@@ -29,6 +31,7 @@ bazel_dep(
     dev_dependency = True,
 )
 
+# Toolchains registration below
 gcc_toolchains = use_extension(
     "@gcc_toolchain//toolchain:module_extensions.bzl",
     "gcc_toolchains",
@@ -62,6 +65,8 @@ register_execution_platforms(
     dev_dependency = True,
 )
 
+# rules_cc is patched only for the development,
+# only to ensure the documentation is generated correctly
 archive_override(
     module_name = "rules_cc",
     patch_args = ["-p1"],

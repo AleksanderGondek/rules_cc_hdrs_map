@@ -1,0 +1,5 @@
+""" This package contains development utilities. """
+
+package(default_visibility = ["//:__subpackages__"])
+
+exports_files(["stardocs.bzl"])

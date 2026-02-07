@@ -1,14 +1,8 @@
 """ This package defines the documentation-related targets. """
 
-load("@aspect_bazel_lib//lib:docs.bzl", "stardoc_with_diff_test", "update_docs")
-
-package(default_visibility = ["//:__subpackages__"])
+load("//utils:stardocs.bzl", "stardoc_with_diff_test")
 
 stardoc_with_diff_test(
     name = "README",
     bzl_library_target = "//cc_hdrs_map:defs",
-)
-
-update_docs(
-    name = "update",
 )

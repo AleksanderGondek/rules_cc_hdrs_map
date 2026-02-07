@@ -1,6 +1,6 @@
 """ This package contains all definitions that should be publicly accessible. """
 
-load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -28,5 +28,9 @@ bzl_library(
 bzl_library(
     name = "workspace_deps",
     srcs = ["workspace_deps.bzl"],
-    deps = [],
+    deps = [
+        "@bazel_tools//tools/build_defs/repo:cache.bzl",
+        "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "@bazel_tools//tools/build_defs/repo:utils.bzl",
+    ],
 )
