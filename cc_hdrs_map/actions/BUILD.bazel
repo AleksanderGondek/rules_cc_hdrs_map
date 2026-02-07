@@ -1,6 +1,6 @@
 """ This package contains the subrules with CC compilation phases. """
 
-load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_lib//:bzl_library.bzl", "bzl_library")
 
 package(default_visibility = ["//:__subpackages__"])
 
@@ -12,6 +12,8 @@ bzl_library(
         ":link_to_archive",
         ":link_to_binary",
         ":link_to_so",
+        "//cc_hdrs_map/providers:cascading_cc_shared_library_info",
+        "//cc_hdrs_map/providers:cc_shared_library_info",
     ],
 )
 
@@ -19,6 +21,8 @@ bzl_library(
     name = "cc_helper",
     srcs = ["cc_helper.bzl"],
     deps = [
+        "//cc_hdrs_map/providers:hdrs_map",
+        "//cc_hdrs_map/providers:hdrs_map_info",
         "@rules_cc//cc/common",
         "@rules_cc//cc/common:cc_helper_bzl",
     ],
@@ -45,6 +49,7 @@ bzl_library(
     name = "link_to_archive",
     srcs = ["link_to_archive.bzl"],
     deps = [
+        ":cc_helper",
         "@rules_cc//cc:action_names_bzl",
         "@rules_cc//cc:find_cc_toolchain_bzl",
         "@rules_cc//cc/common",
@@ -55,6 +60,9 @@ bzl_library(
     name = "link_to_binary",
     srcs = ["link_to_binary.bzl"],
     deps = [
+        ":cc_helper",
+        "//cc_hdrs_map/providers:cascading_cc_shared_library_info",
+        "//cc_hdrs_map/providers:cc_shared_library_info",
         "@rules_cc//cc:find_cc_toolchain_bzl",
         "@rules_cc//cc/common",
     ],
@@ -64,6 +72,9 @@ bzl_library(
     name = "link_to_so",
     srcs = ["link_to_so.bzl"],
     deps = [
+        ":cc_helper",
+        "//cc_hdrs_map/providers:cascading_cc_shared_library_info",
+        "//cc_hdrs_map/providers:cc_shared_library_info",
         "@rules_cc//cc:find_cc_toolchain_bzl",
         "@rules_cc//cc/common",
         "@rules_cc//cc/common:cc_shared_library_info_bzl",
