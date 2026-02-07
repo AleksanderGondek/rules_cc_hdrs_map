@@ -2,3 +2,12 @@
 import %workspace%/.bazelrcs/common.bazelrc
 
 try-import %workspace%/.bazelrcs/rbe.bazelrc
+
+# Use prebuilt protoc, which drastically
+# reduces time required for markdown docs creation
+common --incompatible_enable_proto_toolchain_resolution
+# Remember:
+# Once v34 hits, this flag will have to be switched to
+# --@protobuf//bazel/flags:prefer_prebuilt_protoc=true
+# Docs: https://protobuf.dev/news/2026-01-16/
+common --@protobuf//bazel/toolchains:prefer_prebuilt_protoc=true
