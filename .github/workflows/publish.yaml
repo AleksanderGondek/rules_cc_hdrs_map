@@ -72,6 +72,7 @@ jobs:
         run: |2
           mkdir ./dist
           cp ${{ steps.gen_files_to_publish.outputs.outs}}/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.tar.gz ./dist/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.tar.gz
+          cp ${{ steps.gen_files_to_publish.outputs.outs}}/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.docs.tar.gz ./dist/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.docs.tar.gz
           cp ${{ steps.gen_files_to_publish.outputs.outs}}/release_notes.md ./dist/release_notes.md
 
       # Upload generated artifacts, so that bazel-contrib/.github workflow release_ruleset can use them
@@ -80,6 +81,7 @@ jobs:
           name: dist
           path: |2
             ./dist/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.tar.gz
+            ./dist/rules_cc_hdrs_map-${{ steps.gen_files_to_publish.outputs.version }}.docs.tar.gz
             ./dist/release_notes.md
           retention-days: 1
 
