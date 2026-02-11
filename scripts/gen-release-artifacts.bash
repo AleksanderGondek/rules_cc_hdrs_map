@@ -16,9 +16,11 @@ require_util() {
         oops "you do not have '$1' installed, which I need to $2"
 }
 
+require_util bazel "generate api docs for BCR"
 require_util cat "print out contents of files"
 require_util cog "get release version and notes"
 require_util cut "split sha256sum outputs"
+require_util find "listing files in docs directory"
 require_util git "interact with the svc"
 require_util gzip "gzip files"
 require_util popd "ensure the commands are run in appropriate working dir"
@@ -116,6 +118,39 @@ compatibility_proxy_repo()
 \`\`\`
 EOF
 
+# Generate API docs for the Bazel Central Registry
+# https://github.com/bazel-contrib/rules-template/blob/012c564199f9cef3273ca99da2e0e407a10245ca/.github/workflows/release_prep.sh#L19
+DOCS_ARCHIVE_NAME="rules_cc_hdrs_map-${VERSION}.docs.tar.gz"
+DOCS_BZL_DIR=$(mktemp -d -p ${RUNNER_TEMP:-"/tmp"})
+DOCS_TARGETS=$(mktemp -p ${RUNNER_TEMP:-"/tmp"})
+
+bazel\
+ --output_base="${DOCS_BZL_DIR}"\
+ query\
+ --output=label\
+ --output_file="${DOCS_TARGETS}"\
+ 'kind("starlark_doc_extract rule", //...)' >/dev/null
+
+bazel\
+ --output_base="${DOCS_BZL_DIR}"\
+ build\
+ --target_pattern_file="${DOCS_TARGETS}" >/dev/null
+
+DOCS_DIR=$(bazel --output_base="${DOCS_BZL_DIR}" info bazel-bin)
+
+# Goodbye server
+bazel shutdown
+
+pushd "${DOCS_DIR}" >/dev/null
+## Set each docs file timestamp to that of its latest commit.
+find . -type f | while read -r file; do
+  touch -md "1970-01-01 00:00:00Z" $file
+done
+
+LC_ALL=C tar $TARFLAGS -c --to-stdout $(find . -type f) |
+  gzip $GZIPFLAGS > "${OUT_DIR}/${DOCS_ARCHIVE_NAME}"
+
+popd >/dev/null
 popd >/dev/null
 
 # 'return the output dir with results'
