@@ -1,0 +1,60 @@
+From 3ec80ba393bda9893113481d9b8a9f42e537804f Mon Sep 17 00:00:00 2001
+From: Aleksander Gondek <gondekaleksander@protonmail.com>
+Date: Tue, 10 Feb 2026 21:03:47 +0100
+Subject: [PATCH] feat: explicit load of rules_cc's symbols
+
+This changeset ensures that the symbols of
+rules_cc ruleset are explicitly loaded and
+consequentlly prepares the repository
+for usage in Bazel 9+.
+
+Side note: aspect_bazel_lib also has to be
+updated in the Bazel repository using this
+toolchain, otherwise issues from said dependency
+may pop up.
+---
+ rules_fortran/defs.bzl            | 1 +
+ toolchain/cc_toolchain_config.bzl | 1 +
+ toolchain/defs.bzl                | 2 +-
+ 3 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/rules_fortran/defs.bzl b/rules_fortran/defs.bzl
+index 6db7a9a..48b6161 100644
+--- a/rules_fortran/defs.bzl
++++ b/rules_fortran/defs.bzl
+@@ -19,6 +19,7 @@
+ """
+ 
+ load("@bazel_skylib//lib:paths.bzl", "paths")
++load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
+ load("//toolchain/fortran:action_names.bzl", "ACTION_NAMES")
+ 
+ FortranInfo = provider(
+diff --git a/toolchain/cc_toolchain_config.bzl b/toolchain/cc_toolchain_config.bzl
+index 76b547e..7a0d7dd 100644
+--- a/toolchain/cc_toolchain_config.bzl
++++ b/toolchain/cc_toolchain_config.bzl
+@@ -29,6 +29,7 @@ load(
+     "tool_path",
+     "with_feature_set",
+ )
++load("@rules_cc//cc:defs.bzl", "CcToolchainConfigInfo", "cc_common")
+ load("//toolchain/fortran:action_names.bzl", FORTRAN_ACTION_NAMES = "ACTION_NAMES")
+ 
+ all_compile_actions = [
+diff --git a/toolchain/defs.bzl b/toolchain/defs.bzl
+index 0e55fd7..f995747 100644
+--- a/toolchain/defs.bzl
++++ b/toolchain/defs.bzl
+@@ -524,7 +524,7 @@ ARCHS = struct(
+ )
+ 
+ _TOOLCHAIN_BUILD_FILE_CONTENT = """\
+-load("@rules_cc//cc:defs.bzl", "cc_toolchain")
++load("@rules_cc//cc:defs.bzl", "cc_library", "cc_toolchain")
+ load("@{gcc_toolchain_workspace_name}//toolchain:cc_toolchain_config.bzl", "cc_toolchain_config")
+ load("@{gcc_toolchain_workspace_name}//toolchain/fortran:defs.bzl", "fortran_toolchain")
+ load("//:tool_paths.bzl", "tool_paths")
+-- 
+2.51.2
+

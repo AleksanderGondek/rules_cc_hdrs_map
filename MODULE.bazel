@@ -40,6 +40,16 @@ bazel_dep(
     dev_dependency = True,
 )
 
+# This dependency is here
+# to ensure we are using the aspect_bazel_lib
+# that is compatbile with Bazel 9
+# (it is gcc_toolchain dependency in older version)
+bazel_dep(
+    name = "aspect_bazel_lib",
+    version = "2.22.5",
+    dev_dependency = True,
+)
+
 # Toolchains registration below
 gcc_toolchains = use_extension(
     "@gcc_toolchain//toolchain:module_extensions.bzl",
@@ -72,6 +82,16 @@ register_toolchains(
 register_execution_platforms(
     "@rules_cc_hdrs_map//:x86_64_linux_remote",
     dev_dependency = True,
+)
+
+# gcc_toolchain is patched for compatibility with Bazel 9
+archive_override(
+    module_name = "gcc_toolchain",
+    integrity = "sha256-5qAKn5mbKbpO7gv3P3Sr7uwcuFdAyMGXqL+omnPnIrA=",
+    patch_strip = 1,
+    patches = ["@rules_cc_hdrs_map//patches/github.com-f0rmiga-gcc-toolchain:0001-feat-explicit-load-of-rules_cc-s-symbols.patch"],
+    strip_prefix = "gcc-toolchain-0.9.0",
+    url = "https://github.com/f0rmiga/gcc-toolchain/releases/download/0.9.0/gcc-toolchain-0.9.0.tar.gz",
 )
 
 # rules_cc is patched only for the development,
