@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.30.0 - 2026-02-11
+#### Features
+- (**build**) publish stardocs to BCR - (1988461) - Aleksander Gondek
+
+- - -
+
 ## v0.29.2 - 2026-02-11
 #### Bug Fixes
 - add explicit usage of rules_cc symbols - (1e28e03) - Aleksander Gondek
