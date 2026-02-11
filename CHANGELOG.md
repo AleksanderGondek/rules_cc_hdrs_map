@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.29.2 - 2026-02-11
+#### Bug Fixes
+- add explicit usage of rules_cc symbols - (1e28e03) - Aleksander Gondek
+
+- - -
+
 ## v0.29.1 - 2026-02-07
 #### Bug Fixes
 - (**module**) archive_override use patch_strip - (9d68b64) - Aleksander Gondek
