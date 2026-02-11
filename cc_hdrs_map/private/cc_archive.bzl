@@ -1,5 +1,6 @@
 """ This module contains definition of cc_archive rule. """
 
+load("@rules_cc//cc:defs.bzl", "CcInfo")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_archive_attrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")

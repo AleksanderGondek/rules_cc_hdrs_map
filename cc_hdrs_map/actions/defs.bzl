@@ -1,5 +1,6 @@
 """ This module defines the CC compilation phase actions which are exposed publicalyl as subrules. """
 
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_cc//cc:find_cc_toolchain.bzl", "find_cc_toolchain")
 load(":cc_helper.bzl", _cc_helper = "cc_helper")
 load(":compile.bzl", _compile = "compile")
