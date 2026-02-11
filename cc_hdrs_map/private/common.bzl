@@ -1,5 +1,7 @@
 """ Contains common logic shared between rules implementation(s). """
 
+load("@rules_cc//cc:defs.bzl", "CcInfo")
+
 def _get_dynamic_libraries_for_runtime(cc_linking_context, linking_statically):
     libraries = []
     for linker_input in cc_linking_context.linker_inputs.to_list():
