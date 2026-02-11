@@ -24,6 +24,7 @@ bzl_library(
         "//cc_hdrs_map/private:attrs",
         "//cc_hdrs_map/private:common",
         "//cc_hdrs_map/providers:hdrs_map",
+        "@rules_cc//cc:defs_bzl",
     ],
 )
 

@@ -1,5 +1,6 @@
 """ This module contains logic responsible for creation of executable binary. """
 
+load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load(
     "@rules_cc//cc:find_cc_toolchain.bzl",
     "find_cc_toolchain",

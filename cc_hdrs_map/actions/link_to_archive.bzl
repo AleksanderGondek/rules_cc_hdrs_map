@@ -1,6 +1,7 @@
 """" This module contains logic responsible for linking into .a file. """
 
 load("@rules_cc//cc:action_names.bzl", "CPP_LINK_STATIC_LIBRARY_ACTION_NAME")
+load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load(
     "@rules_cc//cc:find_cc_toolchain.bzl",
     "find_cc_toolchain",

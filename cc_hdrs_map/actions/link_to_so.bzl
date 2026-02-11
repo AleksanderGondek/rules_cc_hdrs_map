@@ -1,5 +1,6 @@
 """ This module contains logic responsible for linking into .so file. """
 
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load(
     "@rules_cc//cc:find_cc_toolchain.bzl",
     "find_cc_toolchain",

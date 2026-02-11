@@ -1,5 +1,6 @@
 """ This module serves chiefly as a vehicle for exposing 'privaete' cc_helper methods to current rule set. """
 
+load("@rules_cc//cc:defs.bzl", "cc_common")
 load("@rules_cc//cc/common:cc_helper.bzl", rules_cc_helper = "cc_helper")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "materialize_hdrs_mapping", "new_hdrs_map")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "quotient_map_hdrs_map_infos")
