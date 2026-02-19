@@ -462,6 +462,310 @@ available under singular, temporary include statment.
 | <a id="actions.prepare_for_compilation-input_includes"></a>input_includes |  include statements specified for the action   |  none |
 
 
+<a id="cc_helper.expand_make_variables_in_copts"></a>
+
+## cc_helper.expand_make_variables_in_copts
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.expand_make_variables_in_copts(<a href="#cc_helper.expand_make_variables_in_copts-ctx">ctx</a>, <a href="#cc_helper.expand_make_variables_in_copts-cc_info">cc_info</a>, <a href="#cc_helper.expand_make_variables_in_copts-action_kwargs">action_kwargs</a>, <a href="#cc_helper.expand_make_variables_in_copts-opts">opts</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.expand_make_variables_in_copts-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_copts-cc_info"></a>cc_info |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_copts-action_kwargs"></a>action_kwargs |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_copts-opts"></a>opts |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.expand_make_variables_in_defines"></a>
+
+## cc_helper.expand_make_variables_in_defines
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.expand_make_variables_in_defines(<a href="#cc_helper.expand_make_variables_in_defines-ctx">ctx</a>, <a href="#cc_helper.expand_make_variables_in_defines-cc_info">cc_info</a>, <a href="#cc_helper.expand_make_variables_in_defines-action_kwargs">action_kwargs</a>, <a href="#cc_helper.expand_make_variables_in_defines-defines">defines</a>, <a href="#cc_helper.expand_make_variables_in_defines-local">local</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.expand_make_variables_in_defines-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_defines-cc_info"></a>cc_info |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_defines-action_kwargs"></a>action_kwargs |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_defines-defines"></a>defines |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_defines-local"></a>local |  <p align="center"> - </p>   |  `False` |
+
+
+<a id="cc_helper.expand_make_variables_in_linkopts"></a>
+
+## cc_helper.expand_make_variables_in_linkopts
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.expand_make_variables_in_linkopts(<a href="#cc_helper.expand_make_variables_in_linkopts-ctx">ctx</a>, <a href="#cc_helper.expand_make_variables_in_linkopts-cc_info">cc_info</a>, <a href="#cc_helper.expand_make_variables_in_linkopts-action_kwargs">action_kwargs</a>, <a href="#cc_helper.expand_make_variables_in_linkopts-opts">opts</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.expand_make_variables_in_linkopts-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_linkopts-cc_info"></a>cc_info |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_linkopts-action_kwargs"></a>action_kwargs |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.expand_make_variables_in_linkopts-opts"></a>opts |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.extensions.cc_header"></a>
+
+## cc_helper.extensions.cc_header
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.extensions.cc_header()
+</pre>
+
+
+
+
+
+<a id="cc_helper.extensions.cc_source"></a>
+
+## cc_helper.extensions.cc_source
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.extensions.cc_source()
+</pre>
+
+
+
+
+
+<a id="cc_helper.extract_headers"></a>
+
+## cc_helper.extract_headers
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.extract_headers(<a href="#cc_helper.extract_headers-files">files</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.extract_headers-files"></a>files |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.extract_sources"></a>
+
+## cc_helper.extract_sources
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.extract_sources(<a href="#cc_helper.extract_sources-files">files</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.extract_sources-files"></a>files |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.get_cc_flags_make_variable"></a>
+
+## cc_helper.get_cc_flags_make_variable
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.get_cc_flags_make_variable(<a href="#cc_helper.get_cc_flags_make_variable-cc_toolchain">cc_toolchain</a>, <a href="#cc_helper.get_cc_flags_make_variable-feature_configuration">feature_configuration</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.get_cc_flags_make_variable-cc_toolchain"></a>cc_toolchain |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_cc_flags_make_variable-feature_configuration"></a>feature_configuration |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.get_compilation_defines"></a>
+
+## cc_helper.get_compilation_defines
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.get_compilation_defines(<a href="#cc_helper.get_compilation_defines-ctx">ctx</a>, <a href="#cc_helper.get_compilation_defines-defines">defines</a>, <a href="#cc_helper.get_compilation_defines-deps">deps</a>, <a href="#cc_helper.get_compilation_defines-additional_make_variable_substitutions">additional_make_variable_substitutions</a>,
+                                  <a href="#cc_helper.get_compilation_defines-additional_targets">additional_targets</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.get_compilation_defines-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_compilation_defines-defines"></a>defines |  <p align="center"> - </p>   |  `[]` |
+| <a id="cc_helper.get_compilation_defines-deps"></a>deps |  <p align="center"> - </p>   |  `[]` |
+| <a id="cc_helper.get_compilation_defines-additional_make_variable_substitutions"></a>additional_make_variable_substitutions |  <p align="center"> - </p>   |  `{}` |
+| <a id="cc_helper.get_compilation_defines-additional_targets"></a>additional_targets |  <p align="center"> - </p>   |  `[]` |
+
+
+<a id="cc_helper.get_compilation_opts"></a>
+
+## cc_helper.get_compilation_opts
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.get_compilation_opts(<a href="#cc_helper.get_compilation_opts-ctx">ctx</a>, <a href="#cc_helper.get_compilation_opts-opts">opts</a>, <a href="#cc_helper.get_compilation_opts-feature_configuration">feature_configuration</a>,
+                               <a href="#cc_helper.get_compilation_opts-additional_make_variable_substitutions">additional_make_variable_substitutions</a>, <a href="#cc_helper.get_compilation_opts-additional_inputs">additional_inputs</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.get_compilation_opts-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_compilation_opts-opts"></a>opts |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_compilation_opts-feature_configuration"></a>feature_configuration |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_compilation_opts-additional_make_variable_substitutions"></a>additional_make_variable_substitutions |  <p align="center"> - </p>   |  `{}` |
+| <a id="cc_helper.get_compilation_opts-additional_inputs"></a>additional_inputs |  <p align="center"> - </p>   |  `[]` |
+
+
+<a id="cc_helper.get_linking_opts"></a>
+
+## cc_helper.get_linking_opts
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.get_linking_opts(<a href="#cc_helper.get_linking_opts-ctx">ctx</a>, <a href="#cc_helper.get_linking_opts-opts">opts</a>, <a href="#cc_helper.get_linking_opts-additional_make_variable_substitutions">additional_make_variable_substitutions</a>, <a href="#cc_helper.get_linking_opts-additional_inputs">additional_inputs</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.get_linking_opts-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_linking_opts-opts"></a>opts |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_linking_opts-additional_make_variable_substitutions"></a>additional_make_variable_substitutions |  <p align="center"> - </p>   |  `{}` |
+| <a id="cc_helper.get_linking_opts-additional_inputs"></a>additional_inputs |  <p align="center"> - </p>   |  `[]` |
+
+
+<a id="cc_helper.get_local_defines_for_runfiles_lookup"></a>
+
+## cc_helper.get_local_defines_for_runfiles_lookup
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.get_local_defines_for_runfiles_lookup(<a href="#cc_helper.get_local_defines_for_runfiles_lookup-ctx">ctx</a>, <a href="#cc_helper.get_local_defines_for_runfiles_lookup-all_deps">all_deps</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.get_local_defines_for_runfiles_lookup-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
+| <a id="cc_helper.get_local_defines_for_runfiles_lookup-all_deps"></a>all_deps |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.get_toolchain_global_make_variables"></a>
+
+## cc_helper.get_toolchain_global_make_variables
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.get_toolchain_global_make_variables(<a href="#cc_helper.get_toolchain_global_make_variables-cc_toolchain">cc_toolchain</a>)
+</pre>
+
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.get_toolchain_global_make_variables-cc_toolchain"></a>cc_toolchain |  <p align="center"> - </p>   |  none |
+
+
+<a id="cc_helper.prepare_for_compilation"></a>
+
+## cc_helper.prepare_for_compilation
+
+<pre>
+load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
+
+cc_helper.prepare_for_compilation(<a href="#cc_helper.prepare_for_compilation-sctx">sctx</a>, <a href="#cc_helper.prepare_for_compilation-input_hdrs_map">input_hdrs_map</a>, <a href="#cc_helper.prepare_for_compilation-input_hdrs">input_hdrs</a>, <a href="#cc_helper.prepare_for_compilation-input_implementation_hdrs">input_implementation_hdrs</a>,
+                                  <a href="#cc_helper.prepare_for_compilation-input_deps">input_deps</a>, <a href="#cc_helper.prepare_for_compilation-input_includes">input_includes</a>)
+</pre>
+
+Materialize information from hdrs map.
+
+This function creates a epheremal directory, that contains all of the
+patterns specified within hdrs_map providers, thus making them all
+available under singular, temporary include statment.
+
+
+**PARAMETERS**
+
+
+| Name  | Description | Default Value |
+| :------------- | :------------- | :------------- |
+| <a id="cc_helper.prepare_for_compilation-sctx"></a>sctx |  subrule context   |  none |
+| <a id="cc_helper.prepare_for_compilation-input_hdrs_map"></a>input_hdrs_map |  list of HdrsMapInfo which should be used for materialization of compilation context   |  none |
+| <a id="cc_helper.prepare_for_compilation-input_hdrs"></a>input_hdrs |  direct headers provided to the action   |  none |
+| <a id="cc_helper.prepare_for_compilation-input_implementation_hdrs"></a>input_implementation_hdrs |  direct headers provided to the action   |  none |
+| <a id="cc_helper.prepare_for_compilation-input_deps"></a>input_deps |  dependencies specified for the action   |  none |
+| <a id="cc_helper.prepare_for_compilation-input_includes"></a>input_includes |  include statements specified for the action   |  none |
+
+
 <a id="providers_helper.materialize_hdrs_mapping"></a>
 
 ## providers_helper.materialize_hdrs_mapping

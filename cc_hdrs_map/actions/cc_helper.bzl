@@ -1,44 +1,20 @@
-""" This module serves chiefly as a vehicle for exposing 'privaete' cc_helper methods to current rule set. """
+""" This module serves chiefly as a vehicle for exposing 'private' cc_helper methods to current rule set. """
 
 load("@rules_cc//cc:defs.bzl", "cc_common")
-load("@rules_cc//cc/common:cc_helper.bzl", rules_cc_helper = "cc_helper")
+load("@rules_cc//cc/common:cc_helper.bzl", rules_cc_extensions = "extensions", rules_cc_helper = "cc_helper")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "materialize_hdrs_mapping", "new_hdrs_map")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map_info.bzl", "HdrsMapInfo", "quotient_map_hdrs_map_infos")
 
-# TODO: Perhaps a PR to `rules_cc` to expose extensions method?
-# https://github.com/bazelbuild/bazel/blob/6d811c80720584eac50372b866d063aebd37e2e5/src/main/starlark/builtins_bzl/common/cc/cc_helper_internal.bzl#L94
-CC_HEADER_EXTENSIONS = [
-    ".h",
-    ".hh",
-    ".hpp",
-    ".ipp",
-    ".hxx",
-    ".h++",
-    ".inc",
-    ".inl",
-    ".tlh",
-    ".tli",
-    ".H",
-    ".tcc",
-]
-CC_SOURCE_EXTENSIONS = [
-    ".c",
-    ".cc",
-    ".cpp",
-    ".cxx",
-    ".c++",
-    ".C",
-    ".cu",
-    ".cl",
-    # Non-standard additions:
-    # assembly
-    ".s",
-    ".S",
-    ".asm",
-    # pre-processed files
-    ".i",
-    ".ii",
-]
+_EXTENSIONS = struct(
+    cc_header = lambda: rules_cc_extensions.CC_HEADER,
+    cc_source = lambda: (
+        rules_cc_extensions.C_SOURCE +
+        rules_cc_extensions.CC_SOURCE +
+        rules_cc_extensions.ASSEMBLER +
+        rules_cc_extensions.ASSEMBLER_WITH_C_PREPROCESSOR +
+        [".i", ".ii"]  # pre-processed files
+    ),
+)
 
 # Author soap box:
 # I do not understand the obsession with making everything private,
@@ -46,6 +22,8 @@ CC_SOURCE_EXTENSIONS = [
 # Here it is making things more convoluted, because there is no easy
 # way I can extract 'private' methods from either bultins cc_helper or rules_cc cc_helper
 # The result is a patch work.
+
+# TODO(agondek): Seems like this might be available for import in newest releases.
 
 # === PATCHWORK BEIGNS ===
 # Source: https://github.com/bazelbuild/rules_cc/blob/3dce172deec2a4563c28eae02a8bb18555abafb2/cc/common/cc_helper.bzl#L140
@@ -273,7 +251,7 @@ def _extract_headers(files):
 
     for file in files:
         extension = "." + file.extension
-        if not extension in CC_HEADER_EXTENSIONS:
+        if not extension in _EXTENSIONS.cc_header():
             continue
 
         hdrs.append(file)
@@ -287,7 +265,7 @@ def _extract_sources(files):
 
     for file in files:
         extension = "." + file.extension
-        if not extension in CC_SOURCE_EXTENSIONS:
+        if not extension in _EXTENSIONS.cc_source():
             continue
 
         srcs.append(file)
@@ -456,6 +434,7 @@ cc_helper = struct(
     expand_make_variables_in_copts = _expand_make_variables_in_copts,
     expand_make_variables_in_defines = _expand_make_variables_in_defines,
     expand_make_variables_in_linkopts = _expand_make_variables_in_linkopts,
+    extensions = _EXTENSIONS,
     extract_headers = _extract_headers,
     extract_sources = _extract_sources,
     get_compilation_defines = _get_compilation_defines,

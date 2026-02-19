@@ -1,6 +1,6 @@
 """ Contains common configuration-related entities used by cc_hdrs_map rules. """
 
-load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "CC_HEADER_EXTENSIONS", "CC_SOURCE_EXTENSIONS", "cc_helper")
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", "cc_helper")
 load("@rules_cc_hdrs_map//cc_hdrs_map/providers:hdrs_map.bzl", "new_hdrs_map")
 
 def _not_yet_implemented(ctx_attr, attr_name):
@@ -46,7 +46,7 @@ _COMMON_RULES_ATTRS = {
         attr = attr.label_list(
             mandatory = True,
             # Perhaps in future we can disallow headers here
-            allow_files = CC_SOURCE_EXTENSIONS + CC_HEADER_EXTENSIONS,
+            allow_files = cc_helper.extensions.cc_header() + cc_helper.extensions.cc_source(),
             doc = "The list of source files.",
         ),
         as_action_param = struct(
@@ -58,7 +58,7 @@ _COMMON_RULES_ATTRS = {
     ),
     "hdrs": struct(
         attr = attr.label_list(
-            allow_files = CC_HEADER_EXTENSIONS,
+            allow_files = cc_helper.extensions.cc_header(),
             doc = """ 
         List of headers that may be included by dependent rules transitively.
         Notice: the cutoff happens during compilation.
@@ -74,7 +74,7 @@ _COMMON_RULES_ATTRS = {
     ),
     "implementation_hdrs": struct(
         attr = attr.label_list(
-            allow_files = CC_HEADER_EXTENSIONS,
+            allow_files = cc_helper.extensions.cc_header(),
             doc = """
         List of headers that CANNOT be included by dependent rules.
         Notice: the cutoff happens during compilation.
