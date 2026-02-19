@@ -70,6 +70,7 @@ Said header map is propagated across all compatible C/C++ rules (meaning those f
 No action is being performed up until the moment of compilation - header mappings, resulting from the header map dictionary, are created only for the purposes of compilation and are _NOT_ part of any rule output. This ensures the impact for the Bazel cache is minimal and the compatibility with original `rules_cc`.
 """
 
+load("@rules_cc_hdrs_map//cc_hdrs_map/actions:cc_helper.bzl", _cc_helper = "cc_helper")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", _actions = "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_archive.bzl", _cc_archive = "cc_archive")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:cc_bin.bzl", _cc_bin = "cc_bin")
@@ -91,3 +92,5 @@ cc_bin = _cc_bin
 cc_hdrs = _cc_hdrs
 cc_so = _cc_so
 cc_so_import = _cc_so_import
+
+cc_helper = _cc_helper
