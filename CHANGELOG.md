@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.31.0 - 2026-02-19
+#### Features
+- (**cc_helper.bzl**) expose it and valid extensions - (9509456) - Aleksander Gondek
+
+- - -
+
 ## v0.30.0 - 2026-02-11
 #### Features
 - (**build**) publish stardocs to BCR - (1988461) - Aleksander Gondek
