@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.31.1 - 2026-02-20
+#### Bug Fixes
+- (**cc_helper.bzl**) reduce copypaste from rules_cc - (5350302) - Aleksander Gondek
+
+- - -
+
 ## v0.31.0 - 2026-02-19
 #### Features
 - (**cc_helper.bzl**) expose it and valid extensions - (9509456) - Aleksander Gondek
