@@ -20,15 +20,13 @@ _EXTENSIONS = struct(
 # I do not understand the obsession with making everything private,
 # especially that Starlark is based on Python.
 # Here it is making things more convoluted, because there is no easy
-# way I can extract 'private' methods from either bultins cc_helper or rules_cc cc_helper
-# The result is a patch work.
+# way I can extract 'private' methods from rules_cc's cc_helper.
+# The result is a copypaste.
 
-# TODO(agondek): Seems like this might be available for import in newest releases.
+# === COPYPASTE BEIGNS ===
+# === Synced to v0.2.16
 
-# === PATCHWORK BEIGNS ===
-# Source: https://github.com/bazelbuild/rules_cc/blob/3dce172deec2a4563c28eae02a8bb18555abafb2/cc/common/cc_helper.bzl#L140
-# Source: https://github.com/bazelbuild/bazel/blob/49e43bbd4a3a3aa5f0f00158dff15914b69b6e85/src/main/starlark/builtins_bzl/common/cc/cc_library.bzl#L53
-
+# Source: https://github.com/bazelbuild/rules_cc/blob/6fd317b2ae0534a29db7085605b0262849e62f93/cc/common/cc_helper.bzl#L585
 def _lookup_var(ctx, additional_vars, var):
     expanded_make_var_ctx = ctx.var.get(var)
     expanded_make_var_additional = additional_vars.get(var)
@@ -38,6 +36,7 @@ def _lookup_var(ctx, additional_vars, var):
         return expanded_make_var_ctx
     fail("{}: {} not defined".format(ctx.label, "$(" + var + ")"))
 
+# Source: https://github.com/bazelbuild/rules_cc/blob/6fd317b2ae0534a29db7085605b0262849e62f93/cc/common/cc_helper.bzl#L594
 def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets = []):
     # If make variable is predefined path variable(like $(location ...))
     # we will expand it first.
@@ -78,7 +77,8 @@ def _expand_nested_variable(ctx, additional_vars, exp, execpath = True, targets 
         fail("potentially unbounded recursion during expansion of {}".format(exp))
     return exp
 
-def _expand(ctx, expression, targets, additional_make_variable_substitutions, execpath = True):
+# Source: https://github.com/bazelbuild/rules_cc/blob/6fd317b2ae0534a29db7085605b0262849e62f93/cc/common/cc_helper.bzl#L634
+def _expand(ctx, expression, additional_make_variable_substitutions, execpath = True, targets = []):
     idx = 0
     last_make_var_end = 0
     result = []
@@ -133,9 +133,7 @@ def _expand(ctx, expression, targets, additional_make_variable_substitutions, ex
 
     return "".join(result)
 
-# Tries to expand a single make variable from token.
-# If token has additional characters other than ones
-# corresponding to make variable returns None.
+# Source: https://github.com/bazelbuild/rules_cc/blob/6fd317b2ae0534a29db7085605b0262849e62f93/cc/common/cc_helper.bzl#L888
 def _expand_single_make_variable(ctx, token, additional_make_variable_substitutions):
     if len(token) < 3:
         return None
@@ -145,6 +143,11 @@ def _expand_single_make_variable(ctx, token, additional_make_variable_substituti
     expanded_var = _expand_nested_variable(ctx, additional_make_variable_substitutions, unexpanded_var)
     return expanded_var
 
+# == COPYPASTE ENDS ===
+
+# This funnction is almost idential to the one that can be found in the rules_cc
+# However it does not hardcode the source of additional_inpputs (they are not retrieved from attr)
+# Source: https://github.com/bazelbuild/rules_cc/blob/6fd317b2ae0534a29db7085605b0262849e62f93/cc/common/cc_helper.bzl#L860
 def _expand_make_variables_for_copts(ctx, tokenization, unexpanded_tokens, additional_make_variable_substitutions, additional_inputs = []):
     tokens = []
     targets = []
@@ -152,97 +155,15 @@ def _expand_make_variables_for_copts(ctx, tokenization, unexpanded_tokens, addit
         targets.append(additional_compiler_input)
     for token in unexpanded_tokens:
         if tokenization:
-            expanded_token = _expand(ctx, token, targets, additional_make_variable_substitutions)
+            expanded_token = _expand(ctx, token, additional_make_variable_substitutions, targets = targets)
             rules_cc_helper.tokenize(tokens, expanded_token)
         else:
             exp = _expand_single_make_variable(ctx, token, additional_make_variable_substitutions)
             if exp != None:
                 rules_cc_helper.tokenize(tokens, exp)
             else:
-                tokens.append(_expand(ctx, token, targets, additional_make_variable_substitutions))
+                tokens.append(_expand(ctx, token, additional_make_variable_substitutions, targets = targets))
     return tokens
-
-def _tool_path(cc_toolchain, tool):
-    return cc_toolchain._tool_paths.get(tool, None)
-
-# Authors soap box: Christ.
-def _get_toolchain_global_make_variables(cc_toolchain):
-    result = {
-        "CC": _tool_path(cc_toolchain, "gcc"),
-        "AR": _tool_path(cc_toolchain, "ar"),
-        "NM": _tool_path(cc_toolchain, "nm"),
-        "LD": _tool_path(cc_toolchain, "ld"),
-        "STRIP": _tool_path(cc_toolchain, "strip"),
-        "C_COMPILER": cc_toolchain.compiler,
-    }
-    obj_copy_tool = _tool_path(cc_toolchain, "objcopy")
-    if obj_copy_tool != None:
-        # objcopy is optional in Crostool.
-        result["OBJCOPY"] = obj_copy_tool
-    gcov_tool = _tool_path(cc_toolchain, "gcov-tool")
-    if gcov_tool != None:
-        # gcovtool is optional in Crostool.
-        result["GCOVTOOL"] = gcov_tool
-
-    libc = cc_toolchain.libc
-    if libc.startswith("glibc-"):
-        # Strip "glibc-" prefix.
-        result["GLIBC_VERSION"] = libc[6:]
-    else:
-        result["GLIBC_VERSION"] = libc
-
-    abi_glibc_version = cc_toolchain._abi_glibc_version
-    if abi_glibc_version != None:
-        result["ABI_GLIBC_VERSION"] = abi_glibc_version
-
-    abi = cc_toolchain._abi
-    if abi != None:
-        result["ABI"] = abi
-
-    result["CROSSTOOLTOP"] = cc_toolchain._crosstool_top_path
-    return result
-
-def _contains_sysroot(original_cc_flags, feature_config_cc_flags):
-    SYSROOT_FLAG = "--sysroot="
-    if SYSROOT_FLAG in original_cc_flags:
-        return True
-    for flag in feature_config_cc_flags:
-        if SYSROOT_FLAG in flag:
-            return True
-
-    return False
-
-def _get_cc_flags_make_variable(cc_toolchain, feature_configuration):
-    SYSROOT_FLAG = "--sysroot="
-    original_cc_flags = cc_toolchain._legacy_cc_flags_make_variable
-    sysroot_cc_flag = ""
-    if cc_toolchain.sysroot != None:
-        sysroot_cc_flag = SYSROOT_FLAG + cc_toolchain.sysroot
-
-    build_vars = cc_toolchain._build_variables
-    feature_config_cc_flags = cc_common.get_memory_inefficient_command_line(
-        feature_configuration = feature_configuration,
-        action_name = "cc-flags-make-variable",
-        variables = build_vars,
-    )
-    cc_flags = [original_cc_flags]
-
-    # Only add sysroots flag if nothing else adds sysroot, BUT it must appear
-    # before the feature config flags.
-    if not _contains_sysroot(original_cc_flags, feature_config_cc_flags):
-        cc_flags.append(sysroot_cc_flag)
-    cc_flags.extend(feature_config_cc_flags)
-    return {"CC_FLAGS": " ".join(cc_flags)}
-
-def _get_local_defines_for_runfiles_lookup(ctx, all_deps):
-    _RUNFILES_LIBRARY_TARGET = Label("@rules_cc//cc/runfiles")
-    _LEGACY_RUNFILES_LIBRARY_TARGET = Label("@bazel_tools//tools/cpp/runfiles")
-    for dep in all_deps:
-        if dep.label == _RUNFILES_LIBRARY_TARGET or dep.label == _LEGACY_RUNFILES_LIBRARY_TARGET:
-            return ["BAZEL_CURRENT_REPOSITORY=\"{}\"".format(ctx.label.workspace_name)]
-    return []
-
-# == PATCHWORK ENDS ===
 
 def _extract_headers(files):
     hdrs = []
@@ -281,7 +202,7 @@ def _get_compilation_defines(ctx, defines = [], deps = [], additional_make_varia
     targets.extend(additional_targets)
 
     for define in defines:
-        expanded_define = _expand(ctx, define, targets, additional_make_variable_substitutions)
+        expanded_define = _expand(ctx, define, additional_make_variable_substitutions, targets = targets)
 
         # Author's soap box: love the design of tokenize not returning a list..
         tokens = []
@@ -311,7 +232,7 @@ def _get_linking_opts(ctx, opts, additional_make_variable_substitutions = {}, ad
     results = []
     for opt in opts:
         results.append(
-            _expand(ctx, opt, additional_inputs, additional_make_variable_substitutions),
+            _expand(ctx, opt, additional_make_variable_substitutions, targets = additional_inputs),
         )
 
     return results
@@ -394,8 +315,8 @@ def _prepare_for_compilation(
     )
 
 def _expand_make_variables_in_defines(ctx, cc_info, action_kwargs, defines, local = False):
-    amvs = _get_toolchain_global_make_variables(cc_info.cc_toolchain)
-    amvs.update(_get_cc_flags_make_variable(cc_info.cc_toolchain, cc_info.cc_feature_configuration))
+    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain)
+    amvs.update(rules_cc_helper.get_cc_flags_make_variable(ctx, cc_info.cc_feature_configuration, cc_info.cc_toolchain))
 
     defines = _get_compilation_defines(
         ctx,
@@ -403,13 +324,13 @@ def _expand_make_variables_in_defines(ctx, cc_info, action_kwargs, defines, loca
         action_kwargs.get("deps", []),
         amvs,
         action_kwargs.get("additional_inputs", []) if local else [],
-    ) + _get_local_defines_for_runfiles_lookup(ctx, action_kwargs.get("deps", [])) if local else []
+    ) + rules_cc_helper.get_local_defines_for_runfiles_lookup(ctx, action_kwargs.get("deps", [])) if local else []
 
     return defines
 
 def _expand_make_variables_in_copts(ctx, cc_info, action_kwargs, opts):
-    amvs = _get_toolchain_global_make_variables(cc_info.cc_toolchain)
-    amvs.update(_get_cc_flags_make_variable(cc_info.cc_toolchain, cc_info.cc_feature_configuration))
+    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain)
+    amvs.update(rules_cc_helper.get_cc_flags_make_variable(ctx, cc_info.cc_feature_configuration, cc_info.cc_toolchain))
 
     return _get_compilation_opts(
         ctx,
@@ -420,8 +341,8 @@ def _expand_make_variables_in_copts(ctx, cc_info, action_kwargs, opts):
     )
 
 def _expand_make_variables_in_linkopts(ctx, cc_info, action_kwargs, opts):
-    amvs = _get_toolchain_global_make_variables(cc_info.cc_toolchain)
-    amvs.update(_get_cc_flags_make_variable(cc_info.cc_toolchain, cc_info.cc_feature_configuration))
+    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain)
+    amvs.update(rules_cc_helper.get_cc_flags_make_variable(ctx, cc_info.cc_feature_configuration, cc_info.cc_toolchain))
 
     return _get_linking_opts(
         ctx,
@@ -440,8 +361,5 @@ cc_helper = struct(
     get_compilation_defines = _get_compilation_defines,
     get_compilation_opts = _get_compilation_opts,
     get_linking_opts = _get_linking_opts,
-    get_local_defines_for_runfiles_lookup = _get_local_defines_for_runfiles_lookup,
-    get_cc_flags_make_variable = _get_cc_flags_make_variable,
-    get_toolchain_global_make_variables = _get_toolchain_global_make_variables,
     prepare_for_compilation = _prepare_for_compilation,
 )
