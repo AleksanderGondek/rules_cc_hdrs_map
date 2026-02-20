@@ -600,27 +600,6 @@ cc_helper.extract_sources(<a href="#cc_helper.extract_sources-files">files</a>)
 | <a id="cc_helper.extract_sources-files"></a>files |  <p align="center"> - </p>   |  none |
 
 
-<a id="cc_helper.get_cc_flags_make_variable"></a>
-
-## cc_helper.get_cc_flags_make_variable
-
-<pre>
-load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
-
-cc_helper.get_cc_flags_make_variable(<a href="#cc_helper.get_cc_flags_make_variable-cc_toolchain">cc_toolchain</a>, <a href="#cc_helper.get_cc_flags_make_variable-feature_configuration">feature_configuration</a>)
-</pre>
-
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="cc_helper.get_cc_flags_make_variable-cc_toolchain"></a>cc_toolchain |  <p align="center"> - </p>   |  none |
-| <a id="cc_helper.get_cc_flags_make_variable-feature_configuration"></a>feature_configuration |  <p align="center"> - </p>   |  none |
-
-
 <a id="cc_helper.get_compilation_defines"></a>
 
 ## cc_helper.get_compilation_defines
@@ -692,47 +671,6 @@ cc_helper.get_linking_opts(<a href="#cc_helper.get_linking_opts-ctx">ctx</a>, <a
 | <a id="cc_helper.get_linking_opts-opts"></a>opts |  <p align="center"> - </p>   |  none |
 | <a id="cc_helper.get_linking_opts-additional_make_variable_substitutions"></a>additional_make_variable_substitutions |  <p align="center"> - </p>   |  `{}` |
 | <a id="cc_helper.get_linking_opts-additional_inputs"></a>additional_inputs |  <p align="center"> - </p>   |  `[]` |
-
-
-<a id="cc_helper.get_local_defines_for_runfiles_lookup"></a>
-
-## cc_helper.get_local_defines_for_runfiles_lookup
-
-<pre>
-load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
-
-cc_helper.get_local_defines_for_runfiles_lookup(<a href="#cc_helper.get_local_defines_for_runfiles_lookup-ctx">ctx</a>, <a href="#cc_helper.get_local_defines_for_runfiles_lookup-all_deps">all_deps</a>)
-</pre>
-
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="cc_helper.get_local_defines_for_runfiles_lookup-ctx"></a>ctx |  <p align="center"> - </p>   |  none |
-| <a id="cc_helper.get_local_defines_for_runfiles_lookup-all_deps"></a>all_deps |  <p align="center"> - </p>   |  none |
-
-
-<a id="cc_helper.get_toolchain_global_make_variables"></a>
-
-## cc_helper.get_toolchain_global_make_variables
-
-<pre>
-load("@rules_cc_hdrs_map//cc_hdrs_map:defs.bzl", "cc_helper")
-
-cc_helper.get_toolchain_global_make_variables(<a href="#cc_helper.get_toolchain_global_make_variables-cc_toolchain">cc_toolchain</a>)
-</pre>
-
-
-
-**PARAMETERS**
-
-
-| Name  | Description | Default Value |
-| :------------- | :------------- | :------------- |
-| <a id="cc_helper.get_toolchain_global_make_variables-cc_toolchain"></a>cc_toolchain |  <p align="center"> - </p>   |  none |
 
 
 <a id="cc_helper.prepare_for_compilation"></a>
