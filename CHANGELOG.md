@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.32.0 - 2026-08-09
+#### Features
+- (**copy_file**) disable custom action - (a43aab5) - Aleksander Gondek
+#### Bug Fixes
+- (**cc_hdrs**) rule should propagate CcInfo from deps - (cb053b4) - Aleksander Gondek
+- (**cc_so**) runfiles propagation - (565ad54) - Aleksander Gondek
+- (**link_to_binary**) propoagation of CcSharedLibraryInfo - (b121a86) - Aleksander Gondek
+
+- - -
+
 ## v0.31.1 - 2026-02-20
 #### Bug Fixes
 - (**cc_helper.bzl**) reduce copypaste from rules_cc - (5350302) - Aleksander Gondek
