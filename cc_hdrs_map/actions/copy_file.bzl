@@ -9,17 +9,25 @@ def copy_file(ctx_actions, src, dst):
         src: (File) source file that should be copied. Must exist.
         dst: (File) destination file that should be created. Must be declared beforehand.
     """
-    ctx_actions.run_shell(
-        inputs = [src],
-        outputs = [dst],
-        command = "cp -f \"$1\" \"$2\"",
-        arguments = [src.path, dst.path],
-        mnemonic = "HdrsMapIncludeMaterialize",
-        progress_message = "Materializing public hdr mapping from '%{input}' to '%{output}'",
-        use_default_shell_env = False,
-        execution_requirements = {
-            # TODO: Improve the action, so that it can run virtually anywhere
-            # This is because its not ready for remote
-            "no-remote": "1",
-        },
+
+    # TODO: Add the explanation, as to why flow with custom action makes sense at all
+    ctx_actions.symlink(
+        output = dst,
+        target_file = src,
     )
+
+    # TODO: Hide behind a build setting
+    # ctx_actions.run_shell(
+    #     inputs = [src],
+    #     outputs = [dst],
+    #     command = "cp -f \"$1\" \"$2\"",
+    #     arguments = [src.path, dst.path],
+    #     mnemonic = "HdrsMapIncludeMaterialize",
+    #     progress_message = "Materializing public hdr mapping from '%{input}' to '%{output}'",
+    #     use_default_shell_env = False,
+    #     execution_requirements = {
+    #         # TODO: Improve the action, so that it can run virtually anywhere
+    #         # This is because its not ready for remote
+    #         "no-remote": "1",
+    #     },
+    # )
