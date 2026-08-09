@@ -61,7 +61,6 @@ def _link_to_binary_impl(
     for dep in deps:
         if CcInfo in dep:
             linking_contexts.append(dep[CcInfo].linking_context)
-            continue
 
         # TODO: Refactor
         if CascadingCcSharedLibraryInfo in dep:
