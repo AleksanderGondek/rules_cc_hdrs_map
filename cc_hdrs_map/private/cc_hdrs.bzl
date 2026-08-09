@@ -1,5 +1,6 @@
 """ This module contains implementation of cc_hdrs rule. """
 
+load("@rules_cc//cc:defs.bzl", "CcInfo", "cc_common")
 load("@rules_cc_hdrs_map//cc_hdrs_map/actions:defs.bzl", "actions")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:attrs.bzl", "get_cc_hdrs_attrs")
 load("@rules_cc_hdrs_map//cc_hdrs_map/private:common.bzl", "prepare_default_runfiles")
@@ -43,6 +44,13 @@ def _cc_hdrs_impl(ctx):
             ),
             runfiles = prepare_default_runfiles(ctx.runfiles, ctx.attr.data, ctx.attr.deps, files = ctx.files.data),
         ),
+        cc_common.merge_cc_infos(
+            direct_cc_infos = [
+                d[CcInfo]
+                for d in ctx.attr.deps
+                if CcInfo in d
+            ],
+        ),
         HdrsMapInfo(
             hdrs = hdrs,
             implementation_hdrs = implementation_hdrs,
@@ -64,6 +72,6 @@ cc_hdrs = rule(
     be used with their intended include paths.
     """,
     fragments = ["cpp"],
-    provides = [DefaultInfo, HdrsMapInfo],
+    provides = [CcInfo, DefaultInfo, HdrsMapInfo],
     subrules = [actions.compile, actions.link_to_so],
 )
