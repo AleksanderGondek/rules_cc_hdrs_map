@@ -16,7 +16,7 @@ def _cc_so_impl(ctx):
         **actions.link_to_so_kwargs(ctx, CC_SO_ATTRS)
     )
 
-    runfiles = [] + ctx.attr.data
+    runfiles = [] + ctx.files.data
     output_files = []
     if linking_outputs.library_to_link.resolved_symlink_dynamic_library:
         runfiles.append(linking_outputs.library_to_link.resolved_symlink_dynamic_library)
