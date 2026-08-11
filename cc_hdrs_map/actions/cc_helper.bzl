@@ -315,7 +315,7 @@ def _prepare_for_compilation(
     )
 
 def _expand_make_variables_in_defines(ctx, cc_info, action_kwargs, defines, local = False):
-    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain)
+    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain, cc_info.cc_feature_configuration)
     amvs.update(rules_cc_helper.get_cc_flags_make_variable(ctx, cc_info.cc_feature_configuration, cc_info.cc_toolchain))
 
     defines = _get_compilation_defines(
@@ -329,7 +329,7 @@ def _expand_make_variables_in_defines(ctx, cc_info, action_kwargs, defines, loca
     return defines
 
 def _expand_make_variables_in_copts(ctx, cc_info, action_kwargs, opts):
-    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain)
+    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain, cc_info.cc_feature_configuration)
     amvs.update(rules_cc_helper.get_cc_flags_make_variable(ctx, cc_info.cc_feature_configuration, cc_info.cc_toolchain))
 
     return _get_compilation_opts(
@@ -341,7 +341,7 @@ def _expand_make_variables_in_copts(ctx, cc_info, action_kwargs, opts):
     )
 
 def _expand_make_variables_in_linkopts(ctx, cc_info, action_kwargs, opts):
-    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain)
+    amvs = rules_cc_helper.get_toolchain_global_make_variables(cc_info.cc_toolchain, cc_info.cc_feature_configuration)
     amvs.update(rules_cc_helper.get_cc_flags_make_variable(ctx, cc_info.cc_feature_configuration, cc_info.cc_toolchain))
 
     return _get_linking_opts(
