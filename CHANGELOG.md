@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.33.0 - 2026-08-11
+#### Features
+- (**deps**) update rules_cc to 0.2.22 - (6c0f071) - Aleksander Gondek
+
+- - -
+
 ## v0.32.0 - 2026-08-09
 #### Features
 - (**copy_file**) disable custom action - (a43aab5) - Aleksander Gondek
